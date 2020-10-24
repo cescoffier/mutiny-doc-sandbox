@@ -1,0 +1,60 @@
+.header {
+    height: 5.625rem;
+    background-color: $light-blue;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.brand {
+    border-bottom: 0;
+    padding: 0;
+    color: $dark-gray;
+    font-size: 2em;
+    line-height: 5.625rem;
+    border-bottom: 0;
+    padding: 0;
+    padding-bottom: 0.2rem;
+    display: block;
+    color: $dark-gray;
+    font-family: 'Bangers', cursive;
+    font-weight: bold;
+    letter-spacing: 1px;
+    line-height: 5.625rem;
+    text-decoration: none;
+    &:hover {
+        text-decoration: none;
+        color: $dark-gray;
+    }
+}
+
+.container-banner {
+    padding: 0;
+    height: 5.625rem;
+    background-color: $light-blue;
+}
+
+#nav {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    float: right;
+    a {
+        padding: 0;
+        color: $dark-gray;
+        margin-right: 15px;
+        font-size: .875em;
+        font-weight: 500;
+        font-family: "Montserrat", sans-serif;
+        line-height: calc(5.625rem - 1px);
+        text-transform: uppercase;
+        border-bottom: 1px solid;
+        border-color: transparent;
+        transition: border-color .2s;
+        &:hover {
+            font-weight: bolder;
+        }
+    }
+    .fab {
+        font-size: large;
+    }
+}

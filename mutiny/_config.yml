@@ -1,0 +1,58 @@
+title: SmallRye Mutiny
+description: >- # this means to ignore newlines until "baseurl:"
+  SmallRye Mutiny!
+
+google_analytics: TODO
+
+host: 127.0.0.1
+port: 4000
+
+exclude:
+  - .idea/
+  - .gitignore
+  - vendor
+
+sass:
+  style: compressed  
+  sass_dir: _sass
+
+
+error_mode: strict
+highlighter: rouge
+markdown: kramdown
+kramdown:
+ input: GFM
+ auto_ids: true
+ hard_wrap: false
+ syntax_highlighter: rouge
+
+asciidoctor:
+  base_dir: :docdir
+  safe: unsafe
+  attributes:
+    source-highlighter: highlightjs
+    sectanchors: ''
+    icons: font
+    outfilesuffix: '' 
+    sourcedir: test/java/snippets
+
+
+
+collections:
+  tooltips:
+    output: false
+
+defaults:
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+      comments: true
+      search: true
+      sidebar: home_sidebar
+      topnav: topnav
+
+
+github: [metadata]

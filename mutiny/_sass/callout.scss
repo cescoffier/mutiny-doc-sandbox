@@ -1,0 +1,24 @@
+.admonitionblock {
+    p {
+        font-size: .9375em;
+        line-height: 1.8em;
+        margin-bottom: .625rem;
+    }
+    strong {
+        color: #00244f;
+        display: block;
+        color: #333;
+        font-family: "Montserrat", sans-serif;
+        font-size: 1.133em;
+        font-weight: 500;
+        margin-bottom: .625rem;
+    }
+    .icon {
+        display: none;
+    }
+}
+
+.note {
+    background-color: #f2f8ff;
+    border-color: #deedff;
+}
