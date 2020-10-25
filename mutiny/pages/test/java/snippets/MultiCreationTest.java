@@ -20,21 +20,27 @@ public class MultiCreationTest {
     public void test() {
         // tag::code[]
 
-        // Creation from a known item(s), or computed at subscription time
+        // Creation from a known item(s), or computed at 
+        // subscription time
         Multi.createFrom().item("some known value");
-        Multi.createFrom().item(() -> "some value computed at subscription time");
+        Multi.createFrom()
+          .item(() -> "some value computed at subscription time");
         Multi.createFrom().items("a", "b", "c");
-        Multi.createFrom().items(() -> Stream.of("computed", "at", "subscription", "time"));
-        Multi.createFrom().iterable(Arrays.asList("some", "iterable"));
+        Multi.createFrom()
+          .items(() -> Stream.of("computed", "at", "subscription", "time"));
+        Multi.createFrom()
+          .iterable(Arrays.asList("some", "iterable"));
 
         // Creation from a completion stage or completable future
-        Multi.createFrom().completionStage(CompletableFuture.supplyAsync(() -> "result"))
-                .subscribe().with(
-                        item -> System.out.println("Received: " + item),
-                        failure -> System.out.println("Failed with " + failure.getMessage()));
+        Multi.createFrom()
+          .completionStage(CompletableFuture.supplyAsync(() -> "x"))
+          .subscribe().with(
+            item -> System.out.println("Received: " + item),
+            failure -> System.out.println("Failed with " + failure));
 
         // Creation from a failure
-        Multi.createFrom().failure(() -> new Exception("exception created at subscription time"));
+        Multi.createFrom()
+          .failure(() -> new Exception("exception created at subscription time"));
 
         // Creation from an emitter
         Multi.createFrom().emitter(emitter -> {
@@ -46,14 +52,17 @@ public class MultiCreationTest {
         });
 
         // Create from a Reactive Streams Publisher or a Multi
-        Multi.createFrom().publisher(Multi.createFrom().ticks().every(Duration.ofMillis(1)))
-                .transform().byTakingFirstItems(2)
-                .subscribe().with(
-                        item -> System.out.println("Received tick " + item),
-                        failure -> System.out.println("Failed with " + failure.getMessage()));
+        Multi.createFrom()
+          .publisher(Multi.createFrom().ticks().every(Duration.ofMillis(1)))
+          .transform().byTakingFirstItems(2)
+          .subscribe().with(
+            item -> System.out.println("Received tick " + item),
+            failure -> System.out.println("Failed with " + failure));
 
         // Defer the creation of the uni until subscription time
-        Multi.createFrom().deferred(() -> Multi.createFrom().item("create the uni at subscription time"));
+        Multi.createFrom()
+          .deferred(() -> Multi.createFrom()
+            .item("create the uni at subscription time"));
 
         // Created from a Uni
         Multi.createFrom().uni(Uni.createFrom().item("hello"));
@@ -75,7 +84,8 @@ public class MultiCreationTest {
 
         Cancellable cancellable = multi.subscribe().with(
                 item -> System.out.println("Got " + item));
-        // you can use the returned Cancellable to cancel the computation
+        // you can use the returned Cancellable to cancel
+        // the computation
         cancellable.cancel();
 
         cancellable = multi.subscribe().with(
