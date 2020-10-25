@@ -34,7 +34,7 @@ asciidoctor:
     sectanchors: ''
     icons: font
     outfilesuffix: '' 
-    sourcedir: test/java/snippets
+    sourcedir: test/java/snippets    
 
 
 

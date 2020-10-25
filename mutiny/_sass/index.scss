@@ -43,6 +43,9 @@ a {
     border-bottom: .0625em solid;
     border-color: inherit;
     padding-bottom: .125em;
+    &:hover {
+        text-decoration: none;
+    }
 }
 
 code,
@@ -154,4 +157,37 @@ tt {
 .imageblock.left {
     float: left;
     max-width: 50%;
+}
+
+.gs {
+    .hero-name {
+        font-family: "Monserrat", sans-serif;
+    }
+}
+
+.footer-buttons {
+    color: #253951;
+    background-color: #E8F2FC;
+    a {
+        font-size: x-large;
+        border-bottom: 0;
+        padding: 0;
+        display: block;
+        text-align: center;
+        font-weight: 500;
+        font-family: "Montserrat", sans-serif;
+        text-decoration: none;
+    }
+    a.previous {
+        float: left;
+        &:hover {
+            color: $dark-gray;
+        }
+    }
+    a.next {
+        float: right;
+        &:hover {
+            color: $dark-gray;
+        }
+    }
 }
