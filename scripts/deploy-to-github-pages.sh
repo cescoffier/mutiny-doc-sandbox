@@ -15,6 +15,7 @@ ls
 echo "Copying site"
 cp -R ../../_site/* .
 git commit -am "Update web site"
+git status
 git push origin $BRANCH
 
 echo "Web site updated..."
