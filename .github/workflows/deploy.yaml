@@ -26,5 +26,7 @@ jobs:
         run: |
           sudo apt-get install graphviz default-jdk 
           ./scripts/build-site.sh
+          git config --global user.email "clement@apache.org"
+          git config --global user.name "Clement Escoffier"
           ./scripts/deploy-to-github-pages.sh
 
