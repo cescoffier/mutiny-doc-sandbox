@@ -26,8 +26,8 @@ jobs:
         run: |
           sudo apt-get install graphviz default-jdk 
           echo "Installing required gems"
-          gem install --user-install bundler
-          gem install --user-install jekyll
+          gem install bundler
+          gem install jekyll
           echo "Installing site required gems"
           bundle install
           ./scripts/build-site.sh
