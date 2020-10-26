@@ -20,13 +20,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gems-
 
-      - name: Install required packages
-        run: sudo apt-get install graphviz default-jdk 
-
-
-      - name: Build & Deploy to GitHub Pages
-        uses: helaili/jekyll-action@2.0.4
+      - name: Build and Deploy
         env:
           JEKYLL_PAT: ${{ secrets.JEKYLL_TOKEN }}
-        with:
-          target_branch: 'gh-pages'
+        run: |
+          sudo apt-get install graphviz default-jdk 
+          ./scripts/build-site.sh
+          ./scripts/deploy-to-github-pages.sh
+
