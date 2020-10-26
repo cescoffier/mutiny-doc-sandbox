@@ -61,6 +61,23 @@ Or directly add the dependency to your `pom.xml`
 
 Follow the https://quarkus.io/guides/getting-started-reactive[Getting started with reactive] guide for more details.
 
+[[vertx]]
+=== Using Mutiny with Eclipse Vert.x
+
+API bindings for many popular modules and clients from the Vert.x stack are available from the https://github.com/smallrye/smallrye-reactive-utils[Smallrye Reactive Utilities project].
+
+Here is how to add a dependency to the Vert.x core library with Mutiny bindings:
+
+[source, xml]
+----
+<dependency>
+  <groupId>io.smallrye.reactive</groupId>
+  <artifactId>smallrye-mutiny-vertx-core</artifactId>
+  <version>{{ site.data.versions.vertx_mutiny_clients }}</version>
+</dependency>
+----
+
+
 [[download]]
 === Direct Download
 
