@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Creating Multis</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="SmallRye Mutiny!">
+
+    <link rel="canonical" href="/getting-started/creating-multis.html">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
+    <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox /favicon.ico ">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="/mutiny-doc-sandbox/assets/css/main.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/630fce6bad.js" crossorigin="anonymous"></script>
+</head>
+
+<body data-spy="scroll" data-target=".js-scrollspy" class="getting-started">
+
+    <div class="container-fluid global-container">
+        <main>
+            <header class="header">
+    <div class="container header-container">
+        <div class="row">
+            <div class="col-5">
+                <a class="brand" href="/mutiny-doc-sandbox/index.html"><strong>Mutiny!</strong></a>
+            </div>
+            <div class="col-7">
+                <nav id="nav" class="nav nav-masthead justify-content-right">
+                    <a class="nav-link active" href="/mutiny-doc-sandbox/index.html">Home</a>
+                    <a class="nav-link" href="/mutiny-doc-sandbox/getting-started/getting-started">Getting Started</a>
+                    <a class="nav-link" href="/mutiny-doc-sandbox/pages/philosophy.html">Concepts</a>
+                    <a class="nav-link" href="#">Documentation</a>
+                    <a href="https://github.com/smallrye/smallrye-mutiny" target="_blank" title="Github"><i class="fab fa-github"></i></a>
+                    <a href="https://stackoverflow.com/questions/tagged/mutiny" target="_blank" title="Stack Overflow"><i class="fab fa-stack-overflow"></i></a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+            <div class="content">
+                <section class="hero gs">
+    <div class="hero-main container">
+        <div class="row">
+            <div class="hero-left col-12">
+                <div class="hero-slogan">
+                    <h1 class="hero-name">Creating Multis</h1>
+                </div>
+                <div class="hero-desc">
+                    Learn how to create Multi instances
+                </div>
+                <div class="hero-buttons">
+                    
+                    <a href="/mutiny-doc-sandbox/getting-started/creating-unis" class="btn btn-rounded button button-dark button-rounded">
+                        <i class="far fa-arrow-alt-circle-left"></i>&nbsp;Creating Unis</a>
+                     
+                    <a href="/mutiny-doc-sandbox/getting-started/transforming-items" class="btn btn-rounded button button-dark button-rounded">
+                Transforming items&nbsp;<i class="far fa-arrow-alt-circle-right"></i></a> 
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container page-content">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="sect1">
+<h2 id="creating-multis"><a class="anchor" href="#creating-multis"></a>Creating Multis</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A <code>Multi</code> represents a <em>stream</em> of data.
+This stream can emit 0, 1, n, or an infinite number of items.
+You rarely create instances of <code>Multi</code> yourself, but, instead, use a reactive client exposing a Mutiny API that provides <code>Multi.</code>
+That being said, it can be handy at times.</p>
+</div>
+<div class="sect2">
+<h3 id="the-multi-type"><a class="anchor" href="#the-multi-type"></a>The Multi type</h3>
+<div class="paragraph">
+<p>A <code>Multi&lt;T&gt;</code> is a data stream that:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>emit 0..n item events</p>
+</li>
+<li>
+<p>emit a failure event</p>
+</li>
+<li>
+<p>emit a completion event for bounded stream</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Failures are terminal events. After a failure, no other items will be emitted.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>Multi&lt;T&gt;</code> provides many operators that create, transform, and orchestrate <code>Multi</code> sequences.
+The offered operators can be used to define a processing pipeline.
+The events flow in this pipeline, and each operator can process or transform the events.
+<code>Multis</code> are lazy by nature.
+To trigger the computation, you must have a final subscriber indicating your interest.
+The following snippet provides a simple example of pipeline using <code>Multi</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Example of pipeline using Multi</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi.createFrom().items(1, 2, 3, 4, 5)
+    .onItem().transform(i -&gt; i * 2)
+    .transform().byTakingFirstItems(3)
+    .onFailure().recoverWithItem(0)
+    .subscribe().with(System.out::println);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can see the <code>Multi</code> javadoc <a href="https://javadoc.io/static/io.smallrye.reactive/mutiny/0.9.0/index.html?io/smallrye/mutiny/Multi.html">here</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="subscribing-to-a-multi"><a class="anchor" href="#subscribing-to-a-multi"></a>Subscribing to a Multi</h3>
+<div class="paragraph">
+<p>Remember, if you don&#8217;t subscribe, nothing is going to happen.
+Also, the pipeline is materialized for each <em>subscription</em>.</p>
+</div>
+<div class="paragraph">
+<p>When subscribing to a <code>Multi,</code> you can pass an item callback (invoked when the item is emitted), or pass two callbacks, one receiving the item and one receiving the failure, or three callbacks to handle respectively the item, failure and completion events.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Cancellable cancellable = multi
+    .subscribe().with(
+        item -&gt; System.out.println(item),
+        failure -&gt; System.out.println("Failed with " + failure),
+        () -&gt; System.out.println("Completed")
+    );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note the returned <code>Cancellable.</code>
+This object allows canceling the stream if needed.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="creating-multi-from-items"><a class="anchor" href="#creating-multi-from-items"></a>Creating Multi from items</h3>
+<div class="paragraph">
+<p>There are many ways to create <code>Multi</code> instances.
+Use <a href="https://javadoc.io/static/io.smallrye.reactive/mutiny/0.9.0/index.html?io/smallrye/mutiny/groups/MultiCreate.html">Multi.createFrom()</a> to see all the possibilities.</p>
+</div>
+<div class="paragraph">
+<p>You can, for instance, create a <code>Multi</code> from a known items or from <code>Iterables</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Integer&gt; uni = Uni.createFrom().items(1, 2, 3, 4);
+Multi.createFrom().iterable(Arrays.asList(1, 2, 3, 4, 5))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Every subscriber receives the same set of items (<code>1</code>, <code>2</code>&#8230;&#8203; <code>5</code>) just after the subscription.</p>
+</div>
+<div class="paragraph">
+<p>You can also use <code>Suppliers</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">AtomicInteger counter = new AtomicInteger();
+Multi.createFrom().items(() -&gt;
+    IntStream.range(counter.getAndIncrement(), counter.get() * 2).boxed()
+)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Supplier</code> is called for every subscriber.
+So, each of them will get different values.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can create ranges using <code>Multi.createFrom().range</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="creating-failing-multis"><a class="anchor" href="#creating-failing-multis"></a>Creating failing Multis</h3>
+<div class="paragraph">
+<p>Streams can also fail.
+Failures are used to indicate to the downstream subscribers that the source encountered a terrible error and cannot continue emitting items.
+Create failed <code>Multi</code> instances with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// Pass an exception directly:
+Multi&lt;Integer&gt; failed1 = Multi.createFrom().failure(new Exception("boom"));
+// Pass a supplier called for every subscriber:
+Multi&lt;Integer&gt; failed2 = Multi.createFrom().failure(() -&gt; new Exception("boom"));</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="creating-empty-multis"><a class="anchor" href="#creating-empty-multis"></a>Creating empty Multis</h3>
+<div class="paragraph">
+<p>Unlike <code>Unis,</code> <code>Multis</code> don&#8217;t send <code>null</code> item.
+They send a completion event indicating that there are no more items to consume.
+Of course, the completion event can happen even if there are no items, creating an empty stream.</p>
+</div>
+<div class="paragraph">
+<p>You can create such a stream using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;T&gt; multi = Multi.createFrom().empty();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="creating-multis-using-an-emitter-advanced"><a class="anchor" href="#creating-multis-using-an-emitter-advanced"></a>Creating Multis using an emitter (<em>advanced</em>)</h3>
+<div class="paragraph">
+<p>You can also create a <code>Multi</code> using an emitter.
+This approach is useful when integrating callback-based APIs:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi.createFrom().emitter(em -&gt; {
+    em.emit(1);
+    em.emit(2);
+    em.emit(3);
+    em.complete();
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The emitter can also send a failure.
+It can also get notified of cancellation to, for example, stop the work in progress.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="creating-multis-from-ticks-advanced"><a class="anchor" href="#creating-multis-from-ticks-advanced"></a>Creating Multis from <em>ticks</em> (<em>advanced</em>)</h3>
+<div class="paragraph">
+<p>You can create a stream that emit a <em>ticks</em> periodically:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Long&gt; ticks = Multi.createFrom().ticks().every(Duration.ofMillis(100));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The downstream receives a <code>long,</code> which is a counter.
+For the first tick, it&#8217;s 0, then 1, then 2, and so on.</p>
+</div>
+</div>
+</div>
+</div>
+        </div>
+        <div class="col-md-4 col-md-offset-1 toc-container">
+            <div class="page-toc affix-toc" data-offset-top="10" data-offset-bottom="200" data-spy="affix">
+                <ul class="sectlevel1">
+<li><a href="#creating-multis">Creating Multis</a>
+<ul class="sectlevel2">
+<li><a href="#the-multi-type">The Multi type</a></li>
+<li><a href="#subscribing-to-a-multi">Subscribing to a Multi</a></li>
+<li><a href="#creating-multi-from-items">Creating Multi from items</a></li>
+<li><a href="#creating-failing-multis">Creating failing Multis</a></li>
+<li><a href="#creating-empty-multis">Creating empty Multis</a></li>
+<li><a href="#creating-multis-using-an-emitter-advanced">Creating Multis using an emitter (<em>advanced</em>)</a></li>
+<li><a href="#creating-multis-from-ticks-advanced">Creating Multis from <em>ticks</em> (<em>advanced</em>)</a></li>
+</ul>
+</li>
+</ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="footer-buttons gs">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                
+                <a href="/mutiny-doc-sandbox/getting-started/creating-unis" class="previous">
+                    <i class="fas fa-arrow-left"></i>&nbsp;Creating Unis</a>
+                 
+                <a href="/mutiny-doc-sandbox/getting-started/transforming-items" class="next">
+    Transforming items&nbsp;<i class="fas fa-arrow-right"></i></a> 
+            </div>
+        </div>
+
+    </div>
+            </div>
+
+            <footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 sep-right">
+                <p>
+                    SmallRye Mutiny is an open source project. All the code from this project is available under the Apache Software License 2.0.
+                </p>
+                <p>
+                    This website was built with Jekyll, is hosted on Github Pages and is completely open source. If you want to make it better, fork the website and show us what you’ve got.
+                </p>
+            </div>
+            <div class="col-lg-6">
+                <p>
+                     Site last generated: Oct 26, 2020
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- Javascript-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/highlight.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <script src="/mutiny-doc-sandbox/assets/js/hl.js" type="text/javascript"></script>
+</footer>
+        </main>
+    </div>
+</body>
+
+</html>
