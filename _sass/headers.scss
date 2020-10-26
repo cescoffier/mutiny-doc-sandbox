@@ -49,9 +49,9 @@
         text-transform: uppercase;
         border-bottom: 1px solid;
         border-color: transparent;
-        transition: border-color .2s;
+        transition: color .2s;
         &:hover {
-            font-weight: bolder;
+            color: $gray;
         }
     }
     .fab {
