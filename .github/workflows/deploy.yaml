@@ -25,6 +25,8 @@ jobs:
           JEKYLL_PAT: ${{ secrets.JEKYLL_TOKEN }}
         run: |
           sudo apt-get install graphviz default-jdk 
+          gem install --user-install bundler jekyll
+          bundle install
           ./scripts/build-site.sh
           git config --global user.email "clement@apache.org"
           git config --global user.name "Clement Escoffier"
