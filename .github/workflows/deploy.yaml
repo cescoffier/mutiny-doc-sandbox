@@ -20,9 +20,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gems-
 
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '11'
+      - name: Install required packages
+        run: sudo apt-get install graphviz openjdk8-jre 
+
 
       - name: Build & Deploy to GitHub Pages
         uses: helaili/jekyll-action@2.0.4
