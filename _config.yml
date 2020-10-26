@@ -6,6 +6,7 @@ google_analytics: TODO
 
 host: 127.0.0.1
 port: 4000
+baseurl: /mutiny-doc-sandbox
 
 exclude:
   - .idea/
@@ -30,6 +31,7 @@ asciidoctor:
   base_dir: :docdir
   safe: unsafe
   attributes:
+    imagesdir: /mutiny-doc-sandbox/assets/images
     source-highlighter: highlightjs
     sectanchors: ''
     icons: font

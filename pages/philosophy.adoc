@@ -12,7 +12,7 @@ The Cloud, IoT, microservices, mobile application, even simple CRUD applications
 But, distributed systems are challenging.
 
 .Distributed systems are asynchronous
-image::/assets/images/distributed-system-blueprint.png[role="left"]
+image::distributed-system-blueprint.png[role="left"]
 
 Their nature is inherently asynchronous and wild. 
 Anything can go wrong unexpectedly. 
@@ -62,7 +62,7 @@ It pushes that idea to its limit: with reactive programming, everything is a dat
 With reactive programming, you observe streams implement side-effects when _something_ flows in the stream:
 
 .Reactive programming is about observing streams
-image::/assets/images/streams.png[role="center"]
+image::streams.png[role="center"]
 
 It's asynchronous by nature as you don't know when the _data_ is going to be seen.
 Yet, reactive programming goes beyond this.
