@@ -125,6 +125,24 @@ You can also add the <code>quarkus-mutiny</code> dependency explicitly:</p>
 </div>
 </div>
 <div class="sect2">
+<h3 id="vertx"><a class="anchor" href="#vertx"></a>Using Mutiny with Eclipse Vert.x</h3>
+<div class="paragraph">
+<p>API bindings for many popular modules and clients from the Vert.x stack are available from the <a href="https://github.com/smallrye/smallrye-reactive-utils">Smallrye Reactive Utilities project</a>.</p>
+</div>
+<div class="paragraph">
+<p>Here is how to add a dependency to the Vert.x core library with Mutiny bindings:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+  &lt;groupId&gt;io.smallrye.reactive&lt;/groupId&gt;
+  &lt;artifactId&gt;smallrye-mutiny-vertx-core&lt;/artifactId&gt;
+  &lt;version&gt;1.2.2&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="download"><a class="anchor" href="#download"></a>Direct Download</h3>
 <div class="paragraph">
 <p>You can also download the Mutiny JARs directly from <a href="https://search.maven.org/search?q=g:io.smallrye.reactive%20AND%20a:mutiny*%20AND%20v:0.9.0">Maven Central</a>.</p>
@@ -136,6 +154,7 @@ You can also add the <code>quarkus-mutiny</code> dependency explicitly:</p>
                 <ul class="sectlevel2">
 <li><a href="#dependency">Using Mutiny in a Java application</a></li>
 <li><a href="#quarkus">Using Mutiny with Quarkus</a></li>
+<li><a href="#vertx">Using Mutiny with Eclipse Vert.x</a></li>
 <li><a href="#download">Direct Download</a></li>
 </ul>
             </div>
