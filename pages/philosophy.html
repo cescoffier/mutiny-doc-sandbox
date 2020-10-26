@@ -184,32 +184,9 @@ Some events can <em>swim</em> upstream from the sinks to the source.</p>
 <div class="paragraph">
 <p>Events going from upstream to downstream are published by <code>Publishers</code> and consumed by (downstream) <code>Subscribers,</code> which may also produce events for their own downstream, as illustrated by the following diagram:</p>
 </div>
-<div class="listingblock">
+<div class="imageblock text-center">
 <div class="content">
-<pre>Failed to generate image: Could not find Java executable
-@startuml
-
-skinparam dpi 200
-skinparam useBetaStyle true
-skinparam handwritten true
-skinparam StereotypeFontSize 0
-
-participant Source as m1 &lt;&lt;Publisher&gt;&gt; #D2B4DE
-participant "Processor A" as m2 &lt;&lt;Publisher, Subscriber&gt;&gt; #FAE5D3
-participant "Processor B" as m3 &lt;&lt;Publisher, Subscriber&gt;&gt; #FAE5D3
-participant "Sink" as subscriber &lt;&lt;Subscriber&gt;&gt;  #D2B4DE
-
-m1 --&gt; m2 : item[...]
-m2 --&gt; m3 : item[...]
-m3 --&gt; subscriber: item[...]
-m1 --&gt; m2 : item[...]
-m2 --&gt; m3 : item[...]
-m3 --&gt; subscriber: item[...]
-m1 --&gt; m2 : completion
-m2 --&gt; m3 : completion
-m3 --&gt; subscriber : completion
-
-@enduml</pre>
+<img src="/mutiny-doc-sandbox/assets/images/diag-4e60926db2b100a45f7a3fafb6d1c2c5.png" alt="Diagram" width="1247" height="822">
 </div>
 </div>
 <div class="paragraph">
@@ -273,31 +250,9 @@ Once they are sent, no more items will flow.</p>
 </li>
 </ol>
 </div>
-<div class="listingblock">
+<div class="imageblock text-center">
 <div class="content">
-<pre>Failed to generate image: Could not find Java executable
-@startuml
-
-skinparam dpi 200
-skinparam useBetaStyle true
-skinparam handwritten true
-skinparam StereotypeFontSize 0
-
-participant Source as pub &lt;&lt;Publisher&gt;&gt; #D2B4DE
-participant "Processor" as proc &lt;&lt;Publisher, Subscriber&gt;&gt; #FAE5D3
-participant "Sink" as sub &lt;&lt;Subscriber&gt;&gt;  #D2B4DE
-
-sub -&gt; proc : subscribe
-proc -&gt; pub : subscribe
-pub -&gt; proc : subscribed[subscription]
-proc -&gt; sub : subscribed[subscription]
-sub -&gt; proc : request[2]
-proc -&gt; pub : request[2]
-pub -&gt; proc : item[...]
-proc -&gt; sub : item[...]
-sub -&gt; proc : cancellation
-proc -&gt; pub : cancellation
-@enduml</pre>
+<img src="/mutiny-doc-sandbox/assets/images/diag-c06139c2b31470fa367c3f84a6e51430.png" alt="Diagram" width="988" height="883">
 </div>
 </div>
 <div class="paragraph">
