@@ -12,6 +12,13 @@ exclude:
   - .idea/
   - .gitignore
   - vendor
+  - scripts
+  - .github
+  - Dockerfile
+  - docker-compose.yml
+  - gemfile
+  - Gemfile.lock
+  - README.md
 
 sass:
   style: compressed  
