@@ -205,10 +205,12 @@ tt {
     margin-top: 10px;
 }
 
-body {
-    position: relative
+.page-content .page-toc ul.sectlevel2 li.active {
+    font-weight: bolder;
+    border-left-width: 5px;
+    border-left-color: $dark-gray;
 }
 
-a.active {
-    border: 1px solid red;
+html {
+    scroll-behavior: smooth;
 }
