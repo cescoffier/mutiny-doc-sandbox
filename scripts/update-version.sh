@@ -1,10 +1,15 @@
 #!/bin/bash
 FILE=_data/versions.yml
-VERSION=$1
-echo "Setting version to $VERSION"
+MUTINY_VERSION=$1
+VERTX_CLIENTS_VERSION=$2
+echo "Setting Mutiny version to $MUTINY_VERSION"
+echo "Setting Vert.x clients version to $VERTX_CLIENTS_VERSION"
 if [[ -f "$FILE" ]]
 then
-    echo "mutiny_version: $VERSION" > $FILE
+    cat <<EOF >$FILE
+mutiny_version: $MUTINY_VERSION
+vertx_mutiny_clients: $VERTX_CLIENTS_VERSION
+EOF
 else 
     echo "Cannot find $FILE"    
     exit 1
