@@ -1,8 +1,8 @@
 :page-layout: getting-started
 :page-title: Creating Unis
 :page-desc: Learn how to create Uni instances
-:page-previous: Getting Started
-:page-previous-href: /getting-started/getting-started
+:page-previous: First lines of code
+:page-previous-href: /getting-started/first-lines-of-code
 :page-next: Creating Multis
 :page-next-href: /getting-started/creating-multis
 :page-liquid: 
