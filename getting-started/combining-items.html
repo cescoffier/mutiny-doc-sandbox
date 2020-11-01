@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Combining items from streams</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Learn how to combine items from different streams.">
+
+    <link rel="canonical" href="/getting-started/combining-items.html">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
+    <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="/mutiny-doc-sandbox/assets/css/main.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/630fce6bad.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <div class="container-fluid global-container ">
+        <main>
+            <header class="header">
+    <div class="container header-container">
+        <div class="row">
+            <div class="col-5">
+                <a class="brand" href="/mutiny-doc-sandbox/index.html"><strong>Mutiny!</strong></a>
+            </div>
+            <div class="col-7">
+                <nav id="nav" class="nav nav-masthead justify-content-right">
+                    <a class="nav-link active" href="/mutiny-doc-sandbox/index.html">Home</a>
+                    <a class="nav-link" href="/mutiny-doc-sandbox/getting-started/getting-started">Getting Started</a>
+                    <a class="nav-link" href="/mutiny-doc-sandbox/pages/philosophy.html">Concepts</a>
+                    <a class="nav-link" href="#">Documentation</a>
+                    <a href="https://github.com/smallrye/smallrye-mutiny" target="_blank" title="Github"><i class="fab fa-github"></i></a>
+                    <a href="https://stackoverflow.com/questions/tagged/mutiny" target="_blank" title="Stack Overflow"><i class="fab fa-stack-overflow"></i></a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+            <div class="content">
+                <section class="hero gs">
+    <div class="hero-main container">
+        <div class="row">
+            <div class="hero-left col-12">
+                <div class="hero-slogan">
+                    <h1 class="hero-name">Combining items from streams</h1>
+                </div>
+                <div class="hero-desc">
+                    Learn how to combine items from different streams.
+                </div>
+                <div class="hero-buttons">
+                    
+                    <a href="/mutiny-doc-sandbox/getting-started/merge-concat" class="btn btn-rounded button button-dark button-rounded">
+                        <i class="far fa-arrow-alt-circle-left"></i>&nbsp;Merging and Concatenating streams</a>
+                     
+                    <a href="/mutiny-doc-sandbox/getting-started/handling-failures" class="btn btn-rounded button button-dark button-rounded">
+                Handling failures&nbsp;<i class="far fa-arrow-alt-circle-right"></i></a> 
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container page-content">
+    <div class="row">
+        <div class="col-md-8 content">
+            <div class="sect1">
+<h2 id="combining-items-from-streams"><a class="anchor" href="#combining-items-from-streams"></a>Combining items from streams</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Combining items from various streams is an essential pattern in Reactive Programming.
+It associates the emitted items from multiple streams and emits this <em>aggregate</em>.
+The downstream receives this <em>aggregates</em> and can handle it smoothly.</p>
+</div>
+<div class="paragraph">
+<p>There are plenty of use cases, such as executing two tasks concurrently and waiting for both completions, getting the last items from different streams to build an always up-to-date view, and so on.</p>
+</div>
+<div class="sect2">
+<h3 id="combining-unis"><a class="anchor" href="#combining-unis"></a>Combining Unis</h3>
+<div class="paragraph">
+<p>Imagine you have two asynchronous operations, for example, two HTTP requests.
+You want to send these requests and be notified when both complete with their response.
+Of course, you could send the first request, wait for the response, and then send the second request.
+If both requests are independent, we can do something better: send both concurrently and wait for both completion.</p>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img src="/mutiny-doc-sandbox/assets/images/uni-combine.png" alt="Combining Unis">
+</div>
+</div>
+<div class="paragraph">
+<p>How to achieve this with Mutiny?
+First, each request is a <code>Uni</code>, so we have:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Response&gt; uniA = invokeHttpServiceA();
+Uni&lt;Response&gt; uniB = invokeHttpServiceB();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, we want to combine both <em>responses</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Tuple2&lt;Response, Response&gt;&gt; responses = Uni.combine()
+  .all().unis(uniA, uniB).asTuple();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This code creates a new <code>Uni</code> produced by combining <code>uniA</code> and <code>uniB</code>.
+The responses are aggregated inside a <code>Tuple</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni.combine().all().unis(uniA, uniB).asTuple()
+  .subscribe().with(tuple -&gt; {
+     System.out.println("Response from A: " + tuple.getItem1());
+     System.out.println("Response from B: " + tuple.getItem2());
+  });</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>tuple</code> aggregates the responses in the same order as the <code>Unis.</code></p>
+</div>
+<div class="paragraph">
+<p>If one of the <code>Uni</code> fails, the combination fails too and you recieves the failure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni.combine().all().unis(uniA, uniB).asTuple()
+  .subscribe().with(tuple -&gt; {
+     System.out.println("Response from A: " + tuple.getItem1());
+     System.out.println("Response from B: " + tuple.getItem2());
+  }, failure -&gt; { ... });</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using tuples is convenient but only works if you have less than 10 <code>Unis.</code>
+If you want anoter structure or deadling with more than 10 <code>Unis</code>, use <code>combineWith</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Map&lt;String, Response&gt;&gt; uni = Uni.combine()
+  .all().unis(uniA, uniB).combinedWith(
+    listOfResponses -&gt; {
+      Map&lt;String, Response&gt; map = new LinkedHashMap&lt;&gt;();
+      map.put("A", (Response) listOfResponses.get(0));
+      map.put("B", (Response) listOfResponses.get(1));
+      return map;
+    }
+  );</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="combining-multis"><a class="anchor" href="#combining-multis"></a>Combining Multis</h3>
+<div class="paragraph">
+<p>Combining <code>Multis</code> consists of associating items from different stream per <em>index</em>:</p>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img src="/mutiny-doc-sandbox/assets/images/multi-combine.png" alt="Combining Multis">
+</div>
+</div>
+<div class="paragraph">
+<p>It associates the first items from the combined streams, then the second items:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Tuple&lt;A, B&gt;&gt; combined = Multi.createBy().combining()
+  .streams(streamA, streamB).asTuple();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As for <code>Uni</code>, you can aggregate the item into tuples (up to 9 items) or combine with a combinator function:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi.createBy().combining()
+  .streams(streamA, streamB).using(list -&gt; { ... });</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If one of the streams fails, the combined stream propagates the failure and stops the emission.
+The combined stream completes as soon as one of the observed stream sends the completion event.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If one of the observed streams does never emit any item, the combined stream will not emit anything.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="combining-the-last-items-of-multis"><a class="anchor" href="#combining-the-last-items-of-multis"></a>Combining the last items of Multis</h3>
+<div class="paragraph">
+<p>It can be useful to combine multiple <code>Multis</code> and receiving the <em>latest</em> items from each stream on every emission:</p>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img src="/mutiny-doc-sandbox/assets/images/multi-combine-latest.png" alt="Combining Multis to always gets the latest items from every stream">
+</div>
+</div>
+<div class="paragraph">
+<p>This is achieved using <code>latest()</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi.createBy().combining()
+  .streams(streamA, streamB)
+  .latestItems().asTuple();
+
+// or
+
+Multi.createBy().combining()
+  .streams(streamA, streamB)
+  .latestItems().using(list -&gt; { ... });</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+        </div>
+        <div class="col-md-4 col-md-offset-1 toc-container">
+            <nav class="page-toc toc nav flex-column" id="toc">
+                <ul class="sectlevel1">
+<li><a href="#combining-items-from-streams">Combining items from streams</a>
+<ul class="sectlevel2">
+<li><a href="#combining-unis">Combining Unis</a></li>
+<li><a href="#combining-multis">Combining Multis</a></li>
+<li><a href="#combining-the-last-items-of-multis">Combining the last items of Multis</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="footer-buttons gs ">
+    <div class="container ">
+        <div class="row ">
+            <div class="col-12 ">
+                
+                <a href="/mutiny-doc-sandbox/getting-started/merge-concat " class="previous ">
+                    <i class="fas fa-arrow-left "></i>&nbsp;Merging and Concatenating streams</a>
+                 
+                <a href="/mutiny-doc-sandbox/getting-started/handling-failures " class="next ">
+    Handling failures&nbsp;<i class="fas fa-arrow-right "></i></a> 
+            </div>
+        </div>
+
+    </div>
+            </div>
+
+            <footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 sep-right">
+                <p>
+                    SmallRye Mutiny is an open source project. All the code from this project is available under the Apache Software License 2.0.
+                </p>
+                <p>
+                    This website was built with Jekyll, is hosted on Github Pages and is completely open source. If you want to make it better, fork the website and show us what you’ve got.
+                </p>
+            </div>
+            <div class="col-lg-6">
+                <p>
+                     Site last generated: Nov 1, 2020
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- Javascript-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/highlight.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/cferdinandi/gumshoe@4/dist/gumshoe.polyfills.min.js"></script>
+    <script src="/mutiny-doc-sandbox/assets/js/hl.js" type="text/javascript"></script>
+    <script src="/mutiny-doc-sandbox/assets/js/scrollspy.js" type="text/javascript"></script>
+</footer>
+        </main>
+    </div>
+</body>
+
+</html>
