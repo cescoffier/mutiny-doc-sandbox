@@ -1,6 +1,6 @@
 :page-layout: getting-started
 :page-title: First lines of code
-:page-desc: Your first line of code using Mutiny
+:page-description: Your first line of code using Mutiny
 :page-next: Creating Unis
 :page-next-href: /getting-started/creating-unis
 :page-liquid: 

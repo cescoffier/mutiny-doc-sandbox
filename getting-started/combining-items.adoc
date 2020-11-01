@@ -1,6 +1,6 @@
 :page-layout: getting-started
 :page-title: Combining items from streams
-:page-desc: Learn how to combine items from different streams.
+:page-description: Learn how to combine items from different streams.
 :page-previous: Merging and Concatenating streams
 :page-previous-href: /getting-started/merge-concat
 :page-next: Handling failures

@@ -1,6 +1,6 @@
 :page-layout: getting-started
 :page-title: Merging and Concatenating Streams
-:page-desc: Learn how to merge or concatenate streams
+:page-description: Learn how to merge or concatenate streams
 :page-previous: Transforming items into streams
 :page-previous-href: /getting-started/transforming-items-async
 :page-next: Combining items from different streams

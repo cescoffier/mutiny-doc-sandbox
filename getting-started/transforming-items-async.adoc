@@ -1,6 +1,6 @@
 :page-layout: getting-started
 :page-title: Transforming items into Uni and Multi
-:page-desc: Learn how to transform received item into asynchronous streams
+:page-description: Learn how to transform received item into asynchronous streams
 :page-previous: Transforming items
 :page-previous-href: /getting-started/transforming-items
 :page-next: Merging and Concatenating streams

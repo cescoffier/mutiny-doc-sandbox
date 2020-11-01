@@ -1,6 +1,6 @@
 :page-layout: getting-started
 :page-title: Transforming items
-:page-desc: Learn how to (synchronously) transform received item
+:page-description: Learn how to (synchronously) transform received item
 :page-previous: Creating Multis
 :page-previous-href: /getting-started/creating-multis
 :page-next: Transforming items into streams

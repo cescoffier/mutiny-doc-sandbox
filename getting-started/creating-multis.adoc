@@ -1,6 +1,6 @@
 :page-layout: getting-started
 :page-title: Creating Multis
-:page-desc: Learn how to create Multi instances
+:page-description: Learn how to create Multi instances
 :page-previous: Creating Unis
 :page-previous-href: /getting-started/creating-unis
 :page-next: Transforming items

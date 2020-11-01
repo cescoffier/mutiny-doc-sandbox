@@ -1,6 +1,6 @@
 :page-layout: getting-started
 :page-title: Getting Started with Mutiny
-:page-desc: To start using Mutiny, you just need to drop a JAR in your classpath
+:page-description: To start using Mutiny, you just need to drop a JAR in your classpath
 :page-next: First lines of code
 :page-next-href: /getting-started/first-lines-of-code
 :page-liquid: 
