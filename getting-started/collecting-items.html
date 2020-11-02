@@ -2,13 +2,13 @@
 <html lang="en">
 
 <head>
-    <title>Retrying on failure</title>
+    <title>Collecting items from Multi</title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Learn how you to retry on failures">
+    <meta name="description" content="Learn how to collect items from a Multi">
 
-    <link rel="canonical" href="/getting-started/retry.html">
+    <link rel="canonical" href="/getting-started/collecting-items.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
@@ -46,18 +46,16 @@
         <div class="row">
             <div class="hero-left col-12">
                 <div class="hero-slogan">
-                    <h1 class="hero-name">Retrying on failure</h1>
+                    <h1 class="hero-name">Collecting items from Multi</h1>
                 </div>
                 <div class="hero-desc">
-                    Learn how you to retry on failures
+                    Learn how to collect items from a Multi
                 </div>
                 <div class="hero-buttons">
                     
-                    <a href="/mutiny-doc-sandbox/getting-started/handling-failures" class="btn btn-rounded button button-dark button-rounded">
-                        <i class="far fa-arrow-alt-circle-left"></i>&nbsp;Handling failures</a>
+                    <a href="/mutiny-doc-sandbox/getting-started/retry" class="btn btn-rounded button button-dark button-rounded">
+                        <i class="far fa-arrow-alt-circle-left"></i>&nbsp;Retrying on failure</a>
                      
-                    <a href="/mutiny-doc-sandbox/getting-started/collecting-items" class="btn btn-rounded button button-dark button-rounded">
-                Collecting items&nbsp;<i class="far fa-arrow-alt-circle-right"></i></a> 
                 </div>
             </div>
         </div>
@@ -68,40 +66,13 @@
     <div class="row">
         <div class="col-md-8 content">
             <div class="sect1">
-<h2 id="retrying-on-failures"><a class="anchor" href="#retrying-on-failures"></a>Retrying on failures</h2>
+<h2 id="collecting-items"><a class="anchor" href="#collecting-items"></a>Collecting items</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>It is common to want to retry if something terrible happened.
-You can retry upon failure.
-The <a href="https://quarkus.io/blog/uni-retry/">How does retry&#8230;&#8203; retries</a> blog post provides a more detailed overview of the retry mechanism.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-If, despite multiple attempts, it still fails, the failure is propagated downstream.
-</td>
-</tr>
-</table>
-</div>
-<div class="sect2">
-<h3 id="retry-multiple-times"><a class="anchor" href="#retry-multiple-times"></a>Retry multiple times</h3>
-<div class="paragraph">
-<p>To retry on failure, use <code>onFailure().retry()</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;T&gt; u = uni
-  .onFailure().retry().atMost(3);
-Multi&lt;T&gt; m = multi
-  .onFailure().retry().atMost(3);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You pass the number of retries as a parameter.</p>
+<p>There are cases where you want to accumulate the items from a <code>Multi</code> and produce a <code>Uni</code> with the collected result.
+The <code>Uni</code> fires its item when the <code>Multi</code> completes.
+Mutiny provides multiple operators to deal with that scenario.
+For example, you can store the items in a list, emit the list on completion, or use a Java <code>Collector</code> to customize the aggregation.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -110,54 +81,104 @@ Multi&lt;T&gt; m = multi
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-While <code>.onFailure().retry().indefinitely()</code> is available, it may never temrinate.
-So use it caution.
+Don&#8217;t collect items from infinite streams.
 </td>
 </tr>
 </table>
 </div>
-</div>
 <div class="sect2">
-<h3 id="introduce-delays"><a class="anchor" href="#introduce-delays"></a>Introduce delays</h3>
+<h3 id="collecting-items-into-a-list"><a class="anchor" href="#collecting-items-into-a-list"></a>Collecting items into a list</h3>
 <div class="paragraph">
-<p>By default, <code>retry</code> retries immediately.
-When using remote services, it is often better to delay a bit the attempts.
-Mutiny provides a method to configure an exponential backoff: a growing delay between retries.</p>
+<p>One of the most common approaches to collect items is to store them into a list.
+It returns a <code>Uni&lt;List&lt;T&gt;&gt;.</code>
+It emits the final list when the <code>Multi</code> completes.</p>
+</div>
+<div class="imageblock center">
+<div class="content">
+<img src="/mutiny-doc-sandbox/assets/images/collect-as-list.png" alt="Collecting items into a list">
+</div>
 </div>
 <div class="paragraph">
-<p>Configure the exponential backoff as follows:</p>
+<p>How to achieve this with Mutiny?</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;T&gt; u = uni
-  .onFailure().retry()
-    .withBackOff(Duration.ofMillis(100), Duration.ofSeconds(5))
-    .atMost(10);</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; multi = ...;
+Uni&lt;List&lt;String&gt;&gt; uni = multi.collectItems().asList();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The backoff is configured with the initial and max delay.
-Optionally, you can also configure a jitter to add a pinch of randomness to the delay.</p>
-</div>
-<div class="paragraph">
-<p>When using exponential backoff, you may not want to configure the max number of attempts (<code>atMost</code>), but a deadline.
-Configure the deadline using <code>expireIn</code> or <code>expireAt</code>.</p>
+<p>It&#8217;s important to note that the returned type is a <code>Uni.</code>
+It emits the list when the multi completes.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="deciding-to-retry"><a class="anchor" href="#deciding-to-retry"></a>Deciding to retry</h3>
+<h3 id="collecting-items-into-a-map"><a class="anchor" href="#collecting-items-into-a-map"></a>Collecting items into a map</h3>
 <div class="paragraph">
-<p>As an alternative to <code>atMost</code>, you can also use <code>until</code>.
-This method accepts a predicate called after every failure.
-If the predicate returned <code>true,</code> it retries.
-Otherwise, it stops retrying and propagates the last failure downstream:</p>
+<p>You can also collect the items into a <code>Map.</code>
+In this case, you need to provide a function to compute the key for each item:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">uni
-  .onFailure().retry()
-    .withBackOff(Duration.ofMillis(100), Duration.ofSeconds(5))
-    .until(f -&gt; shouldWeRetry(f));</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; multi = ...;
+Uni&lt;Map&lt;String, String&gt;&gt; uni =
+  multi.collectItems()
+    .asMap(item -&gt; getKeyForItem(item))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the key mapper function returns the same key for multiple items, the last one with that key is stored in the produced <code>Map.</code>
+You can collect items in a <em>multimap</em> to handle items with the same keys.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="collecting-items-into-a-multimap"><a class="anchor" href="#collecting-items-into-a-multimap"></a>Collecting items into a multimap</h3>
+<div class="paragraph">
+<p>A multimap is a <code>Map&lt;K, List&lt;T&gt;&gt;.</code>
+In the case of a conflicting key, it stores all the items in a list associated with that key.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; multi = ...;
+Uni&lt;Map&lt;String, String&gt;&gt; uni =
+  multi.collectItems()
+    .asMultiMap(item -&gt; getKeyForItem(item));</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="using-a-custom-accumulator"><a class="anchor" href="#using-a-custom-accumulator"></a>Using a custom accumulator</h3>
+<div class="paragraph">
+<p>You can also use a custom <em>accumulator</em> function:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; multi = ...;
+Uni&lt;MyCollection&gt; uni = multi.collectItems()
+  .in(MyCollection::new, (col, item) -&gt; col.add(item));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>in</code> method receives two arguments:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>a supplier providing the new instance of your collection/container</p>
+</li>
+<li>
+<p>the accumulator function</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>You can also use a Java <code>Collector</code>.
+For example, in the next example, count the number of items, and produce the final count as item:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Long&gt; count = multi.collectItems()
+  .with(Collectors.counting());</code></pre>
 </div>
 </div>
 </div>
@@ -167,11 +188,12 @@ Otherwise, it stops retrying and propagates the last failure downstream:</p>
         <div class="col-md-4 col-md-offset-1 toc-container">
             <nav class="page-toc toc nav flex-column" id="toc">
                 <ul class="sectlevel1">
-<li><a href="#retrying-on-failures">Retrying on failures</a>
+<li><a href="#collecting-items">Collecting items</a>
 <ul class="sectlevel2">
-<li><a href="#retry-multiple-times">Retry multiple times</a></li>
-<li><a href="#introduce-delays">Introduce delays</a></li>
-<li><a href="#deciding-to-retry">Deciding to retry</a></li>
+<li><a href="#collecting-items-into-a-list">Collecting items into a list</a></li>
+<li><a href="#collecting-items-into-a-map">Collecting items into a map</a></li>
+<li><a href="#collecting-items-into-a-multimap">Collecting items into a multimap</a></li>
+<li><a href="#using-a-custom-accumulator">Using a custom accumulator</a></li>
 </ul>
 </li>
 </ul>
@@ -187,11 +209,9 @@ Otherwise, it stops retrying and propagates the last failure downstream:</p>
         <div class="row ">
             <div class="col-12 ">
                 
-                <a href="/mutiny-doc-sandbox/getting-started/handling-failures " class="previous ">
-                    <i class="fas fa-arrow-left "></i>&nbsp;Handling failures</a>
+                <a href="/mutiny-doc-sandbox/getting-started/retry " class="previous ">
+                    <i class="fas fa-arrow-left "></i>&nbsp;Retrying on failure</a>
                  
-                <a href="/mutiny-doc-sandbox/getting-started/collecting-items " class="next ">
-    Collecting items&nbsp;<i class="fas fa-arrow-right "></i></a> 
             </div>
         </div>
 
