@@ -4,7 +4,7 @@
 :page-previous: Handling failures
 :page-previous-href: /getting-started/handling-failures
 :page-next: Collecting items
-:page-next-href: /getting-started/collecting
+:page-next-href: /getting-started/collecting-items
 :page-liquid: 
 
 == Retrying on failures
