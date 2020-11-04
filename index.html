@@ -61,9 +61,11 @@
 Uni&lt;String&gt; request = (...)
 
 Uni&lt;String&gt; uni = request
-    .ifNoItem().after(ofSecond(1)).fail()
-    .onFailure().retry().atMost(3)
-    .onItem().transform(this::processResponse)
+    .ifNoItem().after(ofSecond(1))
+      .fail(() -> new Exception("💥"))
+    .onFailure().recoverWithItem(f -> "☔")
+    .subscribe()
+      .with(item -> log("➡️ " + item))
                     </code></pre>
                     </div>
                 </div>
@@ -79,9 +81,7 @@ Uni&lt;String&gt; uni = request
                 <span class="characteristic-item-icon"><i class="fas fa-bolt"></i></span>
                 <h5>Event-Driven</h5>
                 <p>
-                    Mutiny places <em>events</em> at the core of its design. 
-                    With Mutiny, you observe <em>events</em>, <em>react</em> to them, and create elegant and readable processing pipelines.
-                    A PhD in functional programming is not required.
+                    Mutiny places <em>events</em> at the core of its design. With Mutiny, you observe <em>events</em>, <em>react</em> to them, and create elegant and readable processing pipelines. A PhD in functional programming is not required.
                 </p>
             </div>
 
@@ -89,8 +89,7 @@ Uni&lt;String&gt; uni = request
                 <span class="characteristic-item-icon"><i class="fas fa-route"></i></span>
                 <h5>Navigable</h5>
                 <p>
-                    Even with smart code completion classes with hundred of methods are confusing.
-                    Mutiny provides a navigable and explicit API driving you towards the operator you need.
+                    Even with smart code completion classes with hundred of methods are confusing. Mutiny provides a navigable and explicit API driving you towards the operator you need.
                 </p>
             </div>
 
@@ -98,8 +97,7 @@ Uni&lt;String&gt; uni = request
                 <span class="characteristic-item-icon"><i class="fas fa-network-wired"></i></span>
                 <h5>Non-Blocking I/O</h5>
                 <p>
-                    Mutiny is the perfect companion to tame the asynchronous nature of applications with non-blocking I/O.
-                    Declaratively compose operations, transform data, enforce progress, recover from failures and more.
+                    Mutiny is the perfect companion to tame the asynchronous nature of applications with non-blocking I/O. Declaratively compose operations, transform data, enforce progress, recover from failures and more.
                 </p>
             </div>
 
@@ -107,9 +105,7 @@ Uni&lt;String&gt; uni = request
                 <span class="characteristic-item-icon"><img class="characteristic-quarkus-logo" src="/mutiny-doc-sandbox/assets/images/quarkus.png"/></span>
                 <h5>Not exclusive to Quarkus!</h5>
                 <p>
-                    Mutiny is integrated in Quarkus where every reactive API uses Mutiny. 
-                    Mutiny is however an independent library that is not limited to Quarkus and that can be used in any Java application.
-                    A good example are the Eclipse Vert.x Mutiny API bindings.
+                    Mutiny is integrated in Quarkus where every reactive API uses Mutiny. Mutiny is however an independent library that is not limited to Quarkus and that can be used in any Java application. A good example are the Eclipse Vert.x Mutiny API bindings.
                 </p>
             </div>
 
@@ -125,8 +121,7 @@ Uni&lt;String&gt; uni = request
                 <span class="characteristic-item-icon"><i class="fas fa-exchange-alt"></i></span>
                 <h5>Reactive Converters Built-In</h5>
                 <p>
-                    Mutiny is based on the <em>Reactive Streams</em> specification, and so it can be integrated with any other reactive programming library.
-                    In addition, it proposes <em>converters</em> to interact with other popular libraries.
+                    Mutiny is based on the <em>Reactive Streams</em> specification, and so it can be integrated with any other reactive programming library. In addition, it proposes <em>converters</em> to interact with other popular libraries.
                 </p>
             </div>
         </div>
@@ -147,7 +142,7 @@ Uni&lt;String&gt; uni = request
             </div>
             <div class="col-lg-6">
                 <p>
-                     Site last generated: Nov 2, 2020
+                     Site last generated: Nov 4, 2020
                 </p>
             </div>
         </div>
