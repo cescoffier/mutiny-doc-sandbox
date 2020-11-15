@@ -6,21 +6,18 @@
 }
 
 .brand {
-    border-bottom: 0;
-    padding: 0;
     color: $dark-gray;
-    font-size: 2em;
-    line-height: 5.625rem;
-    border-bottom: 0;
-    padding: 0;
-    padding-bottom: 0.2rem;
-    display: block;
-    color: $dark-gray;
-    font-family: 'Bangers', cursive;
+    font-family: $font-logo;
     font-weight: bold;
+    font-size: 2em;
+
     letter-spacing: 1px;
     line-height: 5.625rem;
     text-decoration: none;
+    border-bottom: 0;
+
+    display: block;
+    padding: 0 0 0.2rem;
     &:hover {
         text-decoration: none;
         color: $dark-gray;
@@ -44,7 +41,7 @@
         margin-right: 15px;
         font-size: .875em;
         font-weight: 500;
-        font-family: "Montserrat", sans-serif;
+        font-family: $font-highlight;
         line-height: calc(5.625rem - 1px);
         text-transform: uppercase;
         border-bottom: 1px solid;
@@ -54,7 +51,9 @@
             color: $gray;
         }
     }
-    .fab {
-        font-size: large;
+
+    .lab {
+        position: relative;
+        bottom: -.125rem;
     }
 }

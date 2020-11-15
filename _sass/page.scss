@@ -7,11 +7,11 @@
         }
         li {
             padding-right: 1.25rem;
-            border-left-color: #253951;
+            border-left-color: $dark-gray;
         }
         ul li {
             margin-bottom: .625rem;
-            border-left: 3px solid #eee;
+            border-left: 3px solid $border-color;
             transition: border .2s;
             padding-left: 1.875rem;
             a,
@@ -32,7 +32,7 @@
         -webkit-overflow-scrolling: touch;
     }
     pre {
-        font-family: "Source Code Pro", monospace;
+        font-family: $font-code;
         font-size: 1em;
     }
     pre.highlight,

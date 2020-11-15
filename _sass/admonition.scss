@@ -5,10 +5,9 @@
         margin-bottom: .625rem;
     }
     strong {
-        color: #00244f;
         display: block;
-        color: #333;
-        font-family: "Montserrat", sans-serif;
+        color: $font-color;
+        font-family: $font-highlight;
         font-size: 1.133em;
         font-weight: 500;
         margin-bottom: .625rem;
@@ -36,4 +35,8 @@
 .tip {
     background-color: #eaffee;
     border-color: #cbffd5;
+}
+
+.las {
+    font-size: larger;
 }

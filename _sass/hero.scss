@@ -1,0 +1,38 @@
+.hero {
+  background-color: $light-blue;
+  border-bottom: 1px solid $border-color;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.hero-main {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.hero-slogan {
+  font-size: 2.8rem;
+  line-height: 0.8;
+}
+
+.hero-name {
+  font-family: $font-logo;
+  color: $dark-gray;
+  letter-spacing: 1.5px;
+}
+
+.hero-description {
+  font-family: $font-highlight;
+  font-size: xx-large;
+}
+
+.hero-buttons {
+  margin-top: 2.2rem;
+}
+
+.hero-code {
+  box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, 0.2);
+  border-radius: .8rem;
+}

@@ -1,0 +1,21 @@
+.code-examples {
+  width: 100%;
+  border-radius: .8rem;
+  font-size: 15px;
+  line-height: 1.4;
+  color: white;
+}
+
+.hljs {
+  padding: 10px;
+  padding-left: 20px;
+  color: white;
+  background-color: $dark-gray;
+  border-radius: 10px;
+  font-size: large;
+}
+
+.hljs-number,
+.hljs-string {
+  color: white;
+}
