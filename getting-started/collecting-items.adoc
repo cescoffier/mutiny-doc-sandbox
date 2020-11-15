@@ -3,7 +3,8 @@
 :page-description: Learn how to collect items from a Multi
 :page-previous: Retrying on failure
 :page-previous-href: /getting-started/retry
-// TODO Link to the how-to lists
+:page-next: Integrating other reactive libraries
+:page-next-href: /getting-started/converters
 :page-liquid: 
 
 == Collecting items
