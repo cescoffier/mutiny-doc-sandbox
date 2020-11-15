@@ -26,52 +26,7 @@
     img {
         width: 100%;
     }
-    pre {
-        overflow: auto;
-        margin: 0 0 1.25rem 0;
-        -webkit-overflow-scrolling: touch;
-    }
-    pre {
-        font-family: $font-code;
-        font-size: 1em;
-    }
-    pre.highlight,
-    .hljs {
-        background: #2B3E51;
-        color: #f8f8f2;
-        padding: 0.5rem;
-        border-radius: 5px;
-    }
-    .listingblock {
-        color: $dark-gray;
-        // background-color: #3c4654;
-    }
-    .title {
-        display: inline-block;
-        margin-top: .25rem;
-        margin-bottom: .25rem;
-        padding-left: .25rem;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-    .hljs-string {
-        color: rgb(230, 219, 116);
-    }
-    .hljs-built_in {
-        color: #ffb86c;
-    }
-    .hljs-title {
-        color: #ffb86c;
-    }
-    .hljs-keyword {
-        color: rgb(255, 101, 65);
-    }
-    .hljs-meta {
-        color: rgb(248, 248, 242);
-    }
-    .hljs-comment {
-        color: rgb(92, 152, 205);
-    }
+
     a.anchor {
         margin-top: -.35ex;
         color: $dark-gray;

@@ -6,6 +6,7 @@ html {
 body {
     font-family: $font-text;
     color: $font-color;
+    background-color: $background;
 
     line-height: 1.8;
     font-size: 1.1em;
@@ -21,7 +22,6 @@ body {
     padding-top: 3rem;
     padding-bottom: 3rem;
     border-bottom: 1px solid $border-color;
-    background-color: white;
     .characteristic-item {
         text-align: justify;
         h5 {
@@ -38,6 +38,7 @@ body {
         text-align: center;
         display: block;
         font-size: xx-large;
+        color: $background-dark;
     }
     .characteristic-quarkus-logo {
         max-width: 40px;
@@ -61,8 +62,11 @@ body {
 }
 
 .footer-buttons {
-    color: #253951;
-    background-color: #E8F2FC;
+    margin-top: 1rem;
+    color: $dark-gray;
+    border-top: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
+    background-color: $background-light;
     a {
         font-size: x-large;
         border-bottom: 0;

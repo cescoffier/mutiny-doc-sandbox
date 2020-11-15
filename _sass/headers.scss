@@ -1,12 +1,12 @@
 .header {
     height: 5.625rem;
-    background-color: $light-blue;
+    background-color: $background-light;
     padding-left: 15px;
     padding-right: 15px;
 }
 
 .brand {
-    color: $dark-gray;
+    color: $background-dark;
     font-family: $font-logo;
     font-weight: bold;
     font-size: 2em;
@@ -27,7 +27,7 @@
 .container-banner {
     padding: 0;
     height: 5.625rem;
-    background-color: $light-blue;
+    background-color: $background-light;
 }
 
 #nav {
@@ -37,15 +37,14 @@
     float: right;
     a {
         padding: 0;
-        color: $dark-gray;
+        color: $background-dark;
         margin-right: 15px;
         font-size: .875em;
         font-weight: 500;
         font-family: $font-highlight;
         line-height: calc(5.625rem - 1px);
         text-transform: uppercase;
-        border-bottom: 1px solid;
-        border-color: transparent;
+
         transition: color .2s;
         &:hover {
             color: $gray;

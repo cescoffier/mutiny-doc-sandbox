@@ -1,5 +1,5 @@
 .hero {
-  background-color: $light-blue;
+  background-color: $background-light;
   border-bottom: 1px solid $border-color;
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -19,7 +19,7 @@
 
 .hero-name {
   font-family: $font-logo;
-  color: $dark-gray;
+  color: $background-dark;
   letter-spacing: 1.5px;
 }
 
