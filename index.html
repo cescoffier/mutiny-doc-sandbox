@@ -10,11 +10,14 @@
 
     <link rel="canonical" href="/">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="/mutiny-doc-sandbox/assets/css/main.css" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
-    <script src="https://kit.fontawesome.com/630fce6bad.js" crossorigin="anonymous"></script>
+<!--    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/font-awesome-line-awesome/css/all.min.css">
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+<!--    <script src="https://kit.fontawesome.com/630fce6bad.js" crossorigin="anonymous"></script>-->
 </head>
 
 <body>
@@ -33,8 +36,8 @@
                     <a class="nav-link" href="/mutiny-doc-sandbox/getting-started/getting-started">Getting Started</a>
                     <a class="nav-link" href="/mutiny-doc-sandbox/pages/philosophy.html">Concepts</a>
                     <a class="nav-link" href="#">Documentation</a>
-                    <a href="https://github.com/smallrye/smallrye-mutiny" target="_blank" title="Github"><i class="fab fa-github"></i></a>
-                    <a href="https://stackoverflow.com/questions/tagged/mutiny" target="_blank" title="Stack Overflow"><i class="fab fa-stack-overflow"></i></a>
+                    <a href="https://github.com/smallrye/smallrye-mutiny" target="_blank" title="Github"><i class="lab la-github la-2x"></i></a>
+                    <a href="https://stackoverflow.com/questions/tagged/mutiny" target="_blank" title="Stack Overflow"><i class="lab la-stack-overflow la-2x"></i></a>
                 </nav>
             </div>
         </div>
@@ -51,7 +54,7 @@
                 </div>
                 <div class="hero-buttons">
                     <a href="/mutiny-doc-sandbox/getting-started/getting-started" class="btn btn-rounded button button-dark button-rounded">
-                Let's get started&nbsp;<i class="far fa-arrow-alt-circle-right"></i></a>
+                Let's get started&nbsp;<i class="las la-arrow-right"></i></a>
                 </div>
             </div>
             <div class="hero-right col-6">
@@ -78,7 +81,7 @@ Uni&lt;String&gt; uni = request
     <div class="characteristics-main container">
         <div class="row">
             <div class="characteristic-item col-4">
-                <span class="characteristic-item-icon"><i class="fas fa-bolt"></i></span>
+                <span class="characteristic-item-icon"><i class="las la-bolt la-2x"></i></span>
                 <h5>Event-Driven</h5>
                 <p>
                     Mutiny places <em>events</em> at the core of its design. With Mutiny, you observe <em>events</em>, <em>react</em> to them, and create elegant and readable processing pipelines. A PhD in functional programming is not required.
@@ -86,7 +89,7 @@ Uni&lt;String&gt; uni = request
             </div>
 
             <div class="characteristic-item col-4">
-                <span class="characteristic-item-icon"><i class="fas fa-route"></i></span>
+                <span class="characteristic-item-icon"><i class="las la-route la-2x"></i></span>
                 <h5>Navigable</h5>
                 <p>
                     Even with smart code completion classes with hundred of methods are confusing. Mutiny provides a navigable and explicit API driving you towards the operator you need.
@@ -94,7 +97,7 @@ Uni&lt;String&gt; uni = request
             </div>
 
             <div class="characteristic-item col-4">
-                <span class="characteristic-item-icon"><i class="fas fa-network-wired"></i></span>
+                <span class="characteristic-item-icon"><i class="las la-cogs la-2x"></i></span>
                 <h5>Non-Blocking I/O</h5>
                 <p>
                     Mutiny is the perfect companion to tame the asynchronous nature of applications with non-blocking I/O. Declaratively compose operations, transform data, enforce progress, recover from failures and more.
@@ -110,7 +113,7 @@ Uni&lt;String&gt; uni = request
             </div>
 
             <div class="characteristic-item col-4">
-                <span class="characteristic-item-icon"><i class="fas fa-envelope"></i></span>
+                <span class="characteristic-item-icon"><i class="las la-envelope-open la-2x"></i></span>
                 <h5>Made for an asynchronous world</h5>
                 <p>
                     Mutiny can be used in any asynchronous application such as event-driven microservices, message-based applications, network utilities, data stream processing, and, of course, reactive applications.
@@ -118,7 +121,7 @@ Uni&lt;String&gt; uni = request
             </div>
 
             <div class="characteristic-item col-4">
-                <span class="characteristic-item-icon"><i class="fas fa-exchange-alt"></i></span>
+                <span class="characteristic-item-icon"><i class="las la-sync-alt la-2x"></i></span>
                 <h5>Reactive Converters Built-In</h5>
                 <p>
                     Mutiny is based on the <em>Reactive Streams</em> specification, and so it can be integrated with any other reactive programming library. In addition, it proposes <em>converters</em> to interact with other popular libraries.
@@ -142,7 +145,7 @@ Uni&lt;String&gt; uni = request
             </div>
             <div class="col-lg-6">
                 <p>
-                     Site last generated: Nov 4, 2020
+                     Site last generated: Nov 15, 2020
                 </p>
             </div>
         </div>
