@@ -65,10 +65,10 @@ Uni&lt;String&gt; request = (...)
 
 Uni&lt;String&gt; uni = request
     .ifNoItem().after(ofSecond(1))
-      .fail(() -> new Exception("💥"))
-    .onFailure().recoverWithItem(f -> "☔")
+        .fail(() -> new Exception("💥"))
+    .onFailure().recoverWithItem(fail -> "☔")
     .subscribe()
-      .with(item -> log("➡️ " + item))
+        .with(item -> log("➡️ " + item))
                     </code></pre>
                     </div>
                 </div>
@@ -145,7 +145,7 @@ Uni&lt;String&gt; uni = request
             </div>
             <div class="col-lg-6">
                 <p>
-                     Site last generated: Nov 15, 2020
+                     Site last generated: Nov 18, 2020
                 </p>
             </div>
         </div>
