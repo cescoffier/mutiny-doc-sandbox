@@ -24,7 +24,7 @@ Uni&lt;String&gt; request = (...)
 Uni&lt;String&gt; uni = request
     .ifNoItem().after(ofSecond(1))
         .fail(() -> new Exception("💥"))
-    .onFailure().recoverWithItem(f -> "☔")
+    .onFailure().recoverWithItem(fail -> "☔")
     .subscribe()
         .with(item -> log("➡️ " + item))
                     </code></pre>
