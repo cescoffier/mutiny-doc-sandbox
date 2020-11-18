@@ -23,10 +23,10 @@ Uni&lt;String&gt; request = (...)
 
 Uni&lt;String&gt; uni = request
     .ifNoItem().after(ofSecond(1))
-      .fail(() -> new Exception("💥"))
+        .fail(() -> new Exception("💥"))
     .onFailure().recoverWithItem(f -> "☔")
     .subscribe()
-      .with(item -> log("➡️ " + item))
+        .with(item -> log("➡️ " + item))
                     </code></pre>
                     </div>
                 </div>
