@@ -2,13 +2,13 @@
 <html lang="en">
 
 <head>
-    <title>Transforming items</title>
+    <title>From reactive to imperative</title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Learn how to (synchronously) transform received item">
+    <meta name="description" content="Learn how to block until you get items">
 
-    <link rel="canonical" href="/getting-started/transforming-items.html">
+    <link rel="canonical" href="/getting-started/reactive-to-imperative.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
@@ -49,18 +49,16 @@
         <div class="row">
             <div class="hero-left col-12">
                 <div class="hero-slogan">
-                    <h1 class="hero-name">Transforming items</h1>
+                    <h1 class="hero-name">From reactive to imperative</h1>
                 </div>
                 <div class="hero-desc">
-                    Learn how to (synchronously) transform received item
+                    Learn how to block until you get items
                 </div>
                 <div class="hero-buttons">
                     
-                    <a href="/mutiny-doc-sandbox/getting-started/creating-multis" class="btn btn-rounded button button-dark button-rounded">
-                        <i class="las la-arrow-left left"></i>&nbsp;Creating Multis</a>
+                    <a href="/mutiny-doc-sandbox/getting-started/converters" class="btn btn-rounded button button-dark button-rounded">
+                        <i class="las la-arrow-left left"></i>&nbsp;Using other reactive programming libraries</a>
                      
-                    <a href="/mutiny-doc-sandbox/getting-started/transforming-items-async" class="btn btn-rounded button button-dark button-rounded">
-                Transforming items into streams&nbsp;<i class="las la-arrow-right"></i></a> 
                 </div>
             </div>
         </div>
@@ -71,88 +69,56 @@
     <div class="row">
         <div class="col-md-8 content">
             <div class="sect1">
-<h2 id="transforming-items-synchronously"><a class="anchor" href="#transforming-items-synchronously"></a>Transforming items synchronously</h2>
+<h2 id="from-reactive-to-imperative"><a class="anchor" href="#from-reactive-to-imperative"></a>From reactive to imperative</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Both <code>Unis</code> and <code>Multis</code> emit <em>items</em>.
-One of the most common operations you will do is transforming these items using a synchronous 1-to-1 function.
-To achieve this, you use <code>onItem().transform(Function&lt;T, U&gt;)</code>.
-It calls the passed function for each item and produces the result as an item for its downstream.</p>
+<p>There are use cases where you need the items in an imperative manner instead of asynchronous.
+Typically, when you serve an HTTP request from a worker thread, you can block.
+Mutiny provides the ability to block until you get the items.</p>
 </div>
-<div class="imageblock center">
+<div class="sect2">
+<h3 id="awaiting-on-unis-item"><a class="anchor" href="#awaiting-on-unis-item"></a>Awaiting on Uni&#8217;s item</h3>
+<div class="paragraph">
+<p>When dealing with a <code>Uni,</code> you can block and await the item using:</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<img src="/mutiny-doc-sandbox/assets/images/transform-operator.png" alt="Transforming items synchronously">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">T t = uni.await().indefinitely();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This method blocks the caller thread until the observed <code>uni</code> emits the item.
+Note that the returned item can be <code>null</code> if the <code>uni</code> emits <code>null.</code>
+If the <code>uni</code> fails, it throws the exception, wrapped in the <code>CompletionException</code> for <em>checked</em> exception.</p>
+</div>
+<div class="paragraph">
+<p>Blocking forever may not be a great idea.
+You can use <code>uni.await().atMost(Duration)</code> to pass a deadline.
+If the deadline is reached, a <code>TimeoutException</code> is thrown.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="transforming-items-produced-by-a-uni"><a class="anchor" href="#transforming-items-produced-by-a-uni"></a>Transforming items produced by a Uni</h3>
+<h3 id="iterating-over-multis-items"><a class="anchor" href="#iterating-over-multis-items"></a>Iterating over Multi&#8217;s items</h3>
 <div class="paragraph">
-<p>Let&#8217;s imagine you have a <code>Uni&lt;String&gt;,</code> and you want to capitalize the received <code>String.</code>
-Implementing this transformation is done as follows:</p>
+<p>When dealing with a <code>Multi,</code> you may want to iterate over the items using a simple "foreach."
+You can achieve this using <code>multi.subscribe().asBlockingIterable()</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; u = uni
-    .onItem().transform(i -&gt; i.toUpperCase());</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Iterable&lt;T&gt; iterable = multi.subscribe().asIterable();
+
+for (T item : iterable) {
+    // do something with the item
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The return <code>Uni</code> <code>u</code> emits the produced <code>String.</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; uni = Uni.createFrom().item("hello");
-uni
-    .onItem().transform(i -&gt; i.toUpperCase())
-    .subscribe().with(
-        item -&gt; System.out.println(item) // Print HELLO
-    );</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="transforming-items-produced-by-a-multi"><a class="anchor" href="#transforming-items-produced-by-a-multi"></a>Transforming items produced by a Multi</h3>
-<div class="paragraph">
-<p>The only difference for <code>Multi</code> is that the function may be called multiple times (dependencing on the number of items emitted by the <code>Multi</code>):</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; m = multi
-    .onItem().transform(i -&gt; i.toUpperCase());</code></pre>
-</div>
+<p>The returns <code>iterable</code> is blocking.
+It waits for the next items, and during that time, blocks the caller thread.</p>
 </div>
 <div class="paragraph">
-<p>The produced items are passed to the downstream subscriber:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; multi = Multi.createFrom().items("a", "b", "c");
-multi
-        .onItem().transform(i -&gt; i.toUpperCase())
-        .subscribe().with(
-            item -&gt; System.out.println(item) // Print A B C
-        );</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="what-if-the-transformation-failed"><a class="anchor" href="#what-if-the-transformation-failed"></a>What if the transformation failed?</h3>
-<div class="paragraph">
-<p>If the transformation throws an exception, that exception is caught and passed to the downstream subscriber as a <em>failure</em> event.
-It also means that the subscriber won&#8217;t get any more items after that failure.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="chaining-multiple-transformations"><a class="anchor" href="#chaining-multiple-transformations"></a>Chaining multiple transformations</h3>
-<div class="paragraph">
-<p>You can, obviously, chain multiple transformations:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; u = uni
-    .onItem().transform(i -&gt; i.toUpperCase())
-    .onItem().transform(i -&gt; i + "!");</code></pre>
-</div>
+<p>The iteration ends once the last item is consumed.
+If the <code>multi</code> emits a failure, an exception is thrown.</p>
 </div>
 </div>
 </div>
@@ -161,12 +127,10 @@ It also means that the subscriber won&#8217;t get any more items after that fail
         <div class="col-md-4 col-md-offset-1 toc-container">
             <nav class="page-toc toc nav flex-column" id="toc">
                 <ul class="sectlevel1">
-<li><a href="#transforming-items-synchronously">Transforming items synchronously</a>
+<li><a href="#from-reactive-to-imperative">From reactive to imperative</a>
 <ul class="sectlevel2">
-<li><a href="#transforming-items-produced-by-a-uni">Transforming items produced by a Uni</a></li>
-<li><a href="#transforming-items-produced-by-a-multi">Transforming items produced by a Multi</a></li>
-<li><a href="#what-if-the-transformation-failed">What if the transformation failed?</a></li>
-<li><a href="#chaining-multiple-transformations">Chaining multiple transformations</a></li>
+<li><a href="#awaiting-on-unis-item">Awaiting on Uni&#8217;s item</a></li>
+<li><a href="#iterating-over-multis-items">Iterating over Multi&#8217;s items</a></li>
 </ul>
 </li>
 </ul>
@@ -182,11 +146,9 @@ It also means that the subscriber won&#8217;t get any more items after that fail
         <div class="row ">
             <div class="col-12 ">
                 
-                <a href="/mutiny-doc-sandbox/getting-started/creating-multis " class="previous ">
-                    <i class="fas fa-arrow-left "></i>&nbsp;Creating Multis</a>
+                <a href="/mutiny-doc-sandbox/getting-started/converters " class="previous ">
+                    <i class="fas fa-arrow-left "></i>&nbsp;Using other reactive programming libraries</a>
                  
-                <a href="/mutiny-doc-sandbox/getting-started/transforming-items-async " class="next ">
-    Transforming items into streams&nbsp;<i class="fas fa-arrow-right "></i></a> 
             </div>
         </div>
 
