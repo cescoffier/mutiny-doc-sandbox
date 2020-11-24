@@ -9,17 +9,17 @@
 
 == Merging and Concatenating Streams
 
-Merging or concatenating streams are relatively often required.
-It consists of taking multiple streams and creating a new `Multi` out of them.
+Merging or concatenating streams is a frequent operation which consists in taking multiple streams and creating a new `Multi` out of them.
 Such an operation observes the items emitted by the different streams and produces a new `Multi` emitting the events.
 
 All the streams merged or concatenated this way should emit the same type of items.
 
 === The difference between merge and concatenate
 
-The difference between _merge_ and _concatenate_ is essential.
+Understanding the difference between _merge_ and _concatenate_ is essential.
+
 When _merging_ streams, it observes the different upstreams and emits the items as they come. 
-If the streams emit their items concurrently, the items from the different streams are interleaved. 
+If the streams emit their items concurrently, the items from the different streams are interleaved.
 
 image::merge-streams.png[Merging streams, role="center"]
 
@@ -27,38 +27,38 @@ When using _merge_, failures are also propagated to the merged stream, and no mo
 The _completion_ event is only emitted by the merged stream when all the observed streams are completed.
 
 But if we want to keep the order of the observed stream, we need to _concatenate_.
+
 When _concatenating_, it waits for the first stream to complete before subscribing to the second one. Thus, it ensures that all the items from the first stream have been emitted before emitting the second stream items. It preserves an order corresponding to the source:
 
 image::concatenate-streams.png[Concatenating streams, role="center"]
 
 When the first stream emits the completion event, it switches to the second stream, and so on.
 When the last stream completes, the concatenated stream sends the completion event.
-As for _merge_, if a stream fails, it stops the emissions. 
-
+As for _merge_, if a stream fails then there won't be further evebts.
 
 === Merging Multis
 
-To create a new `Multi` from the _merge_ of multiple `Multis` use:
+To create a new `Multi` from the _merge_ of multiple `Multi` streams use:
 
 [source, java, indent=0]
 ----
-Multi<T> merged = Multi.createBy().merging().streams(streamA, streamB);
+Multi<T> merged = Multi.createBy().merging().streams(first, second);
 ----
 
-For example, we can merge multiple streams emitting event periodically and look at the output:
+For example, we can merge multiple streams emitting periodical events and look at the output:
 
 [source, java, indent=0]
 ----
-Multi<String> streamA = Multi.createFrom().ticks().every(Duration.ofMillis(10))
-        .onItem().transform(l -> "Stream A - " + l);
-Multi<String> streamB = Multi.createFrom().ticks().every(Duration.ofMillis(15))
-        .onItem().transform(l -> "Stream B - " + l);
+Multi<String> first = Multi.createFrom().ticks().every(Duration.ofMillis(10))
+  .onItem().transform(l -> "Stream A - " + l);
 
-Multi.createBy().merging().streams(streamA, streamB)
-    .subscribe().with(
-        s -> System.out.println("Got item: " + s)
-);
-----      
+Multi<String> second = Multi.createFrom().ticks().every(Duration.ofMillis(15))
+  .onItem().transform(l -> "Stream B - " + l);
+
+Multi.createBy().merging().streams(first, second)
+  .subscribe().with(s ->
+    System.out.println("Got item: " + s));
+----
 
 [source, text]
 ----
@@ -80,27 +80,27 @@ Got item: Stream A - 7
 
 === Concatenating Multis
 
-To create a new `Multi` from the _concatenation_ of multiple `Multis` use:
+To create a new `Multi` from the _concatenation_ of multiple `Multi` streams use:
 
 [source, java, indent=0]
 ----
 Multi<T> merged = Multi.createBy().concatenating().streams(streamA, streamB);
 ----
 
-Don't forget that the streams order matters in this case.
-`streamA, streamB` does not provide the same result than `streamB, streamA`:
+Don't forget that the streams order matters in this case, as `(streamA, streamB)` does not provide the same result as `(streamB, streamA)`:
 
 [source, java]
 ----
-Multi<String> streamA = Multi.createFrom().items("A1", "A2", "A3");
-Multi<String> streamB = Multi.createFrom().items("B1", "B2", "B3");
+Multi<String> first = Multi.createFrom().items("A1", "A2", "A3");
 
-Multi.createBy().concatenating().streams(streamA, streamB)
-        .subscribe().with(item -> System.out.print(item)); // Print "A1A2A3B1B2B3"
+Multi<String> second = Multi.createFrom().items("B1", "B2", "B3");
 
-Multi.createBy().concatenating().streams(streamB, streamA)
-        .subscribe().with(item -> System.out.print(item)); // Print "B1B2B3A1A2A3"        
+Multi.createBy().concatenating().streams(first, second)
+  .subscribe().with(item -> System.out.print(item)); // Prints "A1A2A3B1B2B3"
+
+Multi.createBy().concatenating().streams(second, first)
+  .subscribe().with(item -> System.out.print(item)); // Prints "B1B2B3A1A2A3"        
 ----
 
-IMPORTANT: If one of the concatenated streams is unbounded (infinite), the streams after this one in the streams list won't be consumed.
+IMPORTANT: If one of the concatenated streams is unbounded (infinite), the next streams in the list won't be consumed!
 

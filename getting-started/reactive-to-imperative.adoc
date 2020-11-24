@@ -8,13 +8,14 @@
 
 == From reactive to imperative
 
-There are use cases where you need the items in an imperative manner instead of asynchronous.
-Typically, when you serve an HTTP request from a worker thread, you can block.
+There are use cases where you need to receive the items in an imperative rather than asynchronous manner.
+
+For instance you issue a HTTP request from a worker thread and you want to block execution until you have received the response.
 Mutiny provides the ability to block until you get the items.
 
 === Awaiting on Uni's item
 
-When dealing with a `Uni,` you can block and await the item using:
+When dealing with a `Uni` you can block and await the item using:
 
 [source, java]
 ----
@@ -22,6 +23,7 @@ T t = uni.await().indefinitely();
 ----
 
 This method blocks the caller thread until the observed `uni` emits the item.
+
 Note that the returned item can be `null` if the `uni` emits `null.`
 If the `uni` fails, it throws the exception, wrapped in the `CompletionException` for _checked_ exception.
 

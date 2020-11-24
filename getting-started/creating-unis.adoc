@@ -29,6 +29,7 @@ You can consider the item event as a completion signal indicating the success of
 The offered operators can be used to define a processing pipeline.
 The event, either the item or failure, flows in this pipeline, and each operator can process or transform the event.
 `Unis` are lazy by nature. 
+
 To trigger the computation, you must have a final subscriber indicating your interest.
 The following snippet provides a simple example of pipeline using `Uni`:
 
@@ -36,31 +37,29 @@ The following snippet provides a simple example of pipeline using `Uni`:
 [source, java, indent=0]
 ----
 Uni.createFrom().item(1)
-    .onItem().transform(i -> "hello-" + i)
-    .onItem().delayIt().by(Duration.ofMillis(100))
-    .subscribe().with(System.out::println);
+  .onItem().transform(i -> "hello-" + i)
+  .onItem().delayIt().by(Duration.ofMillis(100))
+  .subscribe().with(System.out::println);
 ----
 
 You can see the `Uni` javadoc https://javadoc.io/static/io.smallrye.reactive/mutiny/{{ site.data.versions.mutiny_version }}/index.html?io/smallrye/mutiny/Uni.html[here].
 
 === Subscribing to a Uni
 
-Remember, if you don't subscribe, nothing is going to happen.
-Also, the pipeline is materialized for each _subscription_.
+Remember: if you don't subscribe, nothing is going to happen.
+What's more, the pipeline is materialized for each _subscription_.
 
-When subscribing to a `Uni`, you can pass an item callback (invoked when the item is emitted), or pass two callbacks, one receiving the item and one receiving the failure:
+When subscribing to a `Uni`, you can pass an item callback (invoked when the item is emitted), or two callbacks (one receiving the item and one receiving the failure):
 
 [source, java, indent=0]
 ----
 Cancellable cancellable = uni
-    .subscribe().with(
-        item -> System.out.println(item),
-        failure -> System.out.println("Failed with " + failure)
-    );
+  .subscribe().with(
+    item -> System.out.println(item),
+    failure -> System.out.println("Failed with " + failure));
 ----
 
-Note the returned `Cancellable.` 
-This object allows canceling the operation if needed.
+Note the returned `Cancellable`: this object allows canceling the operation if need be.
 
 === Creating Unis from item
 
@@ -91,12 +90,13 @@ So, each of them will get a different value.
 
 Operations represented by `Unis` can also emit a failure event, indicating that the operation failed.
 
-Create failed `Uni` instances with:
+You can create failed `Uni` instances with:
 
 [source, java]
 ----
 // Pass an exception directly:
 Uni<Integer> failed1 = Uni.createFrom().failure(new Exception("boom"));
+
 // Pass a supplier called for every subscriber:
 Uni<Integer> failed2 = Uni.createFrom().failure(() -> new Exception("boom"));
 ----
@@ -113,14 +113,14 @@ Uni<Void> uni  = Uni.createFrom().nullItem();
 
 === Creating Unis using an emitter (_advanced_)
 
-You can also create a `Uni` using an emitter.
+You can create a `Uni` using an emitter.
 This approach is useful when integrating callback-based APIs:
 
 [source, java]
 ----
 Uni.createFrom().emitter(em -> {
-    // When the result is available, emit it
-    em.complete(result);
+  // When the result is available, emit it
+  em.complete(result);
 });
 ----
 
@@ -129,8 +129,8 @@ It can also get notified of cancellation to, for example, stop the work in progr
 
 === Creating Unis from a CompletionStage (_advanced_)
 
-You cna also create `Unis` from `CompletionStage` / `CompletableFuture`. 
-This is useful when integrating with APIs using these types:
+You can also `Uni` objects from `CompletionStage` / `CompletableFuture`. 
+This is useful when integrating with APIs that are based on these types:
 
 [source, java]
 ----

@@ -10,38 +10,41 @@
 == Creating Multis
 
 A `Multi` represents a _stream_ of data.
-This stream can emit 0, 1, n, or an infinite number of items.
-You rarely create instances of `Multi` yourself, but, instead, use a reactive client exposing a Mutiny API that provides `Multi.` 
-That being said, it can be handy at times.
+A stream can emit 0, 1, n, or an infinite number of items.
+
+You will rarely create instances of `Multi` yourself but instead use a reactive client that exposes a Mutiny API.
+Still, just like `Uni` there exists a rich API for creating `Multi` objects.
 
 === The Multi type
 
 A `Multi<T>` is a data stream that:
 
-* emit 0..n item events
-* emit a failure event
-* emit a completion event for bounded stream
+* emits `0..n` item events
+* emits a failure event
+* emits a completion event for bounded streams
 
 [WARNING]
 ====
-Failures are terminal events. After a failure, no other items will be emitted.
+Failures are terminal events: after having received a failure no further item will be emitted.
 ====
 
 `Multi<T>` provides many operators that create, transform, and orchestrate `Multi` sequences.
-The offered operators can be used to define a processing pipeline.
+The operators can be used to define a processing pipeline.
 The events flow in this pipeline, and each operator can process or transform the events.
+
 `Multis` are lazy by nature. 
-To trigger the computation, you must have a final subscriber indicating your interest.
+To trigger the computation, you must subscribe.
+
 The following snippet provides a simple example of pipeline using `Multi`:
 
 .Example of pipeline using Multi
 [source, java, indent=0]
 ----
 Multi.createFrom().items(1, 2, 3, 4, 5)
-    .onItem().transform(i -> i * 2)
-    .transform().byTakingFirstItems(3)
-    .onFailure().recoverWithItem(0)
-    .subscribe().with(System.out::println);
+  .onItem().transform(i -> i * 2)
+  .transform().byTakingFirstItems(3)
+  .onFailure().recoverWithItem(0)
+  .subscribe().with(System.out::println);
 ----
 
 You can see the `Multi` javadoc https://javadoc.io/static/io.smallrye.reactive/mutiny/{{ site.data.versions.mutiny_version }}/index.html?io/smallrye/mutiny/Multi.html[here].
@@ -56,26 +59,25 @@ When subscribing to a `Multi,` you can pass an item callback (invoked when the i
 [source, java, indent=0]
 ----
 Cancellable cancellable = multi
-    .subscribe().with(
-        item -> System.out.println(item),
-        failure -> System.out.println("Failed with " + failure),
-        () -> System.out.println("Completed")
-    );
+  .subscribe().with(
+    item -> System.out.println(item),
+    failure -> System.out.println("Failed with " + failure),
+    () -> System.out.println("Completed"));
 ----
 
-Note the returned `Cancellable.` 
-This object allows canceling the stream if needed.
+Note the returned `Cancellable`: this object allows canceling the stream if need be.
 
 === Creating Multi from items
 
 There are many ways to create `Multi` instances. 
 Use https://javadoc.io/static/io.smallrye.reactive/mutiny/{{ site.data.versions.mutiny_version }}/index.html?io/smallrye/mutiny/groups/MultiCreate.html[Multi.createFrom()] to see all the possibilities.
 
-You can, for instance, create a `Multi` from a known items or from `Iterables`:
+For instance you can create a `Multi` from known items or from an `Iterable`:
 
 [source, java]
 ----
 Uni<Integer> uni = Uni.createFrom().items(1, 2, 3, 4);
+
 Multi.createFrom().iterable(Arrays.asList(1, 2, 3, 4, 5))
 ----
 
@@ -87,16 +89,14 @@ You can also use `Suppliers`:
 ----
 AtomicInteger counter = new AtomicInteger();
 Multi.createFrom().items(() ->
-    IntStream.range(counter.getAndIncrement(), counter.get() * 2).boxed()
-)
+  IntStream.range(counter.getAndIncrement(), counter.get() * 2).boxed())
 ----
 
-The `Supplier` is called for every subscriber. 
-So, each of them will get different values.
+The `Supplier` is called for every subscriber, so each of them will get different values.
 
 [TIP]
 ====
-You can create ranges using `Multi.createFrom().range`.
+You can create ranges using `Multi.createFrom().range(start, end)`.
 ====
 
 === Creating failing Multis
@@ -109,14 +109,16 @@ Create failed `Multi` instances with:
 ----
 // Pass an exception directly:
 Multi<Integer> failed1 = Multi.createFrom().failure(new Exception("boom"));
+
 // Pass a supplier called for every subscriber:
 Multi<Integer> failed2 = Multi.createFrom().failure(() -> new Exception("boom"));
 ----
 
 === Creating empty Multis
 
-Unlike `Unis,` `Multis` don't send `null` item.
-They send a completion event indicating that there are no more items to consume.
+Unlike `Uni,` `Multi` streams don't send `null` items (this is forbidden in _reactive streams_).
+
+Instead `Multi` streams send completion events indicating that there are no more items to consume.
 Of course, the completion event can happen even if there are no items, creating an empty stream.
 
 You can create such a stream using:
@@ -128,16 +130,16 @@ Multi<T> multi = Multi.createFrom().empty();
 
 === Creating Multis using an emitter (_advanced_)
 
-You can also create a `Multi` using an emitter.
+You can create a `Multi` using an emitter.
 This approach is useful when integrating callback-based APIs:
 
 [source, java]
 ----
 Multi.createFrom().emitter(em -> {
-    em.emit(1);
-    em.emit(2);
-    em.emit(3);
-    em.complete();
+  em.emit(1);
+  em.emit(2);
+  em.emit(3);
+  em.complete();
 });
 ----
 
