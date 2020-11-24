@@ -55,7 +55,7 @@ You can collect items in a _multimap_ to handle items with the same keys.
 === Collecting items into a multimap
 
 A multimap is a `Map<K, List<T>>.` 
-In the case of a colliding keys, it stores all the items in a list associated with that key.
+In the case of a conflicting key, it stores all the items in a list associated with that key.
 
 [source, java]
 ----
