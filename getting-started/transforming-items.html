@@ -75,9 +75,11 @@
 <div class="sectionbody">
 <div class="paragraph">
 <p>Both <code>Unis</code> and <code>Multis</code> emit <em>items</em>.
-One of the most common operations you will do is transforming these items using a synchronous 1-to-1 function.
-To achieve this, you use <code>onItem().transform(Function&lt;T, U&gt;)</code>.
-It calls the passed function for each item and produces the result as an item for its downstream.</p>
+One of the most common operations you will do is transforming these items using a synchronous 1-to-1 function.</p>
+</div>
+<div class="paragraph">
+<p>To achieve this, you use <code>onItem().transform(Function&lt;T, U&gt;)</code>.
+It calls the passed function for each item and produces the result as an item which is propagaed downstream.</p>
 </div>
 <div class="imageblock center">
 <div class="content">
@@ -87,38 +89,29 @@ It calls the passed function for each item and produces the result as an item fo
 <div class="sect2">
 <h3 id="transforming-items-produced-by-a-uni"><a class="anchor" href="#transforming-items-produced-by-a-uni"></a>Transforming items produced by a Uni</h3>
 <div class="paragraph">
-<p>Let&#8217;s imagine you have a <code>Uni&lt;String&gt;,</code> and you want to capitalize the received <code>String.</code>
+<p>Let&#8217;s imagine you have a <code>Uni&lt;String&gt;,</code> and you want to capitalize the received <code>String</code>.
 Implementing this transformation is done as follows:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; u = uni
-    .onItem().transform(i -&gt; i.toUpperCase());</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The return <code>Uni</code> <code>u</code> emits the produced <code>String.</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; uni = Uni.createFrom().item("hello");
+
 uni
-    .onItem().transform(i -&gt; i.toUpperCase())
-    .subscribe().with(
-        item -&gt; System.out.println(item) // Print HELLO
-    );</code></pre>
+  .onItem().transform(i -&gt; i.toUpperCase())
+  .subscribe().with(
+    item -&gt; System.out.println(item)); // Print HELLO</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="transforming-items-produced-by-a-multi"><a class="anchor" href="#transforming-items-produced-by-a-multi"></a>Transforming items produced by a Multi</h3>
 <div class="paragraph">
-<p>The only difference for <code>Multi</code> is that the function may be called multiple times (dependencing on the number of items emitted by the <code>Multi</code>):</p>
+<p>The only difference for <code>Multi</code> is that the function is called for each item:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; m = multi
-    .onItem().transform(i -&gt; i.toUpperCase());</code></pre>
+  .onItem().transform(i -&gt; i.toUpperCase());</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -128,10 +121,9 @@ uni
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; multi = Multi.createFrom().items("a", "b", "c");
 multi
-        .onItem().transform(i -&gt; i.toUpperCase())
-        .subscribe().with(
-            item -&gt; System.out.println(item) // Print A B C
-        );</code></pre>
+  .onItem().transform(i -&gt; i.toUpperCase())
+  .subscribe().with(
+    item -&gt; System.out.println(item)); // Print A B C</code></pre>
 </div>
 </div>
 </div>
@@ -139,19 +131,19 @@ multi
 <h3 id="what-if-the-transformation-failed"><a class="anchor" href="#what-if-the-transformation-failed"></a>What if the transformation failed?</h3>
 <div class="paragraph">
 <p>If the transformation throws an exception, that exception is caught and passed to the downstream subscriber as a <em>failure</em> event.
-It also means that the subscriber won&#8217;t get any more items after that failure.</p>
+It also means that the subscriber won&#8217;t get further item after that failure.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="chaining-multiple-transformations"><a class="anchor" href="#chaining-multiple-transformations"></a>Chaining multiple transformations</h3>
 <div class="paragraph">
-<p>You can, obviously, chain multiple transformations:</p>
+<p>You can chain multiple transformations:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; u = uni
-    .onItem().transform(i -&gt; i.toUpperCase())
-    .onItem().transform(i -&gt; i + "!");</code></pre>
+  .onItem().transform(i -&gt; i.toUpperCase())
+  .onItem().transform(i -&gt; i + "!");</code></pre>
 </div>
 </div>
 </div>
@@ -206,7 +198,7 @@ It also means that the subscriber won&#8217;t get any more items after that fail
             </div>
             <div class="col-lg-6">
                 <p>
-                     Site last generated: Nov 23, 2020
+                     Site last generated: Nov 24, 2020
                 </p>
             </div>
         </div>

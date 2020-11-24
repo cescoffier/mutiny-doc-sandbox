@@ -74,22 +74,22 @@
 <h2 id="transforming-items-into-streams"><a class="anchor" href="#transforming-items-into-streams"></a>Transforming items into streams</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The previous examples illustrate how to transform each item from a stream into another item.
+<p>The previous examples illustrated how to transform each item from a stream into another item.
 Yet, there are cases where we need to go beyond this, for example:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Transforming an item into a <code>Uni</code> - any asynchronous processing such as calling a remote service, interacting with a database&#8230;&#8203;</p>
+<p>Transforming an item into a <code>Uni</code> - any asynchronous processing such as calling a remote service, interacting with a database, etc</p>
 </li>
 <li>
-<p>Transforming an item into a <code>Multi</code> - producing a multi-items stream based on the incoming item, filtering out items (by returning an empty stream)&#8230;&#8203;</p>
+<p>Transforming an item into a <code>Multi</code> - producing a multi-items stream based on the incoming item, filtering out items, etc</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
 <p>Having the possibility to transform an item into a stream gives us many opportunities.
-To implement such transformations, use <code>onItem().transformToUni(Funcction&lt;T, Uni&lt;O&gt;&gt;</code> and <code>onItem().transformToMulti(Function&lt;T, Multi&lt;O&gt;&gt;)</code></p>
+To implement such transformations, we use <code>onItem().transformToUni(Funcction&lt;T, Uni&lt;O&gt;&gt;</code> and <code>onItem().transformToMulti(Function&lt;T, Multi&lt;O&gt;&gt;)</code></p>
 </div>
 <div class="imageblock center">
 <div class="content">
@@ -99,9 +99,10 @@ To implement such transformations, use <code>onItem().transformToUni(Funcction&l
 <div class="sect2">
 <h3 id="uni-transforming-an-item-into-a-uni"><a class="anchor" href="#uni-transforming-an-item-into-a-uni"></a>Uni - Transforming an item into a Uni</h3>
 <div class="paragraph">
-<p>Imagine you have a <code>Uni&lt;String&gt;,</code> and you want to call a remote service.
-Calling a remote service is an asynchronous action represented by a <code>Uni.</code>
-Something like:</p>
+<p>Imagine you have a <code>Uni&lt;String&gt;</code>, and you want to call a remote service.</p>
+</div>
+<div class="paragraph">
+<p>Calling a remote service is an asynchronous action represented by a <code>Uni</code>, as in:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -109,12 +110,12 @@ Something like:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>So, to call this service, you need to transform the item received from the first <code>Uni</code> into the <code>Uni</code> returned by the service:</p>
+<p>To call this service, you need to transform the item received from the first <code>Uni</code> into the <code>Uni</code> returned by the service:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; result = uni
-    .onItem().transformToUni(name -&gt; invokeRemoteGreetingService(name));</code></pre>
+  .onItem().transformToUni(name -&gt; invokeRemoteGreetingService(name));</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -125,24 +126,23 @@ The returned <code>Uni</code> (<code>result</code>) emits the result from the re
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; uni = Uni.createFrom().item("Cameron");
 Uni&lt;String&gt; result = uni
-    .onItem().transformToUni(name -&gt; invokeRemoteGreetingService(name))
-    .subscribe().with(
-        item -&gt; System.out.println(item) // Print "Hello Cameron"
-    );</code></pre>
+  .onItem().transformToUni(name -&gt; invokeRemoteGreetingService(name))
+  .subscribe().with(
+    item -&gt; System.out.println(item) // Print "Hello Cameron",
+    fail -&gt; fail.printStackTrace()); // Print the failure stack trace</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="uni-transforming-an-item-into-a-multi"><a class="anchor" href="#uni-transforming-an-item-into-a-multi"></a>Uni - Transforming an item into a Multi</h3>
 <div class="paragraph">
-<p>The previous section produces a single item.
-You may want to transform the received item into a stream.
-For this, we need to transform the item into a <code>Multi</code>:</p>
+<p>The previous example produced a single item.
+You may want to transform the received item into a stream which is&#8230;&#8203; a <code>Multi</code>!</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; result = uni
-    .onItem().transformToMulti(item -&gt; Multi.createFrom().items(item, item));</code></pre>
+  .onItem().transformToMulti(item -&gt; Multi.createFrom().items(item, item));</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -152,10 +152,9 @@ For this, we need to transform the item into a <code>Multi</code>:</p>
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; uni = Uni.createFrom().item("Cameron");
 Uni&lt;String&gt; result = uni
-    .onItem().transformToMulti(item -&gt; Multi.createFrom().items(item, item))
-    .subscribe().with(
-        item -&gt; System.out.println(item) // Called twice
-    );</code></pre>
+  .onItem().transformToMulti(item -&gt; Multi.createFrom().items(item, item))
+  .subscribe().with(
+    item -&gt; System.out.println(item)); // Called twice</code></pre>
 </div>
 </div>
 <div class="imageblock center">
@@ -164,24 +163,26 @@ Uni&lt;String&gt; result = uni
 </div>
 </div>
 <div class="paragraph">
-<p>The produced <code>Multis</code> can be more complicated and emit items asynchronously.</p>
+<p>The produced <code>Multi</code> objects can of course be more complicated that that and emit items in an asynchronous fashion.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="transforming-items-from-multi-the-merge-dilemma"><a class="anchor" href="#transforming-items-from-multi-the-merge-dilemma"></a>Transforming items from Multi - the <em>merge</em> dilemma</h3>
+<h3 id="transforming-items-from-multi-the-merge-vs-concatenate-dilemma"><a class="anchor" href="#transforming-items-from-multi-the-merge-vs-concatenate-dilemma"></a>Transforming items from Multi - the <em>merge</em> vs <em>concatenate</em> dilemma</h3>
 <div class="paragraph">
-<p>When transforming items emitted by an upstream <code>Multi,</code> we need to answer the following question:
-how are we going to <em>merge</em> the produced items back?</p>
+<p>When transforming items emitted by an upstream <code>Multi,</code> we need to answer the following question: how are we going to <em>merge</em> the produced items back?</p>
 </div>
 <div class="paragraph">
 <p>Let&#8217;s take an example.
-Imagine a <code>Multi</code> emitting the 'Cameron' and 'Donna' items in this order.
-You want to call the <code>invokeRemoteGreetingService</code> from above.
-So, it calls <code>invokeRemoteGreetingService("Cameron")</code> and <code>invokeRemoteGreetingService("Donna")</code>.
-The service does not have a constant response time (because of network latency or the load), which means that responses can be interleaved.
-Indeed, you may receive "Hello Donna" before "Hello Cameron."
-Now, how do you want to handle this case?
-Do you need to preserve the order and ensure that the downstream subscriber will always get "Hello Cameron" first, or do you accept interleaved responses?</p>
+Imagine a <code>Multi</code> emitting the <code>Cameron</code> and <code>Donna</code> items (in order), and you want to call the <code>invokeRemoteGreetingService</code> from above.
+It thus calls <code>invokeRemoteGreetingService("Cameron")</code> then <code>invokeRemoteGreetingService("Donna")</code>.</p>
+</div>
+<div class="paragraph">
+<p>The service does not have a constant response time (because of network latency or the load), which means that responses can be interleaved.
+Indeed, you may receive <code>"Hello Donna"</code> before <code>"Hello Cameron"</code>.</p>
+</div>
+<div class="paragraph">
+<p>Now, how do you want to handle this case?
+Do you need to preserve the order and ensure that the downstream subscriber will always get <code>"Hello Cameron"</code> first, or do you accept interleaved responses?</p>
 </div>
 <div class="paragraph">
 <p>When transforming items from <code>Multi</code> into streams, you need to decide in which order the items emitted by the produced stream are going to be received by the downstream subscriber.
@@ -206,26 +207,26 @@ Mutiny offers two possibilities:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; m = multi
-    .onItem().transformToUniAndMerge(name -&gt; invokeRemoteGreetingService(name));
+  .onItem().transformToUniAndMerge(name -&gt; invokeRemoteGreetingService(name));
 
 Multi&lt;String&gt; m = multi
-    .onItem().transformToUniAndConcatenate(name -&gt; invokeRemoteGreetingService(name));</code></pre>
+  .onItem().transformToUniAndConcatenate(name -&gt; invokeRemoteGreetingService(name));</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="multi-transforming-an-item-into-a-multi"><a class="anchor" href="#multi-transforming-an-item-into-a-multi"></a>Multi - Transforming an item into a Multi</h3>
 <div class="paragraph">
-<p><code>onItem().transformToMultiAndMerge</code> and <code>onItem().transformToMultiAndConcatenate</code> allow transforming incoming items into <code>Multi</code>.
-The produced <code>Multis</code> are either <em>merged</em> or <em>concatenated</em>:</p>
+<p><code>onItem().transformToMultiAndMerge</code> and <code>onItem().transformToMultiAndConcatenate</code> transform incoming items into <code>Multi</code> streams.
+The produced <code>Multi</code> objects are either <em>merged</em> or <em>concatenated</em>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; m = multi
-    .onItem().transformToMultiAndMerge(item -&gt; functionProducingAMulti(item));
+  .onItem().transformToMultiAndMerge(item -&gt; functionProducingAMulti(item));
 
 Multi&lt;String&gt; m = multi
-    .onItem().transformToUniAndConcatenate(item -&gt; functionProducingAMulti(item));</code></pre>
+  .onItem().transformToUniAndConcatenate(item -&gt; functionProducingAMulti(item));</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -242,7 +243,7 @@ Multi&lt;String&gt; m = multi
 <ul class="sectlevel2">
 <li><a href="#uni-transforming-an-item-into-a-uni">Uni - Transforming an item into a Uni</a></li>
 <li><a href="#uni-transforming-an-item-into-a-multi">Uni - Transforming an item into a Multi</a></li>
-<li><a href="#transforming-items-from-multi-the-merge-dilemma">Transforming items from Multi - the <em>merge</em> dilemma</a></li>
+<li><a href="#transforming-items-from-multi-the-merge-vs-concatenate-dilemma">Transforming items from Multi - the <em>merge</em> vs <em>concatenate</em> dilemma</a></li>
 <li><a href="#multi-transforming-an-item-into-a-uni">Multi - Transforming an item into a Uni</a></li>
 <li><a href="#multi-transforming-an-item-into-a-multi">Multi - Transforming an item into a Multi</a></li>
 </ul>
@@ -284,7 +285,7 @@ Multi&lt;String&gt; m = multi
             </div>
             <div class="col-lg-6">
                 <p>
-                     Site last generated: Nov 23, 2020
+                     Site last generated: Nov 24, 2020
                 </p>
             </div>
         </div>

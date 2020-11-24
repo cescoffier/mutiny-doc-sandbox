@@ -74,9 +74,11 @@
 <h2 id="handling-failures"><a class="anchor" href="#handling-failures"></a>Handling failures</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Mutiny provides several operators to handle failures.
-Remember, failures are terminal events sent by the observed stream, indicating that something <em>Bad</em> happened.
-After a failure, no more items from this stream will be received.</p>
+<p>Mutiny provides several operators to handle failures.</p>
+</div>
+<div class="paragraph">
+<p>Remember, failures are terminal events sent by the observed stream, indicating that something <em>bad</em> happened.
+After a failure, no more items are being received.</p>
 </div>
 <div class="paragraph">
 <p>When such an event is received, you can:</p>
@@ -84,13 +86,13 @@ After a failure, no more items from this stream will be received.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>propagate the failure downstream (default)</p>
+<p>propagate the failure downstream (default), or</p>
 </li>
 <li>
-<p>transform the failure into another failure</p>
+<p>transform the failure into another failure, or</p>
 </li>
 <li>
-<p>recover from it by switching to another stream, passing a fallback item, or completing</p>
+<p>recover from it by switching to another stream, passing a fallback item, or completing, or</p>
 </li>
 <li>
 <p>retrying (cover in the /getting-started/retries[next guide])</p>
@@ -132,15 +134,16 @@ The received failure will be propagated downstream when the <code>Uni</code> pro
 <div class="sect2">
 <h3 id="transforming-failures"><a class="anchor" href="#transforming-failures"></a>Transforming failures</h3>
 <div class="paragraph">
-<p>Another useful action on failure is to transform the failure into a <em>more meaningfull</em> failure.
-Typically you can wrap a low-level failure (like an <code>IOException</code>) into a business failure (<code>ServiceUnavailableException</code>):</p>
+<p>Another useful action on failure is to transform the failure into a <em>more meaningfull</em> failure.</p>
+</div>
+<div class="paragraph">
+<p>Typically you can wrap a low-level failure (like an <code>IOException</code>) into a business failure (<code>ServiceUnavailableException</code>):</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; u = uni
   .onFailure().transform(failure -&gt;
-    new ServiceUnavailableException(failure)
-  );</code></pre>
+    new ServiceUnavailableException(failure));</code></pre>
 </div>
 </div>
 </div>
@@ -153,25 +156,25 @@ The first approach is to recover by replacing the failure with an item:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; u1 = uni
-    .onFailure().recoverWithItem("hello");
+  .onFailure().recoverWithItem("hello");
 
 Uni&lt;String&gt; u2 = uni
-    .onFailure().recoverWithItem(f -&gt; getFallback(f));</code></pre>
+  .onFailure().recoverWithItem(f -&gt; getFallback(f));</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The second approach receives a <code>Supplier</code> to compute the fallback item.</p>
+<p>The second approach receives a <code>Supplier</code> to compute the fallback item.
+For the downstream, it didn&#8217;t fail; it gets the fallback item instead.</p>
 </div>
 <div class="paragraph">
-<p>For the downstream, it didn&#8217;t fail; it gets the fallback item instead.
-However, don&#8217;t forget that failures are terminal.
-So for <code>Multi,</code> the downstream receive the fallback item followed by the completion signal, as no more items can be produced.</p>
+<p>However, don&#8217;t forget that failures are terminal!
+So for <code>Multi</code>, the downstream receives the fallback item followed by the completion signal, as no more items can be produced.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="completing-on-failure"><a class="anchor" href="#completing-on-failure"></a>Completing on failure</h3>
 <div class="paragraph">
-<p>When observing a <code>Multi,</code> you can replace the failure with the completion signal:</p>
+<p>When observing a <code>Multi</code> you can replace the failure with the completion signal:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -257,7 +260,7 @@ Multi&lt;T&gt; m = multi
             </div>
             <div class="col-lg-6">
                 <p>
-                     Site last generated: Nov 23, 2020
+                     Site last generated: Nov 24, 2020
                 </p>
             </div>
         </div>

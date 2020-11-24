@@ -75,7 +75,7 @@
 <div class="sectionbody">
 <div class="paragraph">
 <p>Combining items from various streams is an essential pattern in Reactive Programming.
-It associates the emitted items from multiple streams and emits this <em>aggregate</em>.
+It associates the emitted items from multiple streams and emits an <em>aggregate</em>.
 The downstream receives this <em>aggregates</em> and can handle it smoothly.</p>
 </div>
 <div class="paragraph">
@@ -84,10 +84,12 @@ The downstream receives this <em>aggregates</em> and can handle it smoothly.</p>
 <div class="sect2">
 <h3 id="combining-unis"><a class="anchor" href="#combining-unis"></a>Combining Unis</h3>
 <div class="paragraph">
-<p>Imagine you have two asynchronous operations, for example, two HTTP requests.
-You want to send these requests and be notified when both complete with their response.
-Of course, you could send the first request, wait for the response, and then send the second request.
-If both requests are independent, we can do something better: send both concurrently and wait for both completion.</p>
+<p>Imagine that you have two asynchronous operations to perform like 2 HTTP requests.
+You want to send these requests and be notified when both have completed with their responses ready to be consumed.</p>
+</div>
+<div class="paragraph">
+<p>Of course, you could send the first request, wait for the response, and then send the second request.
+If both requests are independent, we can do something better: send both concurrently and await for both completions!</p>
 </div>
 <div class="imageblock center">
 <div class="content">
@@ -95,8 +97,10 @@ If both requests are independent, we can do something better: send both concurre
 </div>
 </div>
 <div class="paragraph">
-<p>How to achieve this with Mutiny?
-First, each request is a <code>Uni</code>, so we have:</p>
+<p>How can you achieve this with Mutiny?</p>
+</div>
+<div class="paragraph">
+<p>First, each request is a <code>Uni</code>, so we have:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -121,29 +125,29 @@ The responses are aggregated inside a <code>Tuple</code>:</p>
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni.combine().all().unis(uniA, uniB).asTuple()
   .subscribe().with(tuple -&gt; {
-     System.out.println("Response from A: " + tuple.getItem1());
-     System.out.println("Response from B: " + tuple.getItem2());
+    System.out.println("Response from A: " + tuple.getItem1());
+    System.out.println("Response from B: " + tuple.getItem2());
   });</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>tuple</code> aggregates the responses in the same order as the <code>Unis.</code></p>
+<p>The <code>tuple</code> aggregates the responses in the same order as the <code>Uni</code> sequence.</p>
 </div>
 <div class="paragraph">
-<p>If one of the <code>Uni</code> fails, the combination fails too and you recieves the failure:</p>
+<p>If one of the <code>Uni</code> fails, so does the combination and you recieve the failure:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni.combine().all().unis(uniA, uniB).asTuple()
   .subscribe().with(tuple -&gt; {
-     System.out.println("Response from A: " + tuple.getItem1());
-     System.out.println("Response from B: " + tuple.getItem2());
+    System.out.println("Response from A: " + tuple.getItem1());
+    System.out.println("Response from B: " + tuple.getItem2());
   }, failure -&gt; { ... });</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Using tuples is convenient but only works if you have less than 10 <code>Unis.</code>
-If you want anoter structure or deadling with more than 10 <code>Unis</code>, use <code>combineWith</code>:</p>
+<p>Using tuples is convenient but only works if you have less than 10 <code>Uni</code> objects.
+If you want another structure or deal with more than 10 <code>Uni</code> objects then use <code>combineWith</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -198,7 +202,7 @@ The combined stream completes as soon as one of the observed stream sends the co
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If one of the observed streams does never emit any item, the combined stream will not emit anything.
+If one of the observed streams never emits any item then the combined stream will not emit anything.
 </td>
 </tr>
 </table>
@@ -207,7 +211,7 @@ If one of the observed streams does never emit any item, the combined stream wil
 <div class="sect2">
 <h3 id="combining-the-last-items-of-multis"><a class="anchor" href="#combining-the-last-items-of-multis"></a>Combining the last items of Multis</h3>
 <div class="paragraph">
-<p>It can be useful to combine multiple <code>Multis</code> and receiving the <em>latest</em> items from each stream on every emission:</p>
+<p>It can be useful to combine multiple <code>Multi</code> streams and receive the <em>latest</em> items from each stream on every emission:</p>
 </div>
 <div class="imageblock center">
 <div class="content">
@@ -281,7 +285,7 @@ Multi.createBy().combining()
             </div>
             <div class="col-lg-6">
                 <p>
-                     Site last generated: Nov 23, 2020
+                     Site last generated: Nov 24, 2020
                 </p>
             </div>
         </div>

@@ -74,8 +74,7 @@
 <h2 id="merging-and-concatenating-streams"><a class="anchor" href="#merging-and-concatenating-streams"></a>Merging and Concatenating Streams</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Merging or concatenating streams are relatively often required.
-It consists of taking multiple streams and creating a new <code>Multi</code> out of them.
+<p>Merging or concatenating streams is a frequent operation which consists in taking multiple streams and creating a new <code>Multi</code> out of them.
 Such an operation observes the items emitted by the different streams and produces a new <code>Multi</code> emitting the events.</p>
 </div>
 <div class="paragraph">
@@ -84,8 +83,10 @@ Such an operation observes the items emitted by the different streams and produc
 <div class="sect2">
 <h3 id="the-difference-between-merge-and-concatenate"><a class="anchor" href="#the-difference-between-merge-and-concatenate"></a>The difference between merge and concatenate</h3>
 <div class="paragraph">
-<p>The difference between <em>merge</em> and <em>concatenate</em> is essential.
-When <em>merging</em> streams, it observes the different upstreams and emits the items as they come.
+<p>Understanding the difference between <em>merge</em> and <em>concatenate</em> is essential.</p>
+</div>
+<div class="paragraph">
+<p>When <em>merging</em> streams, it observes the different upstreams and emits the items as they come.
 If the streams emit their items concurrently, the items from the different streams are interleaved.</p>
 </div>
 <div class="imageblock center">
@@ -98,8 +99,10 @@ If the streams emit their items concurrently, the items from the different strea
 The <em>completion</em> event is only emitted by the merged stream when all the observed streams are completed.</p>
 </div>
 <div class="paragraph">
-<p>But if we want to keep the order of the observed stream, we need to <em>concatenate</em>.
-When <em>concatenating</em>, it waits for the first stream to complete before subscribing to the second one. Thus, it ensures that all the items from the first stream have been emitted before emitting the second stream items. It preserves an order corresponding to the source:</p>
+<p>But if we want to keep the order of the observed stream, we need to <em>concatenate</em>.</p>
+</div>
+<div class="paragraph">
+<p>When <em>concatenating</em>, it waits for the first stream to complete before subscribing to the second one. Thus, it ensures that all the items from the first stream have been emitted before emitting the second stream items. It preserves an order corresponding to the source:</p>
 </div>
 <div class="imageblock center">
 <div class="content">
@@ -109,33 +112,33 @@ When <em>concatenating</em>, it waits for the first stream to complete before su
 <div class="paragraph">
 <p>When the first stream emits the completion event, it switches to the second stream, and so on.
 When the last stream completes, the concatenated stream sends the completion event.
-As for <em>merge</em>, if a stream fails, it stops the emissions.</p>
+As for <em>merge</em>, if a stream fails then there won&#8217;t be further evebts.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="merging-multis"><a class="anchor" href="#merging-multis"></a>Merging Multis</h3>
 <div class="paragraph">
-<p>To create a new <code>Multi</code> from the <em>merge</em> of multiple <code>Multis</code> use:</p>
+<p>To create a new <code>Multi</code> from the <em>merge</em> of multiple <code>Multi</code> streams use:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;T&gt; merged = Multi.createBy().merging().streams(streamA, streamB);</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;T&gt; merged = Multi.createBy().merging().streams(first, second);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>For example, we can merge multiple streams emitting event periodically and look at the output:</p>
+<p>For example, we can merge multiple streams emitting periodical events and look at the output:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; streamA = Multi.createFrom().ticks().every(Duration.ofMillis(10))
-        .onItem().transform(l -&gt; "Stream A - " + l);
-Multi&lt;String&gt; streamB = Multi.createFrom().ticks().every(Duration.ofMillis(15))
-        .onItem().transform(l -&gt; "Stream B - " + l);
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; first = Multi.createFrom().ticks().every(Duration.ofMillis(10))
+  .onItem().transform(l -&gt; "Stream A - " + l);
 
-Multi.createBy().merging().streams(streamA, streamB)
-    .subscribe().with(
-        s -&gt; System.out.println("Got item: " + s)
-);</code></pre>
+Multi&lt;String&gt; second = Multi.createFrom().ticks().every(Duration.ofMillis(15))
+  .onItem().transform(l -&gt; "Stream B - " + l);
+
+Multi.createBy().merging().streams(first, second)
+  .subscribe().with(s -&gt;
+    System.out.println("Got item: " + s));</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -160,7 +163,7 @@ Got item: Stream A - 7
 <div class="sect2">
 <h3 id="concatenating-multis"><a class="anchor" href="#concatenating-multis"></a>Concatenating Multis</h3>
 <div class="paragraph">
-<p>To create a new <code>Multi</code> from the <em>concatenation</em> of multiple <code>Multis</code> use:</p>
+<p>To create a new <code>Multi</code> from the <em>concatenation</em> of multiple <code>Multi</code> streams use:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -168,19 +171,19 @@ Got item: Stream A - 7
 </div>
 </div>
 <div class="paragraph">
-<p>Don&#8217;t forget that the streams order matters in this case.
-<code>streamA, streamB</code> does not provide the same result than <code>streamB, streamA</code>:</p>
+<p>Don&#8217;t forget that the streams order matters in this case, as <code>(streamA, streamB)</code> does not provide the same result as <code>(streamB, streamA)</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; streamA = Multi.createFrom().items("A1", "A2", "A3");
-Multi&lt;String&gt; streamB = Multi.createFrom().items("B1", "B2", "B3");
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; first = Multi.createFrom().items("A1", "A2", "A3");
 
-Multi.createBy().concatenating().streams(streamA, streamB)
-        .subscribe().with(item -&gt; System.out.print(item)); // Print "A1A2A3B1B2B3"
+Multi&lt;String&gt; second = Multi.createFrom().items("B1", "B2", "B3");
 
-Multi.createBy().concatenating().streams(streamB, streamA)
-        .subscribe().with(item -&gt; System.out.print(item)); // Print "B1B2B3A1A2A3"</code></pre>
+Multi.createBy().concatenating().streams(first, second)
+  .subscribe().with(item -&gt; System.out.print(item)); // Prints "A1A2A3B1B2B3"
+
+Multi.createBy().concatenating().streams(second, first)
+  .subscribe().with(item -&gt; System.out.print(item)); // Prints "B1B2B3A1A2A3"</code></pre>
 </div>
 </div>
 <div class="admonitionblock important">
@@ -190,7 +193,7 @@ Multi.createBy().concatenating().streams(streamB, streamA)
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-If one of the concatenated streams is unbounded (infinite), the streams after this one in the streams list won&#8217;t be consumed.
+If one of the concatenated streams is unbounded (infinite), the next streams in the list won&#8217;t be consumed!
 </td>
 </tr>
 </table>
@@ -246,7 +249,7 @@ If one of the concatenated streams is unbounded (infinite), the streams after th
             </div>
             <div class="col-lg-6">
                 <p>
-                     Site last generated: Nov 23, 2020
+                     Site last generated: Nov 24, 2020
                 </p>
             </div>
         </div>

@@ -75,9 +75,11 @@
 <div class="sectionbody">
 <div class="paragraph">
 <p>A <code>Multi</code> represents a <em>stream</em> of data.
-This stream can emit 0, 1, n, or an infinite number of items.
-You rarely create instances of <code>Multi</code> yourself, but, instead, use a reactive client exposing a Mutiny API that provides <code>Multi.</code>
-That being said, it can be handy at times.</p>
+A stream can emit 0, 1, n, or an infinite number of items.</p>
+</div>
+<div class="paragraph">
+<p>You will rarely create instances of <code>Multi</code> yourself but instead use a reactive client that exposes a Mutiny API.
+Still, just like <code>Uni</code> there exists a rich API for creating <code>Multi</code> objects.</p>
 </div>
 <div class="sect2">
 <h3 id="the-multi-type"><a class="anchor" href="#the-multi-type"></a>The Multi type</h3>
@@ -87,13 +89,13 @@ That being said, it can be handy at times.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>emit 0..n item events</p>
+<p>emits <code>0..n</code> item events</p>
 </li>
 <li>
-<p>emit a failure event</p>
+<p>emits a failure event</p>
 </li>
 <li>
-<p>emit a completion event for bounded stream</p>
+<p>emits a completion event for bounded streams</p>
 </li>
 </ul>
 </div>
@@ -105,7 +107,7 @@ That being said, it can be handy at times.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Failures are terminal events. After a failure, no other items will be emitted.</p>
+<p>Failures are terminal events: after having received a failure no further item will be emitted.</p>
 </div>
 </td>
 </tr>
@@ -113,20 +115,24 @@ That being said, it can be handy at times.</p>
 </div>
 <div class="paragraph">
 <p><code>Multi&lt;T&gt;</code> provides many operators that create, transform, and orchestrate <code>Multi</code> sequences.
-The offered operators can be used to define a processing pipeline.
-The events flow in this pipeline, and each operator can process or transform the events.
-<code>Multis</code> are lazy by nature.
-To trigger the computation, you must have a final subscriber indicating your interest.
-The following snippet provides a simple example of pipeline using <code>Multi</code>:</p>
+The operators can be used to define a processing pipeline.
+The events flow in this pipeline, and each operator can process or transform the events.</p>
+</div>
+<div class="paragraph">
+<p><code>Multis</code> are lazy by nature.
+To trigger the computation, you must subscribe.</p>
+</div>
+<div class="paragraph">
+<p>The following snippet provides a simple example of pipeline using <code>Multi</code>:</p>
 </div>
 <div class="listingblock">
 <div class="title">Example of pipeline using Multi</div>
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi.createFrom().items(1, 2, 3, 4, 5)
-    .onItem().transform(i -&gt; i * 2)
-    .transform().byTakingFirstItems(3)
-    .onFailure().recoverWithItem(0)
-    .subscribe().with(System.out::println);</code></pre>
+  .onItem().transform(i -&gt; i * 2)
+  .transform().byTakingFirstItems(3)
+  .onFailure().recoverWithItem(0)
+  .subscribe().with(System.out::println);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -145,16 +151,14 @@ Also, the pipeline is materialized for each <em>subscription</em>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Cancellable cancellable = multi
-    .subscribe().with(
-        item -&gt; System.out.println(item),
-        failure -&gt; System.out.println("Failed with " + failure),
-        () -&gt; System.out.println("Completed")
-    );</code></pre>
+  .subscribe().with(
+    item -&gt; System.out.println(item),
+    failure -&gt; System.out.println("Failed with " + failure),
+    () -&gt; System.out.println("Completed"));</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Note the returned <code>Cancellable.</code>
-This object allows canceling the stream if needed.</p>
+<p>Note the returned <code>Cancellable</code>: this object allows canceling the stream if need be.</p>
 </div>
 </div>
 <div class="sect2">
@@ -164,11 +168,12 @@ This object allows canceling the stream if needed.</p>
 Use <a href="https://javadoc.io/static/io.smallrye.reactive/mutiny/0.10.1/index.html?io/smallrye/mutiny/groups/MultiCreate.html">Multi.createFrom()</a> to see all the possibilities.</p>
 </div>
 <div class="paragraph">
-<p>You can, for instance, create a <code>Multi</code> from a known items or from <code>Iterables</code>:</p>
+<p>For instance you can create a <code>Multi</code> from known items or from an <code>Iterable</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Integer&gt; uni = Uni.createFrom().items(1, 2, 3, 4);
+
 Multi.createFrom().iterable(Arrays.asList(1, 2, 3, 4, 5))</code></pre>
 </div>
 </div>
@@ -182,13 +187,11 @@ Multi.createFrom().iterable(Arrays.asList(1, 2, 3, 4, 5))</code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">AtomicInteger counter = new AtomicInteger();
 Multi.createFrom().items(() -&gt;
-    IntStream.range(counter.getAndIncrement(), counter.get() * 2).boxed()
-)</code></pre>
+  IntStream.range(counter.getAndIncrement(), counter.get() * 2).boxed())</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>Supplier</code> is called for every subscriber.
-So, each of them will get different values.</p>
+<p>The <code>Supplier</code> is called for every subscriber, so each of them will get different values.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -198,7 +201,7 @@ So, each of them will get different values.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can create ranges using <code>Multi.createFrom().range</code>.</p>
+<p>You can create ranges using <code>Multi.createFrom().range(start, end)</code>.</p>
 </div>
 </td>
 </tr>
@@ -216,6 +219,7 @@ Create failed <code>Multi</code> instances with:</p>
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// Pass an exception directly:
 Multi&lt;Integer&gt; failed1 = Multi.createFrom().failure(new Exception("boom"));
+
 // Pass a supplier called for every subscriber:
 Multi&lt;Integer&gt; failed2 = Multi.createFrom().failure(() -&gt; new Exception("boom"));</code></pre>
 </div>
@@ -224,8 +228,10 @@ Multi&lt;Integer&gt; failed2 = Multi.createFrom().failure(() -&gt; new Exception
 <div class="sect2">
 <h3 id="creating-empty-multis"><a class="anchor" href="#creating-empty-multis"></a>Creating empty Multis</h3>
 <div class="paragraph">
-<p>Unlike <code>Unis,</code> <code>Multis</code> don&#8217;t send <code>null</code> item.
-They send a completion event indicating that there are no more items to consume.
+<p>Unlike <code>Uni,</code> <code>Multi</code> streams don&#8217;t send <code>null</code> items (this is forbidden in <em>reactive streams</em>).</p>
+</div>
+<div class="paragraph">
+<p>Instead <code>Multi</code> streams send completion events indicating that there are no more items to consume.
 Of course, the completion event can happen even if there are no items, creating an empty stream.</p>
 </div>
 <div class="paragraph">
@@ -240,16 +246,16 @@ Of course, the completion event can happen even if there are no items, creating 
 <div class="sect2">
 <h3 id="creating-multis-using-an-emitter-advanced"><a class="anchor" href="#creating-multis-using-an-emitter-advanced"></a>Creating Multis using an emitter (<em>advanced</em>)</h3>
 <div class="paragraph">
-<p>You can also create a <code>Multi</code> using an emitter.
+<p>You can create a <code>Multi</code> using an emitter.
 This approach is useful when integrating callback-based APIs:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi.createFrom().emitter(em -&gt; {
-    em.emit(1);
-    em.emit(2);
-    em.emit(3);
-    em.complete();
+  em.emit(1);
+  em.emit(2);
+  em.emit(3);
+  em.complete();
 });</code></pre>
 </div>
 </div>
@@ -327,7 +333,7 @@ For the first tick, it&#8217;s 0, then 1, then 2, and so on.</p>
             </div>
             <div class="col-lg-6">
                 <p>
-                     Site last generated: Nov 23, 2020
+                     Site last generated: Nov 24, 2020
                 </p>
             </div>
         </div>

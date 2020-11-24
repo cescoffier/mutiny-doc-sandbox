@@ -74,8 +74,10 @@
 <h2 id="retrying-on-failures"><a class="anchor" href="#retrying-on-failures"></a>Retrying on failures</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>It is common to want to retry if something terrible happened.
-You can retry upon failure.
+<p>It is common to want to retry if something terrible happened.</p>
+</div>
+<div class="paragraph">
+<p>You can retry upon failure.
 The <a href="https://quarkus.io/blog/uni-retry/">How does retry&#8230;&#8203; retries</a> blog post provides a more detailed overview of the retry mechanism.</p>
 </div>
 <div class="admonitionblock note">
@@ -113,8 +115,7 @@ Multi&lt;T&gt; m = multi
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-While <code>.onFailure().retry().indefinitely()</code> is available, it may never temrinate.
-So use it caution.
+While <code>.onFailure().retry().indefinitely()</code> is available, it may never terminate, so use it with caution.
 </td>
 </tr>
 </table>
@@ -124,11 +125,11 @@ So use it caution.
 <h3 id="introduce-delays"><a class="anchor" href="#introduce-delays"></a>Introduce delays</h3>
 <div class="paragraph">
 <p>By default, <code>retry</code> retries immediately.
-When using remote services, it is often better to delay a bit the attempts.
-Mutiny provides a method to configure an exponential backoff: a growing delay between retries.</p>
+When using remote services, it is often better to delay a bit the attempts.</p>
 </div>
 <div class="paragraph">
-<p>Configure the exponential backoff as follows:</p>
+<p>Mutiny provides a method to configure an exponential backoff: a growing delay between retries.
+Configure the exponential backoff as follows:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -144,15 +145,17 @@ Optionally, you can also configure a jitter to add a pinch of randomness to the 
 </div>
 <div class="paragraph">
 <p>When using exponential backoff, you may not want to configure the max number of attempts (<code>atMost</code>), but a deadline.
-Configure the deadline using <code>expireIn</code> or <code>expireAt</code>.</p>
+To do so use either <code>expireIn</code> or <code>expireAt</code>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="deciding-to-retry"><a class="anchor" href="#deciding-to-retry"></a>Deciding to retry</h3>
 <div class="paragraph">
 <p>As an alternative to <code>atMost</code>, you can also use <code>until</code>.
-This method accepts a predicate called after every failure.
-If the predicate returned <code>true,</code> it retries.
+This method accepts a predicate called after every failure.</p>
+</div>
+<div class="paragraph">
+<p>If the predicate returned <code>true,</code> it retries.
 Otherwise, it stops retrying and propagates the last failure downstream:</p>
 </div>
 <div class="listingblock">
@@ -214,7 +217,7 @@ Otherwise, it stops retrying and propagates the last failure downstream:</p>
             </div>
             <div class="col-lg-6">
                 <p>
-                     Site last generated: Nov 23, 2020
+                     Site last generated: Nov 24, 2020
                 </p>
             </div>
         </div>

@@ -72,14 +72,16 @@
 <h2 id="from-reactive-to-imperative"><a class="anchor" href="#from-reactive-to-imperative"></a>From reactive to imperative</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>There are use cases where you need the items in an imperative manner instead of asynchronous.
-Typically, when you serve an HTTP request from a worker thread, you can block.
+<p>There are use cases where you need to receive the items in an imperative rather than asynchronous manner.</p>
+</div>
+<div class="paragraph">
+<p>For instance you issue a HTTP request from a worker thread and you want to block execution until you have received the response.
 Mutiny provides the ability to block until you get the items.</p>
 </div>
 <div class="sect2">
 <h3 id="awaiting-on-unis-item"><a class="anchor" href="#awaiting-on-unis-item"></a>Awaiting on Uni&#8217;s item</h3>
 <div class="paragraph">
-<p>When dealing with a <code>Uni,</code> you can block and await the item using:</p>
+<p>When dealing with a <code>Uni</code> you can block and await the item using:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -87,8 +89,10 @@ Mutiny provides the ability to block until you get the items.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>This method blocks the caller thread until the observed <code>uni</code> emits the item.
-Note that the returned item can be <code>null</code> if the <code>uni</code> emits <code>null.</code>
+<p>This method blocks the caller thread until the observed <code>uni</code> emits the item.</p>
+</div>
+<div class="paragraph">
+<p>Note that the returned item can be <code>null</code> if the <code>uni</code> emits <code>null.</code>
 If the <code>uni</code> fails, it throws the exception, wrapped in the <code>CompletionException</code> for <em>checked</em> exception.</p>
 </div>
 <div class="paragraph">
@@ -168,7 +172,7 @@ If the <code>multi</code> emits a failure, an exception is thrown.</p>
             </div>
             <div class="col-lg-6">
                 <p>
-                     Site last generated: Nov 23, 2020
+                     Site last generated: Nov 24, 2020
                 </p>
             </div>
         </div>
