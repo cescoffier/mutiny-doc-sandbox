@@ -1,0 +1,11 @@
+reactive-to-imperative:
+  title: From reactive to imperative
+  text: Learn how to block until you get items
+  categories:
+    - advanced
+    - integration
+  related:
+    - url: some-javadoc-url
+      text: The Uni Await group
+    - guide: converters
+      text: How to integrate Mutiny with other reactive programming libraries
