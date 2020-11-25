@@ -34,7 +34,7 @@
                     {% for g in guide.related %}
                     <li>
                         {% if g.guide %}
-                        <a href="/guides/{{ g.guide }}">{{ g.text }}</a>
+                        <a href="{{ site.baseurl }}/guides/{{ g.guide }}">{{ site.data.guides[g.guide].title }}</a>
                         {% endif %}
                         {% if g.url %}
                         <a href="{{ g.url }}">{{ g.text }}</a>

@@ -34,3 +34,14 @@
         border: none;
     }
 }
+
+.guide.card {
+    margin-top: 1rem;
+    padding-top: 0;
+    border-color: $color-primary;
+    border-bottom-width: 2px;
+
+    h3 {
+        margin: 0;
+    }
+}
