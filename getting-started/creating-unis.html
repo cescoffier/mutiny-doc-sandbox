@@ -33,9 +33,9 @@
             <div class="col-7">
                 <nav id="nav" class="nav nav-masthead justify-content-right">
                     <a class="nav-link active" href="/mutiny-doc-sandbox/index.html">Home</a>
-                    <a class="nav-link" href="/mutiny-doc-sandbox/getting-started/getting-started">Getting Started</a>
-                    <a class="nav-link" href="/mutiny-doc-sandbox/pages/philosophy.html">Concepts</a>
-                    <a class="nav-link" href="#">Documentation</a>
+                    <a class="nav-link" href="/mutiny-doc-sandbox/getting-started/getting-started">Getting Started</a>                    
+                    <a class="nav-link" href="/mutiny-doc-sandbox/pages/philosophy.html">Philosophy</a>
+                    <a class="nav-link" href="/mutiny-doc-sandbox/guides/index.html">Guides</a>
                     <a href="https://github.com/smallrye/smallrye-mutiny" target="_blank" title="Github"><i class="lab la-github la-2x"></i></a>
                     <a href="https://stackoverflow.com/questions/tagged/mutiny" target="_blank" title="Stack Overflow"><i class="lab la-stack-overflow la-2x"></i></a>
                 </nav>
@@ -69,7 +69,7 @@
 
 <div class="container page-content">
     <div class="row">
-        <div class="col-md-8 content">
+        <div class="col-md-9 content">
             <div class="sect1">
 <h2 id="creating-unis"><a class="anchor" href="#creating-unis"></a>Creating Unis</h2>
 <div class="sectionbody">
@@ -114,7 +114,7 @@ The following snippet provides a simple example of pipeline using <code>Uni</cod
 </div>
 </div>
 <div class="paragraph">
-<p>You can see the <code>Uni</code> javadoc <a href="https://javadoc.io/static/io.smallrye.reactive/mutiny/0.10.1/index.html?io/smallrye/mutiny/Uni.html">here</a>.</p>
+<p>You can see the <code>Uni</code> javadoc <a href="https://javadoc.io/static/io.smallrye.reactive/mutiny/0.11.0/index.html?io/smallrye/mutiny/Uni.html">here</a>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -142,7 +142,7 @@ What&#8217;s more, the pipeline is materialized for each <em>subscription</em>.<
 <h3 id="creating-unis-from-item"><a class="anchor" href="#creating-unis-from-item"></a>Creating Unis from item</h3>
 <div class="paragraph">
 <p>There are many ways to create <code>Uni</code> instances.
-Use <a href="https://javadoc.io/static/io.smallrye.reactive/mutiny/0.10.1/index.html?io/smallrye/mutiny/groups/UniCreate.html">Uni.createFrom()</a> to see all the possibilities.</p>
+Use <a href="https://javadoc.io/static/io.smallrye.reactive/mutiny/0.11.0/index.html?io/smallrye/mutiny/groups/UniCreate.html">Uni.createFrom()</a> to see all the possibilities.</p>
 </div>
 <div class="paragraph">
 <p>You can, for instance, create a <code>Uni</code> from a known value:</p>
@@ -249,7 +249,7 @@ Uni&lt;T&gt; = Uni.createFrom().completionStage(stage);</code></pre>
 </div>
 </div>
         </div>
-        <div class="col-md-4 col-md-offset-1 toc-container">
+        <div class="col-md-3 col-md-offset-1 toc-container">
             <nav class="page-toc toc nav flex-column" id="toc">
                 <ul class="sectlevel1">
 <li><a href="#creating-unis">Creating Unis</a>
@@ -291,7 +291,7 @@ Uni&lt;T&gt; = Uni.createFrom().completionStage(stage);</code></pre>
             <footer class="footer">
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 sep-right">
+            <div class="col-lg-9 sep-right">
                 <p>
                     SmallRye Mutiny is an open source project. All the code from this project is available under the Apache Software License 2.0.
                 </p>
@@ -299,7 +299,7 @@ Uni&lt;T&gt; = Uni.createFrom().completionStage(stage);</code></pre>
                     This website was built with Jekyll, is hosted on Github Pages and is completely open source. If you want to make it better, fork the website and show us what you’ve got.
                 </p>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-3">
                 <p>
                      Site last generated: Nov 25, 2020
                 </p>
