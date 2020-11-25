@@ -2,13 +2,13 @@
 <html lang="en">
 
 <head>
-    <title>From reactive to imperative</title>
+    <title></title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Learn how to block until you get items">
+    <meta name="description" content="SmallRye Mutiny!">
 
-    <link rel="canonical" href="/getting-started/reactive-to-imperative.html">
+    <link rel="canonical" href="/guides/reactive-to-imperative.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
@@ -44,7 +44,9 @@
     </div>
 </header>
             <div class="content">
-                <section class="hero gs">
+                
+
+<section class="hero gs">
     <div class="hero-main container">
         <div class="row">
             <div class="hero-left col-12">
@@ -54,12 +56,7 @@
                 <div class="hero-desc">
                     Learn how to block until you get items
                 </div>
-                <div class="hero-buttons">
-                    
-                    <a href="/mutiny-doc-sandbox/getting-started/converters" class="btn btn-rounded button button-dark button-rounded">
-                        <i class="las la-arrow-left left"></i>&nbsp;Using other reactive programming libraries</a>
-                     
-                </div>
+                <!-- TODO Labels -->
             </div>
         </div>
     </div>
@@ -68,20 +65,15 @@
 <div class="container page-content">
     <div class="row">
         <div class="col-md-8 content">
-            <div class="sect1">
-<h2 id="from-reactive-to-imperative"><a class="anchor" href="#from-reactive-to-imperative"></a>From reactive to imperative</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>There are use cases where you need to receive the items in an imperative rather than asynchronous manner.</p>
-</div>
-<div class="paragraph">
-<p>For instance you issue a HTTP request from a worker thread and you want to block execution until you have received the response.
+            <div class="paragraph">
+<p>There are use cases where you need the items in an imperative manner instead of asynchronous.
+Typically, when you serve an HTTP request from a worker thread, you can block.
 Mutiny provides the ability to block until you get the items.</p>
 </div>
 <div class="sect2">
 <h3 id="awaiting-on-unis-item"><a class="anchor" href="#awaiting-on-unis-item"></a>Awaiting on Uni&#8217;s item</h3>
 <div class="paragraph">
-<p>When dealing with a <code>Uni</code> you can block and await the item using:</p>
+<p>When dealing with a <code>Uni,</code> you can block and await the item using:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -89,10 +81,8 @@ Mutiny provides the ability to block until you get the items.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>This method blocks the caller thread until the observed <code>uni</code> emits the item.</p>
-</div>
-<div class="paragraph">
-<p>Note that the returned item can be <code>null</code> if the <code>uni</code> emits <code>null.</code>
+<p>This method blocks the caller thread until the observed <code>uni</code> emits the item.
+Note that the returned item can be <code>null</code> if the <code>uni</code> emits <code>null.</code>
 If the <code>uni</code> fails, it throws the exception, wrapped in the <code>CompletionException</code> for <em>checked</em> exception.</p>
 </div>
 <div class="paragraph">
@@ -125,39 +115,41 @@ It waits for the next items, and during that time, blocks the caller thread.</p>
 If the <code>multi</code> emits a failure, an exception is thrown.</p>
 </div>
 </div>
-</div>
-</div>
         </div>
         <div class="col-md-4 col-md-offset-1 toc-container">
             <nav class="page-toc toc nav flex-column" id="toc">
-                <ul class="sectlevel1">
-<li><a href="#from-reactive-to-imperative">From reactive to imperative</a>
-<ul class="sectlevel2">
+                <h4>Table of Content</h4>
+                <ul class="sectlevel2">
 <li><a href="#awaiting-on-unis-item">Awaiting on Uni&#8217;s item</a></li>
 <li><a href="#iterating-over-multis-items">Iterating over Multi&#8217;s items</a></li>
 </ul>
-</li>
-</ul>
+
+                <h4>Related content</h4>
+                <ul>
+                    
+                    <li>
+                        
+                        
+                        <a href="some-javadoc-url">The Uni Await group</a>
+                        
+                    </li>
+                    
+                    <li>
+                        
+                        <a href="/guides/converters">How to integrate Mutiny with other reactive programming libraries</a>
+                        
+                        
+                    </li>
+                    
+                </ul>
             </nav>
+
+
         </div>
     </div>
 </div>
 
 
-
-<div class="footer-buttons gs ">
-    <div class="container ">
-        <div class="row ">
-            <div class="col-12 ">
-                
-                <a href="/mutiny-doc-sandbox/getting-started/converters " class="previous ">
-                    <i class="fas fa-arrow-left "></i>&nbsp;Using other reactive programming libraries</a>
-                 
-            </div>
-        </div>
-
-    </div>
-</div>
             </div>
 
             <footer class="footer">
