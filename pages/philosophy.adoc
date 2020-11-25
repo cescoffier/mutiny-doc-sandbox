@@ -6,10 +6,12 @@ It provides a simple but powerful asynchronous development model that lets you b
 Mutiny can be used in any Java application exhibiting asynchrony. From reactive microservices, data streaming, event processing to API gateway, and network utility, Mutiny is a great fit.
 
 === Why is asynchronous important? 
-We are living in a distributed worlds. 
+
+We are living in a distributed world. 
 Most of the applications built nowadays are distributed systems. 
 The Cloud, IoT, microservices, mobile application, even simple CRUD applications are distributed applications.
-But, distributed systems are challenging.
+
+Still, distributed systems are challenging.
 
 .Distributed systems are asynchronous
 image::distributed-system-blueprint.png[role="left"]

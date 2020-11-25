@@ -1,4 +1,4 @@
 class Jekyll::Cleaner
-    def cleanup!; end
-  end
+  def cleanup!; end
+end
   
