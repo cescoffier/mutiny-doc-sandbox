@@ -45,4 +45,10 @@
         background-color: $button-background-color-hover;
         border-color: $button-border-color;
     }
+    &:focus {
+        background-color: $button-background-color-hover;
+        border-color: $button-border-color;
+        box-shadow: 0 0 0 0.2rem darken($color-primary, $dark-value);
+
+    }
 }
