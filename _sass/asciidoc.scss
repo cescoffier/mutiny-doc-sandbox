@@ -80,7 +80,7 @@ h6>a.anchor:hover {
 .admonitionblock>table td.content {
     padding-left: 1.125em;
     padding-right: 1.25em;
-    border-left: 1px solid $gray;
+    border-left: 1px solid $color-secondary;
 }
 
 .admonitionblock>table td.content>:last-child>:last-child {
@@ -472,7 +472,7 @@ h2>a.anchor::before {
 }
 
 .admonitionblock td.icon .icon-note::before {
-    color: $blue;
+    color: $color-primary;
 }
 
 .admonitionblock td.icon .icon-tip::before {
@@ -501,6 +501,6 @@ h2>a.anchor::before {
     font-weight: bold;
     line-height: .6em;
     margin-left: -.6em;
-    color: $blue;
+    color: $color-primary;
     text-shadow: 0 1px 2px rgba(0, 0, 0, .1);
 }

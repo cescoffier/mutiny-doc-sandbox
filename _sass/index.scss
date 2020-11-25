@@ -6,7 +6,7 @@ html {
 body {
     font-family: $font-text;
     color: $font-color;
-    background-color: $background;
+    background-color: $color-white;
 
     line-height: 1.8;
     font-size: 1.1em;
@@ -19,9 +19,9 @@ body {
 }
 
 .characteristics {
+    background: $color-white;
     padding-top: 3rem;
     padding-bottom: 3rem;
-    border-bottom: 1px solid $border-color;
     .characteristic-item {
         text-align: justify;
         h5 {
@@ -38,7 +38,7 @@ body {
         text-align: center;
         display: block;
         font-size: xx-large;
-        color: $background-dark;
+        color: $code-background-dark;
     }
     .characteristic-quarkus-logo {
         max-width: 40px;
@@ -63,14 +63,15 @@ body {
 
 .footer-buttons {
     margin-top: 1rem;
-    color: $dark-gray;
+    color: $color-white;
     border-top: 1px solid $border-color;
     border-bottom: 1px solid $border-color;
-    background-color: $background-light;
+    background-color: $color-primary;
     a {
         font-size: x-large;
         border-bottom: 0;
         padding: 0;
+        color: $color-white;
         display: block;
         text-align: center;
         font-weight: 500;
@@ -80,13 +81,13 @@ body {
     a.previous {
         float: left;
         &:hover {
-            color: $dark-gray;
+            color: $button-text-color-hover;
         }
     }
     a.next {
         float: right;
         &:hover {
-            color: $dark-gray;
+            color: $button-text-color-hover;
         }
     }
 }
@@ -107,5 +108,5 @@ body {
 .page-content .page-toc ul.sectlevel2 li.active {
     font-weight: bolder;
     border-left-width: 5px;
-    border-left-color: $dark-gray;
+    border-left-color: $color-gray-700;
 }

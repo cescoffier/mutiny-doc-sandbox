@@ -26,19 +26,23 @@
 
     &:focus {
         outline: 0;
-        box-shadow: 0 0 0 0.2rem $gray;
+        box-shadow: 0 0 0 0.2rem $color-secondary;
     }
 
 }
 
 .button-dark {
-    color: $white;
-    background-color: $dark-gray;
+    color: $button-text-color;
+    background-color: $button-background-color;
     padding: .5625rem 1.5625rem;
     transition: color .2s, background-color .2s;
     font-size: large;
     &:hover {
-        color: $dark-gray;
-        background-color: $highlight-color;
+        background-color: $button-background-color-hover;
+        border-color: $button-border-color;
+    }
+    &:active {
+        background-color: $button-background-color-hover;
+        border-color: $button-border-color;
     }
 }

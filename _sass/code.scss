@@ -10,7 +10,7 @@
   padding: 10px;
   padding-left: 20px;
   color: white;
-  background-color: $dark-gray;
+  background-color: $color-gray-700;
   border-radius: 10px;
   font-size: 16px;
 }
@@ -31,12 +31,12 @@ pre {
 }
 pre.highlight,
 .hljs {
-  background: $background-dark;
+  background: $code-background-dark;
   color: #f8f8f2;
   border-radius: 5px;
 }
 .listingblock {
-  color: $dark-gray;
+  color: $color-gray-700;
 }
 .title {
   display: inline-block;

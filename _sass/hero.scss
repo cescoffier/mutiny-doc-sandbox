@@ -1,15 +1,16 @@
 .hero {
-  background-color: $background-light;
-  border-bottom: 1px solid $border-color;
   padding-top: 1rem;
   padding-bottom: 1rem;
-  margin-bottom: 1rem;
+  background: $color-primary;
+  -webkit-clip-path: polygon(0 0,100% 0,100% calc(100% - 2vw),0 100%);
+  clip-path: polygon(0 0,100% 0,100% calc(100% - 2vw),0 100%);
 }
 
 .hero-main {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-bottom: 1rem;
 }
 
 .hero-slogan {
@@ -19,13 +20,15 @@
 
 .hero-name {
   font-family: $font-logo;
-  color: $background-dark;
+  color: $color-white;
   letter-spacing: 1.5px;
 }
 
 .hero-description {
   font-family: $font-highlight;
   font-size: xx-large;
+  color: $color-white;
+
 }
 
 .hero-buttons {
@@ -35,4 +38,8 @@
 .hero-code {
   box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, 0.2);
   border-radius: .8rem;
+}
+
+.hero-desc {
+  color: $color-white;
 }
