@@ -1,50 +1,58 @@
 == Concepts & Philosophy
 
 Mutiny is a novel reactive programming library.
+
 It provides a simple but powerful asynchronous development model that lets you build reactive applications.
 
-Mutiny can be used in any Java application exhibiting asynchrony. From reactive microservices, data streaming, event processing to API gateway, and network utility, Mutiny is a great fit.
+Mutiny can be used in any Java application exhibiting asynchrony.
+From reactive microservices, data streaming, event processing to API gateways and network utilities, Mutiny is a great fit.
 
 === Why is asynchronous important? 
 
 We are living in a distributed world. 
+
 Most of the applications built nowadays are distributed systems. 
 The Cloud, IoT, microservices, mobile application, even simple CRUD applications are distributed applications.
 
-Still, distributed systems are challenging.
+Still, developing distributed systems is hard!
 
 .Distributed systems are asynchronous
 image::distributed-system-blueprint.png[role="left"]
 
-Their nature is inherently asynchronous and wild. 
-Anything can go wrong unexpectedly. 
+Communications in distributed systems are inherently asynchronous and unreliable.
+Anything can go wrong, anytime, and often with no prior notice.
+
 Network disruptions, unavailable services, software, or hardware failures are just a tiny subset of the wide variety of failures that can happen in distributed systems. 
 
-Building distributed applications correctly is a considerable challenge. 
-It requires reassessing almost everything we know about development. 
+_Correctly_ building distributed applications is a considerable challenge, as it requires re-assessing almost everything we know from traditional software development.
 
-Typically, most applications use a synchronous development model. 
-Synchronous is easy to reason about, more comfortable to write and read, but it has some hidden cost. 
+Most classic applications use a synchronous development model.
+Synchronous code is easy to reason about, more comfortable to write and read than asynchronous code, but it has some hidden cost.
 This cost emerges when building I/O intensive applications, quite common in distributed applications.
-In general, these traditional applications assign one thread per request, and so to handle multiple requests concurrently requires multiple threads. 
-When the request processing needs to interact over the network, it uses that _worker_ thread, which blocks the thread until the response's reception. 
-This response may never come, so you need to add watchdogs handling timeouts and other resilience patterns. 
-And, to handle more requests concurrently, you need to create more threads. 
-But this is not without a cost. 
-Each thread requires memory, and also, the more threads you have, the more CPU cycles are used to handle the context switches. Thus, this model ends up being costly, limits the deployment density, and on the Cloud means $$$. 
-Fortunately, there is another way.
-That way relies on non-blocking I/O, an efficient way to handle I/O interactions that do not require additional threads. 
-While applications using non-blocking I/O are more efficient and better suited for the Cloud's distributed nature, they come with a considerable constraint: You must never block the I/O thread.   
+
+In general, these traditional applications assign one thread per request, and so they handle multiple concurrent requests with multiple threads. 
+When the request processing needs to interact over the network, it uses that _worker_ thread, which blocks the thread until the response has been received.
+This response may never come, so you need to add watchdogs handling timeouts and other resilience patterns.
+And, to handle more requests concurrently, you need to create more threads.
+
+Threads come at a cost.
+Each thread requires memory, and the more threads you have, the more CPU cycles are used to handle the context switches. 
+Thus, this model ends up being costly, limits the deployment density, and on the Cloud means that you pay bigger bills.
+
+Fortunately, there is another way, and it relies on non-blocking I/O, an efficient way to handle I/O interactions that do not require additional threads. 
+While applications using non-blocking I/O are more efficient and better suited for the Cloud's distributed nature, they come with a considerable constraint: you must never block the I/O thread.   
 Thus, you need to implement your business logic using an asynchronous development model.
 
-I/O is not the only reason why asynchronous is essential in Today's systems. Most of the interactions in the real world are asynchronous and event-driven. Representing these interactions using synchronous processes is not only wrong; it also introduces fragility in your application. 
+I/O is not the only reason why asynchronous is essential in Today's systems. 
+Most of the interactions in the real world are asynchronous and event-driven. 
+Representing these interactions using synchronous processes is not only wrong; it also introduces fragility in your application. 
 
-Asynchronous is a shift. 
-But, Mutiny helps you to take the plunge.
+Asynchronous is a significant shift. 
+Mutiny helps you to take the plunge.
 
-=== What's Reactive Programming
+=== What's Reactive Programming?
 
-As said above, Mutiny is a reactive programming library.
+Mutiny is a reactive programming library.
 If you look on Wikipedia for reactive programming, you will find the following definition:
 
 [quote]
@@ -61,7 +69,7 @@ That's it.
 Reactive programming is about streams and especially, observing them.
 It pushes that idea to its limit: with reactive programming, everything is a data stream.
 
-With reactive programming, you observe streams implement side-effects when _something_ flows in the stream:
+With reactive programming, you observe streams and implement side-effects when _something_ flows in the stream:
 
 .Reactive programming is about observing streams
 image::streams.png[role="center"]
@@ -74,11 +82,13 @@ It provides a toolbox to compose streams and process events.
 
 There are other reactive programming libraries out there. 
 In the Java world,  we can mention Project Reactor and Rx Java. 
-So, what makes Mutiny different from these two well-known libraries? 
-Its API.
 
-As said above, asynchronous is hard to grasp for most developers. 
-Thus, the API must not require advanced knowledge or add cognitive overload. It should help you design your logic and be understandable in 6 months.
+So, what makes Mutiny different from these two well-known libraries? 
+**The API!**
+
+As said above, asynchronous is hard to grasp for most developers, and for good reasons.
+Thus, the API must not require advanced knowledge or add cognitive overload.
+It should help you design your logic and still be intelligible in 6 months.
 
 To achieve this, Mutiny is built on three pillars:
 
@@ -86,11 +96,13 @@ To achieve this, Mutiny is built on three pillars:
 * **API Navigability** - based on the event-driven nature, the API is built around the type of events and drive the navigation based on the kind of event you want to handle,
 * **Simplicity** - Mutiny provides only two types (`Multi` and `Uni`), which can handle any kind of asynchronous interactions.
 
-=== Events
+=== Events?
 
 When you use Mutiny, you design a pipeline in which the events flow.
 Your code observes these events and react. 
-Each processing stage is a new pipe you append to the pipeline. This pipe may change the events, create new ones, drops, buffers, whatever you need. 
+
+Each processing stage is a new pipe you append to the pipeline.
+This pipe may change the events, create new ones, drops, buffers, whatever you need. 
 
 In general, events flow from upstream to downstream, from source to sinks. 
 Some events can _swim_ upstream from the sinks to the source.
@@ -143,13 +155,15 @@ Mutiny's back-pressure is based on Reactive Streams.
 [IMPORTANT]
 .Don't forget to subscribe
 ====
-If no subscriber _subscribes_, no items would be emitted. More importantly, nothing will ever happen.
+If no subscriber _subscribes_, no items would be emitted.
+More importantly, nothing will ever happen.
 If your program does not do anything, check that it subscribes, it's a very common error.
 ====
 
-=== An event-driven API
+=== An event-driven API?
 
 Mutiny is an event-driven API.
+
 For each type of event, there is an `on` associated method that lets you handle this specific event.
 For example:
 
@@ -183,14 +197,15 @@ They receive and fire events at any time.
 
 You may wonder why we make the distinction between `Uni` and `Multi.`
 Conceptually, a `Uni` is a `Multi,` right? 
-In practice, you don't use `Unis` and `Multis` the same way. 
-The use case and operations are different.  
-Also, `Uni` does not need the complete ceremony presented above as the _request_ does not make sense.
-The `subscribe` event expresses the interest and triggers the computation, no need for an additional _request_.
-Also, `Uni` can handle items having a `null` items (and has specific methods to handle this case).
-`Multi` does not allow it (because the Reactive Streams specification forbids it).
 
-Also, having a `Uni` implementing `Publisher` would be a bit like having `Optional` implementing `Iterable.`
+In practice, you don't use `Unis` and `Multis` the same way. 
+The use case and operations are different.
+
+* `Uni` does not need the complete ceremony presented above as the _request_ does not make sense.
+* The `subscribe` event expresses the interest and triggers the computation, no need for an additional _request_.
+* `Uni` can handle items having a `null` items (and has specific methods to handle this case).
+* `Multi` does not allow it (because the Reactive Streams specification forbids it).
+* Having a `Uni` implementing `Publisher` would be a bit like having `Optional` implementing `Iterable`.
 
 In other words, `Uni`:
 
