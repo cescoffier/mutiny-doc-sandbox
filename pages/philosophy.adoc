@@ -221,58 +221,58 @@ The following snippet shows how you can use `Uni` and `Multi`:
 include::{sourcedir}/UniMultiComparisonTest.java[tags=code]
 ----
 
-You can convert `Unis` to `Multis` and vice-versa:
+// You can convert `Unis` to `Multis` and vice-versa:
 
-[source,java,indent=0]
-----
-include::{sourcedir}/UniMultiComparisonTest.java[tags=conversion]
-----
+// [source,java,indent=0]
+// ----
+// include::{sourcedir}/UniMultiComparisonTest.java[tags=conversion]
+// ----
 
-== Creating and Subscribing to Unis
+// == Creating and Subscribing to Unis
 
-There are many ways to create instances of `Unis`:
+// There are many ways to create instances of `Unis`:
 
-.Creating Unis
-[source,java,indent=0]
-----
-include::{sourcedir}/UniCreationTest.java[tags=code]
-----
+// .Creating Unis
+// [source,java,indent=0]
+// ----
+// include::{sourcedir}/UniCreationTest.java[tags=code]
+// ----
 
-Subscribing to `Unis` is done by method provided by `uni.subscribe()`:
+// Subscribing to `Unis` is done by method provided by `uni.subscribe()`:
 
-.Subscribing to Unis
-[source,java,indent=0]
-----
-include::{sourcedir}/UniCreationTest.java[tags=subscription]
-----
+// .Subscribing to Unis
+// [source,java,indent=0]
+// ----
+// include::{sourcedir}/UniCreationTest.java[tags=subscription]
+// ----
 
-== Creating and Subscribing to Multis
+// == Creating and Subscribing to Multis
 
-There are many ways to create instances of `Multis`:
+// There are many ways to create instances of `Multis`:
 
-.Creating Multis
-[source,java,indent=0]
-----
-include::{sourcedir}/MultiCreationTest.java[tags=code]
-----
+// .Creating Multis
+// [source,java,indent=0]
+// ----
+// include::{sourcedir}/MultiCreationTest.java[tags=code]
+// ----
 
-Subscribing to `Multis` is done by method provided by `multi.subscribe()`:
+// Subscribing to `Multis` is done by method provided by `multi.subscribe()`:
 
-.Subscribing to Multis
-[source,java,indent=0]
-----
-include::{sourcedir}/MultiCreationTest.java[tags=subscription]
-----
+// .Subscribing to Multis
+// [source,java,indent=0]
+// ----
+// include::{sourcedir}/MultiCreationTest.java[tags=subscription]
+// ----
 
-== Structuring the pipeline
+// == Structuring the pipeline
 
-It can be hard to structure your sequence of processing in a readable manner.
-Mutiny provides the `stage` function to structure your pipeline:
+// It can be hard to structure your sequence of processing in a readable manner.
+// Mutiny provides the `stage` function to structure your pipeline:
 
-.Structuring your pipeline with `stage`
-[source,java,indent=0]
-----
-include::{sourcedir}/StageTest.java[tags=code]
-----
+// .Structuring your pipeline with `stage`
+// [source,java,indent=0]
+// ----
+// include::{sourcedir}/StageTest.java[tags=code]
+// ----
 
-`stage` can be used on `Multi` and `Uni` and let you group operations in a logical set.
+// `stage` can be used on `Multi` and `Uni` and let you group operations in a logical set.

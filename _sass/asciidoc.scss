@@ -407,6 +407,12 @@ pre {
     background: #fafa00 !important
 }
 
+.quoteblock {
+    margin: 3rem;
+    color: $color-primary-dark;
+    font-style: italic;
+}
+
 .quoteblock blockquote::before {
     content: "\201c";
     float: left;

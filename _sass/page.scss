@@ -3,23 +3,20 @@
         ul {
             list-style-type: none;
             padding: 0;
-            margin: 0 0 1.25rem 0;
-        }
-        li {
-            padding-right: 1.25rem;
-            border-left-color: $color-gray-700;
+            margin: 0;
         }
         ul li {
-            margin-bottom: .625rem;
-            border-left: 3px solid $border-color;
-            transition: border .2s;
+            padding: 0;
+            padding-bottom: .625rem;
             padding-left: 1.875rem;
             a,
-            a:hover,
             a:visited {
                 text-decoration: none;
                 color: inherit;
                 border-bottom: none;
+            }
+            a:hover {
+                color: $color-primary;
             }
         }
     }
