@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="SmallRye Mutiny!">
 
-    <link rel="canonical" href="/guides/reactive-to-imperative.html">
+    <link rel="canonical" href="/guides/imperative-to-reactive.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
@@ -50,10 +50,10 @@
         <div class="row">
             <div class="hero-left col-12">
                 <div class="hero-slogan">
-                    <h1 class="hero-name">From reactive to imperative</h1>
+                    <h1 class="hero-name">Imperative to Reactive</h1>
                 </div>
                 <div class="hero-desc">
-                    Learn how to block until you get items.
+                    Learn how to integrate blocking code.
                 </div>
                 <!-- TODO Labels -->
             </div>
@@ -65,53 +65,84 @@
     <div class="row">
         <div class="col-md-9 content">
             <div class="paragraph">
-<p>There are use cases where you need the items in an imperative manner instead of asynchronous.
-Typically, when you serve an HTTP request from a worker thread, you can block.
-Mutiny provides the ability to block until you get the items.</p>
+<p>If you use Mutiny, there is a good chance you may want to avoid blocking the caller thread.
+In a <em>pure</em> reactive application, the application logic is executed on one of the few I/O threads, and blocking one of these would have dramatic consequences.
+So, here is the big question: how to you deal with blocking code?</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s imagine you have blocking code (e.g., connecting to a database using JDBC, reading a file from the file system&#8230;&#8203;), and you want to integrate that into your reactive pipelines while avoiding blocking.
+You would need to isolate such blocking parts of your code and run these parts on worker threads.</p>
+</div>
+<div class="paragraph">
+<p>Mutiny provides two operators to customize the threads used to handle events:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>runSubscriptionOn</code> - to configure the thread used to execute the code happening at subscription-time</p>
+</li>
+<li>
+<p><code>emitOn</code> - to configure the thread used to dispatch events downstream</p>
+</li>
+</ul>
 </div>
 <div class="sect2">
-<h3 id="awaiting-on-unis-item"><a class="anchor" href="#awaiting-on-unis-item"></a>Awaiting on Uni&#8217;s item</h3>
+<h3 id="running-blocking-code-on-subscription"><a class="anchor" href="#running-blocking-code-on-subscription"></a>Running blocking code on subscription</h3>
 <div class="paragraph">
-<p>When dealing with a <code>Uni,</code> you can block and await the item using:</p>
+<p>It is very usual to deal with the blocking call during the subscription.
+In this case, the <code>runSubscription</code> operator is what you need:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">T t = uni.await().indefinitely();</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; blocking = Uni.createFrom().item(this::invokeRemoteServiceUsingBlockingIO)
+        .runSubscriptionOn(Infrastructure.getDefaultWorkerPool());</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This method blocks the caller thread until the observed <code>uni</code> emits the item.
-Note that the returned item can be <code>null</code> if the <code>uni</code> emits <code>null.</code>
-If the <code>uni</code> fails, it throws the exception, wrapped in the <code>CompletionException</code> for <em>checked</em> exception.</p>
+<p>The code above creates a Uni that will supply the item using a blocking call, here the <code>invokeRemoteServiceUsingBlockingIO</code> method.
+To avoid blocking the subscriber thread, it uses <code>runSubscriptionOn</code> which switch the thread and call <code>invokeRemoteServiceUsingBlockingIO</code> on another thread.
+Here we pass the default worker thread pool, but you can use your own executor.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="title">What&#8217;s that default worker pool?</div>
+<div class="paragraph">
+<p>In the previous snippet, you may wonder about <code>Infrastructure.getDefaultWorkerPool()</code>.
+Mutiny allows the underlying platform to provide a default worker pool.
+<code>Infrastructure.getDefaultWorkerPool()</code> provides access to this pool.</p>
 </div>
 <div class="paragraph">
-<p>Blocking forever may not be a great idea.
-You can use <code>uni.await().atMost(Duration)</code> to pass a deadline.
-If the deadline is reached, a <code>TimeoutException</code> is thrown.</p>
+<p>If the underlying platform does not provide a pool, a default one is used.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Note that runSubscriptionOn does not subscribe to the Uni.
+It specifies the executor to use when a subscription happens.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="iterating-over-multis-items"><a class="anchor" href="#iterating-over-multis-items"></a>Iterating over Multi&#8217;s items</h3>
+<h3 id="executing-blocking-calls-on-event"><a class="anchor" href="#executing-blocking-calls-on-event"></a>Executing blocking calls on event</h3>
 <div class="paragraph">
-<p>When dealing with a <code>Multi,</code> you may want to iterate over the items using a simple "foreach."
-You can achieve this using <code>multi.subscribe().asBlockingIterable()</code>:</p>
+<p>Using <code>runSubscriptionOn</code> works when the blocking operation happens at subscription time.
+But, when dealing with <code>Multi</code> and need to execute blocking operations for each item, you need to use <code>emitOn</code>.</p>
+</div>
+<div class="paragraph">
+<p>While <code>runSubscriptionOn</code> runs the subscription on the given executor, <code>emitOn</code> configures the executor used to propagate downstream the items, failure and completion events:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Iterable&lt;T&gt; iterable = multi.subscribe().asIterable();
-
-for (T item : iterable) {
-    // do something with the item
-}</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; multi = Multi.createFrom().items("john", "jack", "sue")
+.emitOn(Infrastructure.getDefaultWorkerPool())
+.onItem().transform(this::invokeRemoteServiceUsingBlockingIO);</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>The returns <code>iterable</code> is blocking.
-It waits for the next items, and during that time, blocks the caller thread.</p>
-</div>
-<div class="paragraph">
-<p>The iteration ends once the last item is consumed.
-If the <code>multi</code> emits a failure, an exception is thrown.</p>
 </div>
 </div>
         </div>
@@ -119,8 +150,8 @@ If the <code>multi</code> emits a failure, an exception is thrown.</p>
             <nav class="page-toc toc nav flex-column" id="toc">
                 <h4>Table of Content</h4>
                 <ul class="sectlevel2">
-<li><a href="#awaiting-on-unis-item">Awaiting on Uni&#8217;s item</a></li>
-<li><a href="#iterating-over-multis-items">Iterating over Multi&#8217;s items</a></li>
+<li><a href="#running-blocking-code-on-subscription">Running blocking code on subscription</a></li>
+<li><a href="#executing-blocking-calls-on-event">Executing blocking calls on event</a></li>
 </ul>
 
                 <h4>Related content</h4>
@@ -128,14 +159,7 @@ If the <code>multi</code> emits a failure, an exception is thrown.</p>
                     
                     <li>
                         
-                        
-                        <a href="some-javadoc-url">The Uni Await group</a>
-                        
-                    </li>
-                    
-                    <li>
-                        
-                        <a href="/mutiny-doc-sandbox/guides/imperative-to-reactive">Imperative to Reactive</a>
+                        <a href="/mutiny-doc-sandbox/guides/reactive-to-imperative">From reactive to imperative</a>
                         
                         
                     </li>
