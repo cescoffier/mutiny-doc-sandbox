@@ -39,9 +39,12 @@ body {
         display: block;
         font-size: xx-large;
         color: $code-background-dark;
+        max-height: 73px;
     }
     .characteristic-quarkus-logo {
-        max-width: 40px;
+        margin-top: 1rem;
+        margin-bottom: 1.2rem;
+        max-width: 40px;        
     }
 }
 
