@@ -17,6 +17,16 @@
     .icon {
         display: none;
     }
+    .content .title {
+        display: block;
+        font-weight: 500;
+        color: $font-color;
+        font-family: $font-highlight;
+        font-size: 1em;
+        margin-bottom: .625rem;
+        text-decoration: none;
+        padding-left: 0;
+    }
 }
 
 .note {
