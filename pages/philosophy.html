@@ -50,21 +50,26 @@
 <h2 id="concepts-philosophy"><a class="anchor" href="#concepts-philosophy"></a>Concepts &amp; Philosophy</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Mutiny is a novel reactive programming library.
-It provides a simple but powerful asynchronous development model that lets you build reactive applications.</p>
+<p>Mutiny is a novel reactive programming library.</p>
 </div>
 <div class="paragraph">
-<p>Mutiny can be used in any Java application exhibiting asynchrony. From reactive microservices, data streaming, event processing to API gateway, and network utility, Mutiny is a great fit.</p>
+<p>It provides a simple but powerful asynchronous development model that lets you build reactive applications.</p>
+</div>
+<div class="paragraph">
+<p>Mutiny can be used in any Java application exhibiting asynchrony.
+From reactive microservices, data streaming, event processing to API gateways and network utilities, Mutiny is a great fit.</p>
 </div>
 <div class="sect2">
 <h3 id="why-is-asynchronous-important"><a class="anchor" href="#why-is-asynchronous-important"></a>Why is asynchronous important?</h3>
 <div class="paragraph">
-<p>We are living in a distributed world.
-Most of the applications built nowadays are distributed systems.
+<p>We are living in a distributed world.</p>
+</div>
+<div class="paragraph">
+<p>Most of the applications built nowadays are distributed systems.
 The Cloud, IoT, microservices, mobile application, even simple CRUD applications are distributed applications.</p>
 </div>
 <div class="paragraph">
-<p>Still, distributed systems are challenging.</p>
+<p>Still, developing distributed systems is hard!</p>
 </div>
 <div class="imageblock left">
 <div class="content">
@@ -73,41 +78,50 @@ The Cloud, IoT, microservices, mobile application, even simple CRUD applications
 <div class="title">Figure 1. Distributed systems are asynchronous</div>
 </div>
 <div class="paragraph">
-<p>Their nature is inherently asynchronous and wild.
-Anything can go wrong unexpectedly.
-Network disruptions, unavailable services, software, or hardware failures are just a tiny subset of the wide variety of failures that can happen in distributed systems.</p>
+<p>Communications in distributed systems are inherently asynchronous and unreliable.
+Anything can go wrong, anytime, and often with no prior notice.</p>
 </div>
 <div class="paragraph">
-<p>Building distributed applications correctly is a considerable challenge.
-It requires reassessing almost everything we know about development.</p>
+<p>Network disruptions, unavailable services, software, or hardware failures are just a tiny subset of the wide variety of failures that can happen in distributed systems.</p>
 </div>
 <div class="paragraph">
-<p>Typically, most applications use a synchronous development model.
-Synchronous is easy to reason about, more comfortable to write and read, but it has some hidden cost.
-This cost emerges when building I/O intensive applications, quite common in distributed applications.
-In general, these traditional applications assign one thread per request, and so to handle multiple requests concurrently requires multiple threads.
-When the request processing needs to interact over the network, it uses that <em>worker</em> thread, which blocks the thread until the response&#8217;s reception.
+<p><em>Correctly</em> building distributed applications is a considerable challenge, as it requires re-assessing almost everything we know from traditional software development.</p>
+</div>
+<div class="paragraph">
+<p>Most classic applications use a synchronous development model.
+Synchronous code is easy to reason about, more comfortable to write and read than asynchronous code, but it has some hidden cost.
+This cost emerges when building I/O intensive applications, quite common in distributed applications.</p>
+</div>
+<div class="paragraph">
+<p>In general, these traditional applications assign one thread per request, and so they handle multiple concurrent requests with multiple threads.
+When the request processing needs to interact over the network, it uses that <em>worker</em> thread, which blocks the thread until the response has been received.
 This response may never come, so you need to add watchdogs handling timeouts and other resilience patterns.
-And, to handle more requests concurrently, you need to create more threads.
-But this is not without a cost.
-Each thread requires memory, and also, the more threads you have, the more CPU cycles are used to handle the context switches. Thus, this model ends up being costly, limits the deployment density, and on the Cloud means $$$.
-Fortunately, there is another way.
-That way relies on non-blocking I/O, an efficient way to handle I/O interactions that do not require additional threads.
-While applications using non-blocking I/O are more efficient and better suited for the Cloud&#8217;s distributed nature, they come with a considerable constraint: You must never block the I/O thread.
+And, to handle more requests concurrently, you need to create more threads.</p>
+</div>
+<div class="paragraph">
+<p>Threads come at a cost.
+Each thread requires memory, and the more threads you have, the more CPU cycles are used to handle the context switches.
+Thus, this model ends up being costly, limits the deployment density, and on the Cloud means that you pay bigger bills.</p>
+</div>
+<div class="paragraph">
+<p>Fortunately, there is another way, and it relies on non-blocking I/O, an efficient way to handle I/O interactions that do not require additional threads.
+While applications using non-blocking I/O are more efficient and better suited for the Cloud&#8217;s distributed nature, they come with a considerable constraint: you must never block the I/O thread.
 Thus, you need to implement your business logic using an asynchronous development model.</p>
 </div>
 <div class="paragraph">
-<p>I/O is not the only reason why asynchronous is essential in Today&#8217;s systems. Most of the interactions in the real world are asynchronous and event-driven. Representing these interactions using synchronous processes is not only wrong; it also introduces fragility in your application.</p>
+<p>I/O is not the only reason why asynchronous is essential in Today&#8217;s systems.
+Most of the interactions in the real world are asynchronous and event-driven.
+Representing these interactions using synchronous processes is not only wrong; it also introduces fragility in your application.</p>
 </div>
 <div class="paragraph">
-<p>Asynchronous is a shift.
-But, Mutiny helps you to take the plunge.</p>
+<p>Asynchronous is a significant shift.
+Mutiny helps you to take the plunge.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="whats-reactive-programming"><a class="anchor" href="#whats-reactive-programming"></a>What&#8217;s Reactive Programming</h3>
+<h3 id="whats-reactive-programming"><a class="anchor" href="#whats-reactive-programming"></a>What&#8217;s Reactive Programming?</h3>
 <div class="paragraph">
-<p>As said above, Mutiny is a reactive programming library.
+<p>Mutiny is a reactive programming library.
 If you look on Wikipedia for reactive programming, you will find the following definition:</p>
 </div>
 <div class="quoteblock">
@@ -131,7 +145,7 @@ Reactive programming is about streams and especially, observing them.
 It pushes that idea to its limit: with reactive programming, everything is a data stream.</p>
 </div>
 <div class="paragraph">
-<p>With reactive programming, you observe streams implement side-effects when <em>something</em> flows in the stream:</p>
+<p>With reactive programming, you observe streams and implement side-effects when <em>something</em> flows in the stream:</p>
 </div>
 <div class="imageblock center">
 <div class="content">
@@ -149,13 +163,16 @@ It provides a toolbox to compose streams and process events.</p>
 <h3 id="what-makes-mutiny-different"><a class="anchor" href="#what-makes-mutiny-different"></a>What makes Mutiny different?</h3>
 <div class="paragraph">
 <p>There are other reactive programming libraries out there.
-In the Java world,  we can mention Project Reactor and Rx Java.
-So, what makes Mutiny different from these two well-known libraries?
-Its API.</p>
+In the Java world,  we can mention Project Reactor and Rx Java.</p>
 </div>
 <div class="paragraph">
-<p>As said above, asynchronous is hard to grasp for most developers.
-Thus, the API must not require advanced knowledge or add cognitive overload. It should help you design your logic and be understandable in 6 months.</p>
+<p>So, what makes Mutiny different from these two well-known libraries?
+<strong>The API!</strong></p>
+</div>
+<div class="paragraph">
+<p>As said above, asynchronous is hard to grasp for most developers, and for good reasons.
+Thus, the API must not require advanced knowledge or add cognitive overload.
+It should help you design your logic and still be intelligible in 6 months.</p>
 </div>
 <div class="paragraph">
 <p>To achieve this, Mutiny is built on three pillars:</p>
@@ -175,11 +192,14 @@ Thus, the API must not require advanced knowledge or add cognitive overload. It 
 </div>
 </div>
 <div class="sect2">
-<h3 id="events"><a class="anchor" href="#events"></a>Events</h3>
+<h3 id="events"><a class="anchor" href="#events"></a>Events?</h3>
 <div class="paragraph">
 <p>When you use Mutiny, you design a pipeline in which the events flow.
-Your code observes these events and react.
-Each processing stage is a new pipe you append to the pipeline. This pipe may change the events, create new ones, drops, buffers, whatever you need.</p>
+Your code observes these events and react.</p>
+</div>
+<div class="paragraph">
+<p>Each processing stage is a new pipe you append to the pipeline.
+This pipe may change the events, create new ones, drops, buffers, whatever you need.</p>
 </div>
 <div class="paragraph">
 <p>In general, events flow from upstream to downstream, from source to sinks.
@@ -287,7 +307,8 @@ A subscriber should not request more than what it can handle, and a publisher sh
 <td class="content">
 <div class="title">Don&#8217;t forget to subscribe</div>
 <div class="paragraph">
-<p>If no subscriber <em>subscribes</em>, no items would be emitted. More importantly, nothing will ever happen.
+<p>If no subscriber <em>subscribes</em>, no items would be emitted.
+More importantly, nothing will ever happen.
 If your program does not do anything, check that it subscribes, it&#8217;s a very common error.</p>
 </div>
 </td>
@@ -296,10 +317,12 @@ If your program does not do anything, check that it subscribes, it&#8217;s a ver
 </div>
 </div>
 <div class="sect2">
-<h3 id="an-event-driven-api"><a class="anchor" href="#an-event-driven-api"></a>An event-driven API</h3>
+<h3 id="an-event-driven-api"><a class="anchor" href="#an-event-driven-api"></a>An event-driven API?</h3>
 <div class="paragraph">
-<p>Mutiny is an event-driven API.
-For each type of event, there is an <code>on</code> associated method that lets you handle this specific event.
+<p>Mutiny is an event-driven API.</p>
+</div>
+<div class="paragraph">
+<p>For each type of event, there is an <code>on</code> associated method that lets you handle this specific event.
 For example:</p>
 </div>
 <div class="listingblock">
@@ -372,16 +395,30 @@ They receive and fire events at any time.</p>
 </div>
 <div class="paragraph">
 <p>You may wonder why we make the distinction between <code>Uni</code> and <code>Multi.</code>
-Conceptually, a <code>Uni</code> is a <code>Multi,</code> right?
-In practice, you don&#8217;t use <code>Unis</code> and <code>Multis</code> the same way.
-The use case and operations are different.
-Also, <code>Uni</code> does not need the complete ceremony presented above as the <em>request</em> does not make sense.
-The <code>subscribe</code> event expresses the interest and triggers the computation, no need for an additional <em>request</em>.
-Also, <code>Uni</code> can handle items having a <code>null</code> items (and has specific methods to handle this case).
-<code>Multi</code> does not allow it (because the Reactive Streams specification forbids it).</p>
+Conceptually, a <code>Uni</code> is a <code>Multi,</code> right?</p>
 </div>
 <div class="paragraph">
-<p>Also, having a <code>Uni</code> implementing <code>Publisher</code> would be a bit like having <code>Optional</code> implementing <code>Iterable.</code></p>
+<p>In practice, you don&#8217;t use <code>Unis</code> and <code>Multis</code> the same way.
+The use case and operations are different.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Uni</code> does not need the complete ceremony presented above as the <em>request</em> does not make sense.</p>
+</li>
+<li>
+<p>The <code>subscribe</code> event expresses the interest and triggers the computation, no need for an additional <em>request</em>.</p>
+</li>
+<li>
+<p><code>Uni</code> can handle items having a <code>null</code> items (and has specific methods to handle this case).</p>
+</li>
+<li>
+<p><code>Multi</code> does not allow it (because the Reactive Streams specification forbids it).</p>
+</li>
+<li>
+<p>Having a <code>Uni</code> implementing <code>Publisher</code> would be a bit like having <code>Optional</code> implementing <code>Iterable</code>.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>In other words, <code>Uni</code>:</p>
@@ -679,10 +716,10 @@ Mutiny provides the <code>stage</code> function to structure your pipeline:</p>
 <li><a href="#concepts-philosophy">Concepts &amp; Philosophy</a>
 <ul class="sectlevel2">
 <li><a href="#why-is-asynchronous-important">Why is asynchronous important?</a></li>
-<li><a href="#whats-reactive-programming">What&#8217;s Reactive Programming</a></li>
+<li><a href="#whats-reactive-programming">What&#8217;s Reactive Programming?</a></li>
 <li><a href="#what-makes-mutiny-different">What makes Mutiny different?</a></li>
-<li><a href="#events">Events</a></li>
-<li><a href="#an-event-driven-api">An event-driven API</a></li>
+<li><a href="#events">Events?</a></li>
+<li><a href="#an-event-driven-api">An event-driven API?</a></li>
 <li><a href="#uni-and-multi">Uni and Multi</a></li>
 </ul>
 </li>
