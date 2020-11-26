@@ -9,7 +9,7 @@ reactive-to-imperative:
     - guide: imperative-to-reactive
 
 imperative-to-reactive:
-  title: Imperative to Reactive
+  title: From imperative to Reactive
   text: Learn how to integrate blocking code.
   labels:
     - advanced
