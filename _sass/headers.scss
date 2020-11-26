@@ -22,12 +22,6 @@
     }
 }
 
-.container-banner {
-    padding: 0;
-    height: 5.625rem;
-    background-color: $navbar-background-color;
-}
-
 .nav-item a {
     padding: 0;
     color: $navbar-link-color;
@@ -35,7 +29,6 @@
     font-size: .875em;
     font-weight: 500;
     font-family: $font-highlight;
-    //line-height: calc(5.625rem - 1px);
     text-transform: uppercase;
 
     transition: color .2s;
