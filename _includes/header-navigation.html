@@ -1,19 +1,24 @@
-<header class="header">
-    <div class="container header-container">
-        <div class="row">
-            <div class="col-lg-5">
-                <a class="brand" href="{{ '/index.html' | relative_url }}"><strong>Mutiny!</strong></a>
+<header class="header masthead mb-auto">
+    <div class="container">
+        <nav class="navbar navbar-dark navbar-expand-lg">
+            <a class="navbar-brand brand" href="{{ '/index.html' | relative_url }}"><strong>Mutiny!</strong></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
+                    aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav ml-auto mr-0 mt-2 mt-lg-0">
+                    <li class="nav-item active"><a class="nav-link" href="{{ '/index.html' | relative_url }}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ '/pages/philosophy' | relative_url }}">Philosophy</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ '/guides' | relative_url }}">Guides</a></li>
+                    <li class="nav-item"><a href="https://github.com/smallrye/smallrye-mutiny" target="_blank" title="Github"><i
+                            class="lab la-github la-2x"></i></a></li>
+                    <li class="nav-item"><a href="https://stackoverflow.com/questions/tagged/mutiny" target="_blank"
+                                            title="Stack Overflow"><i
+                            class="lab la-stack-overflow la-2x"></i></a></li>
+                </ul>
             </div>
-            <div class="col-lg-7">
-                <nav id="nav" class="nav nav-masthead justify-content-right">
-                    <a class="nav-link active" href="{{ '/index.html' | relative_url }}">Home</a>
-                    <a class="nav-link" href="{{ '/getting-started/getting-started' | relative_url }}">Getting Started</a>
-                    <a class="nav-link" href="{{ '/pages/philosophy' | relative_url }}">Philosophy</a>
-                    <a class="nav-link" href="{{ '/guides' | relative_url }}">Guides</a>
-                    <a href="https://github.com/smallrye/smallrye-mutiny" target="_blank" title="Github"><i class="lab la-github la-2x"></i></a>
-                    <a href="https://stackoverflow.com/questions/tagged/mutiny" target="_blank" title="Stack Overflow"><i class="lab la-stack-overflow la-2x"></i></a>
-                </nav>
-            </div>
-        </div>
+        </nav>
     </div>
 </header>

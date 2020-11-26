@@ -1,5 +1,4 @@
 .header {
-    height: 5.625rem;
     background-color: $navbar-background-color;
     padding-left: 15px;
     padding-right: 15px;
@@ -11,8 +10,7 @@
     font-weight: bold;
     font-size: 2em;
 
-    letter-spacing: 1px;
-    line-height: 5.625rem;
+    letter-spacing: 1.5px;
     text-decoration: none;
     border-bottom: 0;
 
@@ -30,29 +28,22 @@
     background-color: $navbar-background-color;
 }
 
-#nav {
-    margin-top: 0;
-    margin-bottom: 0;
+.nav-item a {
     padding: 0;
-    float: right;
-    a {
-        padding: 0;
-        color: $navbar-link-color;
-        margin-right: 15px;
-        font-size: .875em;
-        font-weight: 500;
-        font-family: $font-highlight;
-        line-height: calc(5.625rem - 1px);
-        text-transform: uppercase;
+    color: $navbar-link-color;
+    margin-right: 15px;
+    font-size: .875em;
+    font-weight: 500;
+    font-family: $font-highlight;
+    //line-height: calc(5.625rem - 1px);
+    text-transform: uppercase;
 
-        transition: color .2s;
-        &:hover {
-            color: $navbar-link-hover-color;
-        }
+    transition: color .2s;
+    &:hover {
+        color: $navbar-link-hover-color;
     }
+}
 
-    .lab {
-        position: relative;
-        bottom: -.125rem;
-    }
+.navbar-toggler-icon {
+    border-color: $color-white;
 }
