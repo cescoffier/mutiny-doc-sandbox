@@ -44,6 +44,13 @@
     }
 }
 
+.nav-link {
+    color: $navbar-link-color !important;
+    &:hover {
+        color: $navbar-link-hover-color !important;
+    }
+}
+
 .navbar-toggler-icon {
     border-color: $color-white;
 }
