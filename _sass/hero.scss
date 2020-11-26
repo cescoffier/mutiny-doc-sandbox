@@ -4,6 +4,12 @@
   background: $color-primary;
   -webkit-clip-path: polygon(0 0,100% 0,100% calc(100% - 2vw),0 100%);
   clip-path: polygon(0 0,100% 0,100% calc(100% - 2vw),0 100%);
+
+  .hljs {
+    background: $code-background-main;
+    color: #f8f8f2;
+    border-radius: 5px;
+  }
 }
 
 .hero-main {
