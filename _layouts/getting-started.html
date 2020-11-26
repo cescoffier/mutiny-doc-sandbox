@@ -14,10 +14,10 @@
                 </div>
                 <div class="hero-buttons">
                     {% if page.previous %}
-                    <a href="{{ page.previous-href | relative_url }}" class="btn btn-rounded button button-dark button-rounded">
+                    <a href="{{ page.previous-href | relative_url }}" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
                         <i class="las la-arrow-left left"></i>&nbsp;{{ page.previous }}</a>
                     {% endif %} {% if page.next %}
-                    <a href="{{ page.next-href | relative_url }}" class="btn btn-rounded button button-dark button-rounded">
+                    <a href="{{ page.next-href | relative_url }}" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
                 {{ page.next }}&nbsp;<i class="las la-arrow-right"></i></a> {% endif %}
                 </div>
             </div>
