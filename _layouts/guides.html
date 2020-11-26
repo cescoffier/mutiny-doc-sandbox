@@ -24,7 +24,7 @@ layout: base
         <div class="col-md-9 content">
             {{ content }}
         </div>
-        <div class="col-md-3 col-md-offset-1 toc-container">
+        <div class="col-md-3 col-md-offset-1 toc-container d-sm-none d-md-block">
             <nav class="page-toc toc nav flex-column" id="toc">
                 <h4>Table of Content</h4>
                 {{ page.document | tocify_asciidoc }}
