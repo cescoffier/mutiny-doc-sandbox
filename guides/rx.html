@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="SmallRye Mutiny!">
 
-    <link rel="canonical" href="/guides/unchecked.html">
+    <link rel="canonical" href="/guides/rx.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
@@ -54,10 +54,10 @@
         <div class="row">
             <div class="hero-left col-12">
                 <div class="hero-slogan">
-                    <h1 class="hero-name">Dealing with checked exceptions</h1>
+                    <h1 class="hero-name">Using map, flatMap and concatMap</h1>
                 </div>
                 <div class="hero-desc">
-                    Learn how to handle <em>checked</em> exceptions.
+                    Learn how to use the traditional Reactive eXtensions methods.
                 </div>
                 <!-- TODO Labels -->
             </div>
@@ -69,66 +69,103 @@
     <div class="row">
         <div class="col-md-9 content">
             <div class="paragraph">
-<p>When implementing your reactive pipeline, you write lots of functions (<code>java.util.function.Function</code>), consumers (<code>java.util.function.Consumer</code>), suppliers (<code>java.util.function.Supplier</code>) and so on.
-By default, you cannot throw checked exceptions.</p>
+<p>If you are a seasoned reactive developer, you may miss the <code>map</code>, <code>flatMap</code>, <code>concatMap</code> methods.
+Mutiny API is quite different from the _ standard_ reactive eXtensions API.
+There are multiple reasons for this choice.
+Typically, <em>flatMap</em> is not necessarily well understood by every developer, leading to potentially catastrophic consequences.</p>
 </div>
 <div class="paragraph">
-<p>When integrating libraries throwing checked exceptions (like <code>IOException</code>) it&#8217;s not very convenient to add a <code>try/catch</code> block and wrap the thrown exception into a runtime exception:</p>
+<p>That being said, Mutiny provides the <em>map</em>, <em>flatMap</em> and <em>concatMap</em> methods, implementing the most common variant for each:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Integer&gt; uni = item.onItem().transform(i -&gt; {
-    try {
-        return methodThrowingIoException(i);
-    } catch (IOException e) {
-        throw new UncheckedIOException(e);
-    }
-});</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">int result = uni
+        .map(i -&gt; i + 1)
+        .await().indefinitely();
+
+int result2 = uni
+        .flatMap(i -&gt; Uni.createFrom().item(i + 1))
+        .await().indefinitely();
+
+List&lt;Integer&gt; list = multi
+        .map(i -&gt; i + 1)
+        .collectItems().asList()
+        .await().indefinitely();
+
+List&lt;Integer&gt; list2 = multi
+        .flatMap(i -&gt; Multi.createFrom().items(i, i))
+        .collectItems().asList()
+        .await().indefinitely();
+
+List&lt;Integer&gt; list3 = multi
+        .concatMap(i -&gt; Multi.createFrom().items(i, i))
+        .collectItems().asList()
+        .await().indefinitely();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Mutiny provides utilities to avoid having to do this manually.
-If your operation throws a <em>checked exception</em>, you can use the <a href="https://javadoc.io/doc/io.smallrye.reactive/mutiny/latest/io/smallrye/mutiny/unchecked/Unchecked.html"><code>io.smallrye.mutiny.unchecked.Unchecked</code></a> wrappers.</p>
+<p>The Mutiny equivalents are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>map</code> &#8594; <code>onItem().transform()</code></p>
+</li>
+<li>
+<p><code>flatMap</code> &#8594; <code>onItem().transformToUniAndMerge</code> and <code>onItem().transformToMultiAndMerge</code></p>
+</li>
+<li>
+<p><code>concatMap</code> &#8594; <code>onItem().transformToUniAndConcatenate</code> and <code>onItem().transformToMultiAndConcatenate</code></p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>For example, if your synchronous transformation uses a method throwing a checked exception, wrap it using <code>Unchecked.function</code>:</p>
+<p>The following snippet demonstrates how to uses these methods:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Integer&gt; uni = item.onItem().transform(Unchecked.function(i -&gt; {
-    // Can throw checked exception
-    return methodThrowingIoException(i);
-}));</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">int result = uni
+        .onItem().transform(i -&gt; i + 1)
+        .await().indefinitely();
+
+int result2 = uni
+        .onItem().transformToUni(i -&gt; Uni.createFrom().item(i + 1))
+        .await().indefinitely();
+
+// Shortcut for .onItem().transformToUni
+int result3 = uni
+        .chain(i -&gt; Uni.createFrom().item(i + 1))
+        .await().indefinitely();
+
+List&lt;Integer&gt; list = multi
+        .onItem().transform(i -&gt; i + 1)
+        .collectItems().asList()
+        .await().indefinitely();
+
+List&lt;Integer&gt; list2 = multi
+        .onItem().transformToMultiAndMerge(i -&gt; Multi.createFrom().items(i, i))
+        .collectItems().asList()
+        .await().indefinitely();
+
+// Equivalent to transformToMultiAndMerge but let you configure the flattening process,
+// failure management, concurrency...
+List&lt;Integer&gt; list3 = multi
+        .onItem().transformToMulti(i -&gt; Multi.createFrom().items(i, i)).merge()
+        .collectItems().asList()
+        .await().indefinitely();
+
+List&lt;Integer&gt; list4 = multi
+        .onItem().transformToMultiAndConcatenate(i -&gt; Multi.createFrom().items(i, i))
+        .collectItems().asList()
+        .await().indefinitely();
+
+// Equivalent to transformToMultiAndConcatenate but let you configure the flattening process,
+// failure management...
+List&lt;Integer&gt; list5 = multi
+        .onItem().transformToMulti(i -&gt; Multi.createFrom().items(i, i)).concatenate()
+        .collectItems().asList()
+        .await().indefinitely();</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>You can also wrap consumers such as in:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Integer&gt; uni = item.onItem().invoke(Unchecked.consumer(i -&gt; {
-    // Can throw checked exception
-    throw new IOException("boom");
-}));</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="title">Static Import</div>
-<div class="paragraph">
-<p>You can add the following import statement to simplify the usage of the provided methods:</p>
-</div>
-<div class="paragraph">
-<p><code>import static io.smallrye.mutiny.unchecked.Unchecked.*;</code></p>
-</div>
-</td>
-</tr>
-</table>
 </div>
         </div>
         <div class="col-md-3 col-md-offset-1 toc-container d-sm-none d-md-block">
@@ -141,8 +178,8 @@ If your operation throws a <em>checked exception</em>, you can use the <a href="
                     
                     <li>
                         
+                        <a href="/mutiny-doc-sandbox/guides/shortcuts">Shortcut methods</a>
                         
-                        <a href="https://javadoc.io/doc/io.smallrye.reactive/mutiny/latest/io/smallrye/mutiny/unchecked/Unchecked.html">Unchecked Javadoc</a>
                         
                     </li>
                     
