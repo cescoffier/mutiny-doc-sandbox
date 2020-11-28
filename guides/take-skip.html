@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="SmallRye Mutiny!">
 
-    <link rel="canonical" href="/guides/reactive-to-imperative.html">
+    <link rel="canonical" href="/guides/take-skip.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
@@ -54,10 +54,10 @@
         <div class="row">
             <div class="hero-left col-12">
                 <div class="hero-slogan">
-                    <h1 class="hero-name">From reactive to imperative</h1>
+                    <h1 class="hero-name">Take or Skip the first or last items</h1>
                 </div>
                 <div class="hero-desc">
-                    Learn how to block until you get items.
+                    Learn how to select or skip only the first or last items from a multi.
                 </div>
                 <!-- TODO Labels -->
             </div>
@@ -69,68 +69,120 @@
     <div class="row">
         <div class="col-md-9 content">
             <div class="paragraph">
-<p>There are use cases where you need the items in an imperative manner instead of asynchronous.
-Typically, when you serve an HTTP request from a worker thread, you can block.
-Mutiny provides the ability to block until you get the items.</p>
+<p>Multi provides the ability to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>only forward items from the beginning of the observed multi,</p>
+</li>
+<li>
+<p>only forward the last items (and discard all the other ones),</p>
+</li>
+<li>
+<p>skip items from the beginning of the multi,</p>
+</li>
+<li>
+<p>skip the last items.</p>
+</li>
+</ul>
 </div>
 <div class="sect1">
-<h2 id="awaiting-on-unis-item"><a class="anchor" href="#awaiting-on-unis-item"></a>Awaiting on Uni&#8217;s item</h2>
+<h2 id="taking-items"><a class="anchor" href="#taking-items"></a>Taking items</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>When dealing with a <code>Uni,</code> you can block and await the item using:</p>
+<p>The <code>multi.transform().byTakingFirstItems</code> method forwards on the <em>n</em> <strong>first</strong> items from the multi.
+It forwards that amount of items and then sends the completion signal.
+It also cancels the upstream subscription.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">T t = uni.await().indefinitely();</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; firstThreeItems = multi.transform().byTakingFirstItems(3);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This method blocks the caller thread until the observed <code>uni</code> emits the item.
-Note that the returned item can be <code>null</code> if the <code>uni</code> emits <code>null.</code>
-If the <code>uni</code> fails, it throws the exception, wrapped in the <code>CompletionException</code> for <em>checked</em> exception.</p>
+<p>If the observed multi emits fewer items, it sends the completion event when the upstream completes.</p>
 </div>
 <div class="paragraph">
-<p>Blocking forever may not be a great idea.
-You can use <code>uni.await().atMost(Duration)</code> to pass a deadline.
-When the deadline is reached, a <code>TimeoutException</code> is thrown:</p>
+<p>Similarly, The <code>multi.transform().byTakingLastItems</code> operator forwards on the <em>n</em>  <strong>last</strong> items from the multi.
+It discards all the items emitted beforehand.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">T t = uni.await().atMost(Duration.ofSeconds(1));</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; lastThreeItems = multi.transform().byTakingLastItems(3);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>multi.transform().byTakingItemsWhile</code> operator forwards the items while the passed predicate returns <code>true</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; takeWhile = multi.transform().byTakingItemsWhile(i -&gt; i &lt; 4);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It calls the predicates for each item.
+Once the predicate returns <code>false</code>, it stops forwarding the items downstream.
+It also sends the completion event and cancels the upstream subscription.</p>
+</div>
+<div class="paragraph">
+<p>Finally,  <code>multi.transform().byTakingItemsFor</code> operator picks the first items for a given period.
+Once the passed duration expires, it sends the completion event and cancels the upstream subscription.
+If the observes multi completes before the passed duration, it sends the completion event.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; takeForDuration = multi.transform().byTakingItemsFor(Duration.ofSeconds(1));</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="iterating-over-multis-items"><a class="anchor" href="#iterating-over-multis-items"></a>Iterating over Multi&#8217;s items</h2>
+<h2 id="skipping-items"><a class="anchor" href="#skipping-items"></a>Skipping items</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>When dealing with a <code>Multi,</code> you may want to iterate over the items using a simple "foreach."
-You can achieve this using <code>multi.subscribe().asBlockingIterable()</code>:</p>
+<p>You can also skip items.</p>
+</div>
+<div class="paragraph">
+<p>The <code>multi.transform().bySkippingFirstItems</code> method skips the <em>n</em> <strong>first</strong> items from the multi.
+It forwards all the remaining items and sends the completion event when the upstream multi completes.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Iterable&lt;T&gt; iterable = multi.subscribe().asIterable();
-for (T item : iterable) {
-    doSomethingWithItem(item);
-}</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; skipThreeItems = multi.transform().bySkippingFirstItems(3);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The returns <code>iterable</code> is blocking.
-It waits for the next items, and during that time, blocks the caller thread.</p>
+<p>If the observed multi emits fewer items, it sends the completion event without emitting any items.</p>
 </div>
 <div class="paragraph">
-<p>The iteration ends once the last item is consumed.
-If the <code>multi</code> emits a failure, an exception is thrown.</p>
-</div>
-<div class="paragraph">
-<p>Similar to <code>asIterable()</code>, the <code>asStream</code> method lets you retrieve a <code>java.util.stream.Stream</code>:</p>
+<p>Similarly, The <code>multi.transform().bySkippingLastItems</code> operator skips on the <em>n</em>  <strong>last</strong> items from the multi:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Stream&lt;T&gt; stream = multi.subscribe().asStream();
-stream.forEach(this::doSomethingWithItem);</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt;  skipLastThreeItems = multi.transform().bySkippingLastItems(3);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>multi.transform().bySkippingItemsWhile</code> operator skips the items while the passed predicate returns <code>true</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; skipWhile = multi.transform().bySkippingItemsWhile(i -&gt; i &lt; 4);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It calls the predicates for each item.
+Once the predicate returns <code>false</code>, it stops discarding the items and starts forwarding downstream.</p>
+</div>
+<div class="paragraph">
+<p>Finally,  <code>multi.transform().bySkippingItemsFor</code> operator skips the first items for a given period.
+Once the passed duration expires, it sends the items emitted after the deadline downstream.
+If the observes multi completes before the passed duration, it sends the completion event.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; skipForDuration = multi.transform().bySkippingItemsFor(Duration.ofSeconds(1));</code></pre>
 </div>
 </div>
 </div>
@@ -141,8 +193,8 @@ stream.forEach(this::doSomethingWithItem);</code></pre>
                 
                 <h4>Table of Content</h4>
                 <ul class="sectlevel1">
-<li><a href="#awaiting-on-unis-item">Awaiting on Uni&#8217;s item</a></li>
-<li><a href="#iterating-over-multis-items">Iterating over Multi&#8217;s items</a></li>
+<li><a href="#taking-items">Taking items</a></li>
+<li><a href="#skipping-items">Skipping items</a></li>
 </ul>
                 
 
@@ -151,15 +203,15 @@ stream.forEach(this::doSomethingWithItem);</code></pre>
                     
                     <li>
                         
+                        <a href="/mutiny-doc-sandbox/guides/filter">Filtering items from multi</a>
                         
-                        <a href="some-javadoc-url">The Uni Await group</a>
                         
                     </li>
                     
                     <li>
                         
-                        <a href="/mutiny-doc-sandbox/guides/imperative-to-reactive">Imperative to Reactive</a>
                         
+                        <a href="https://javadoc.io/doc/io.smallrye.reactive/mutiny/latest/io/smallrye/mutiny/groups/MultiTransform.html"><tt>MultiTransform</tt></a>
                         
                     </li>
                     

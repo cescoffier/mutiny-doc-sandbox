@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="SmallRye Mutiny!">
 
-    <link rel="canonical" href="/404.html">
+    <link rel="canonical" href="/guides/filter.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
@@ -47,37 +47,92 @@
 </header>
         <main>
             <div class="content">
-                <style type="text/css" media="screen">
-  h1 {
-    margin: 30px 0;
-    font-size: 4em;
-    line-height: 1;
-    letter-spacing: -1px;
-  }
-</style>
+                
 
-<div class="container">
-  <div class="row">
-    <div class="col-1">
+<section class="hero gs">
+    <div class="hero-main container">
+        <div class="row">
+            <div class="hero-left col-12">
+                <div class="hero-slogan">
+                    <h1 class="hero-name">Filtering items from multi</h1>
+                </div>
+                <div class="hero-desc">
+                    Learn how to filter and select items from a multi.
+                </div>
+                <!-- TODO Labels -->
+            </div>
+        </div>
+    </div>
+</section>
 
-    </div>
-    <div class="col-10 code-404">
-      <div class="hero-code">
-          <div class="code-examples">
-          <pre><code class="hljs java">
-Uni&lt;String&gt; uni = pageRequested
-  .onItem()
-    .ifNull().fail(
-        () -> new PageNotFound("Oh No! This page does not exist")
-    )      
-  .onFailure()
-    .recoverWith(() -> "Click on one of the links there ^^");
-          </code></pre>
-          </div>
-      </div>
-    </div>
-  </div>
+<div class="container page-content">
+    <div class="row">
+        <div class="col-md-9 content">
+            <div class="paragraph">
+<p>When observing a <code>Multi</code>, you may want to not forward all the received items to your downstream.
+To <em>filter</em> or <em>select</em> items, you can use <code>multi.transform().byFilteringItemsWith(predicate)</code>:</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Integer&gt; list = multi
+        .transform().byFilteringItemsWith(i -&gt; i &gt; 6)
+        .collectItems().asList()
+        .await().indefinitely();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>byFilteringItemsWith</code> accepts a predicate called for each item.
+If the predicate returns <code>true</code>, the item propagated downstream.
+Otherwise, it drops the item.</p>
+</div>
+<div class="paragraph">
+<p>The predicated passed to <code>byFilteringItemsWith</code> is synchronous.
+The <code>byTestingItemsWith</code> method provides an asynchronous version:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Integer&gt; list2 = multi
+        .transform().byTestingItemsWith(i -&gt; Uni.createFrom().item(i &gt; 6))
+        .collectItems().asList()
+        .await().indefinitely();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>byFilteringItemsWith</code> accepts a function called for each item.
+Unlike <code>byFilteringItemsWith</code> where the predicate returns a boolean synchronously, the function returns a <code>Uni&lt;Boolean&gt;</code>.
+It forwards the item downstream if the <code>uni</code> produced by the function emits <code>true</code>.
+Otherwise, it drops the item.</p>
+</div>
+        </div>
+        <div class="col-md-3 col-md-offset-1 toc-container d-sm-none d-md-block">
+            <nav class="page-toc toc nav flex-column" id="toc">
+                
+
+                <h4>Related content</h4>
+                <ul>
+                    
+                    <li>
+                        
+                        <a href="/mutiny-doc-sandbox/guides/take-skip">Take or Skip the first or last items</a>
+                        
+                        
+                    </li>
+                    
+                    <li>
+                        
+                        
+                        <a href="https://javadoc.io/doc/io.smallrye.reactive/mutiny/latest/io/smallrye/mutiny/groups/MultiTransform.html"><tt>MultiTransform</tt></a>
+                        
+                    </li>
+                    
+                </ul>
+            </nav>
+
+
+        </div>
+    </div>
+</div>
+
 
             </div>
         </main>

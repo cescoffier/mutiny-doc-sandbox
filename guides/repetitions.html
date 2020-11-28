@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="SmallRye Mutiny!">
 
-    <link rel="canonical" href="/404.html">
+    <link rel="canonical" href="/guides/repetitions.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
@@ -47,37 +47,126 @@
 </header>
         <main>
             <div class="content">
-                <style type="text/css" media="screen">
-  h1 {
-    margin: 30px 0;
-    font-size: 4em;
-    line-height: 1;
-    letter-spacing: -1px;
-  }
-</style>
+                
 
-<div class="container">
-  <div class="row">
-    <div class="col-1">
+<section class="hero gs">
+    <div class="hero-main container">
+        <div class="row">
+            <div class="hero-left col-12">
+                <div class="hero-slogan">
+                    <h1 class="hero-name">Eliminate duplicates and repetitions</h1>
+                </div>
+                <div class="hero-desc">
+                    Learn how to drop duplicated and repeated items from a multi.
+                </div>
+                <!-- TODO Labels -->
+            </div>
+        </div>
+    </div>
+</section>
 
-    </div>
-    <div class="col-10 code-404">
-      <div class="hero-code">
-          <div class="code-examples">
-          <pre><code class="hljs java">
-Uni&lt;String&gt; uni = pageRequested
-  .onItem()
-    .ifNull().fail(
-        () -> new PageNotFound("Oh No! This page does not exist")
-    )      
-  .onFailure()
-    .recoverWith(() -> "Click on one of the links there ^^");
-          </code></pre>
-          </div>
-      </div>
-    </div>
-  </div>
+<div class="container page-content">
+    <div class="row">
+        <div class="col-md-9 content">
+            <div class="paragraph">
+<p>When observing a <code>Multi</code>, you may see duplicated items or repetitions.
+Mutiny has operators to removes these duplicates.</p>
 </div>
+<div class="sect1">
+<h2 id="removing-duplicates"><a class="anchor" href="#removing-duplicates"></a>Removing duplicates</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>.transform().byDroppingDuplicates()</code> operator removes all the duplicates.
+As a result, the downstream only contains distinct items:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Integer&gt; list = multi
+        .transform().byDroppingDuplicates()
+        .collectItems().asList()
+        .await().indefinitely();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you have a stream emitting the {1, 1, 2, 3, 4, 5, 5, 6, 1, 4, 4} items.
+Applying <code>.transform().byDroppingDuplicates()</code> on such stream produces:
+{1, 2, 3, 4, 5, 6}.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Do not use <code>.transform().byDroppingDuplicates()</code> on large or infinite streams.
+The operator keeps a reference on all the emitted items, and so, it could lead to memory issues if the stream contains too many distinct items.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="removing-repetitions"><a class="anchor" href="#removing-repetitions"></a>Removing repetitions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>.transform().byDroppingRepetitions()</code> operator removes subsequent repetition of an item:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">List&lt;Integer&gt; list2 = multi
+        .transform().byDroppingRepetitions()
+        .collectItems().asList()
+        .await().indefinitely();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you have a stream emitting the {1, 1, 2, 3, 4, 5, 5, 6, 1, 4, 4} items.
+Applying <code>.transform().byDroppingRepetitions()</code> on such stream produces:
+{1, 2, 3, 4, 5, 6, 1, 4}.</p>
+</div>
+<div class="paragraph">
+<p>Unlike <code>.transform().byDroppingDuplicates()</code>, you can use this operator on large or infinite streams.</p>
+</div>
+</div>
+</div>
+        </div>
+        <div class="col-md-3 col-md-offset-1 toc-container d-sm-none d-md-block">
+            <nav class="page-toc toc nav flex-column" id="toc">
+                
+                <h4>Table of Content</h4>
+                <ul class="sectlevel1">
+<li><a href="#removing-duplicates">Removing duplicates</a></li>
+<li><a href="#removing-repetitions">Removing repetitions</a></li>
+</ul>
+                
+
+                <h4>Related content</h4>
+                <ul>
+                    
+                    <li>
+                        
+                        <a href="/mutiny-doc-sandbox/guides/filter">Filtering items from multi</a>
+                        
+                        
+                    </li>
+                    
+                    <li>
+                        
+                        
+                        <a href="https://javadoc.io/doc/io.smallrye.reactive/mutiny/latest/io/smallrye/mutiny/groups/MultiTransform.html"><tt>MultiTransform</tt></a>
+                        
+                    </li>
+                    
+                </ul>
+            </nav>
+
+
+        </div>
+    </div>
+</div>
+
 
             </div>
         </main>
