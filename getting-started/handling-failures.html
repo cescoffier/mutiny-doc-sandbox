@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-    <title>Handling failures</title>
+    <title></title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Learn how you can recover from failures">
+    <meta name="description" content="SmallRye Mutiny!">
 
     <link rel="canonical" href="/getting-started/handling-failures.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
@@ -33,7 +33,7 @@
                 <ul class="navbar-nav ml-auto mr-0 mt-2 mt-lg-0">
                     <li class="nav-item active"><a class="nav-link" href="/mutiny-doc-sandbox/index.html">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/pages/philosophy">Philosophy</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/getting-started">Getting started</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/getting-started/download">Getting started</a></li>
                     <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/guides">Guides</a></li>
                     <li class="nav-item"><a href="https://github.com/smallrye/smallrye-mutiny" target="_blank" title="Github"><i
                             class="lab la-github la-2x"></i></a></li>
@@ -47,7 +47,48 @@
 </header>
         <main>
             <div class="content">
-                <section class="hero gs">
+                
+
+    
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+            
+            
+
+    
+        
+
+
+
+<section class="hero gs">
     <div class="hero-main container">
         <div class="row">
             <div class="hero-left col-12">
@@ -55,15 +96,17 @@
                     <h1 class="hero-name">Handling failures</h1>
                 </div>
                 <div class="hero-desc">
-                    Learn how you can recover from failures
+                    Learn how you can recover from failures.
                 </div>
                 <div class="hero-buttons">
                     
-                    <a href="/mutiny-doc-sandbox/getting-started/combining-items" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
-                        <i class="las la-arrow-left left"></i>&nbsp;Combining items from different streams</a>
-                     
+                    <a href="/mutiny-doc-sandbox/getting-started/transforming-items-async" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
+                        <i class="las la-arrow-left left"></i>&nbsp;Transforming items into Uni and Multi</a>
+                    
+                    
                     <a href="/mutiny-doc-sandbox/getting-started/retry" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
-                Retrying on failures&nbsp;<i class="las la-arrow-right"></i></a> 
+                        Retrying on failures&nbsp;<i class="las la-arrow-right"></i></a>
+                    
                 </div>
             </div>
         </div>
@@ -73,10 +116,7 @@
 <div class="container page-content">
     <div class="row">
         <div class="col-md-9 content">
-            <div class="sect1">
-<h2 id="handling-failures"><a class="anchor" href="#handling-failures"></a>Handling failures</h2>
-<div class="sectionbody">
-<div class="paragraph">
+            <div class="paragraph">
 <p>Mutiny provides several operators to handle failures.</p>
 </div>
 <div class="paragraph">
@@ -105,8 +145,9 @@ After a failure, no more items are being received.</p>
 <div class="paragraph">
 <p>If you don&#8217;t handle the failure event, it is propagated downstream until a stage handles the failure or reaches the final subscriber.</p>
 </div>
-<div class="sect2">
-<h3 id="observing-failures"><a class="anchor" href="#observing-failures"></a>Observing failures</h3>
+<div class="sect1">
+<h2 id="observing-failures"><a class="anchor" href="#observing-failures"></a>Observing failures</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>It can be useful to execute some custom action when a failure happens.
 For example, you can log the failure:</p>
@@ -134,8 +175,10 @@ The received failure will be propagated downstream when the <code>Uni</code> pro
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="transforming-failures"><a class="anchor" href="#transforming-failures"></a>Transforming failures</h3>
+</div>
+<div class="sect1">
+<h2 id="transforming-failures"><a class="anchor" href="#transforming-failures"></a>Transforming failures</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Another useful action on failure is to transform the failure into a <em>more meaningfull</em> failure.</p>
 </div>
@@ -150,8 +193,10 @@ The received failure will be propagated downstream when the <code>Uni</code> pro
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="recovering-using-fallback-items"><a class="anchor" href="#recovering-using-fallback-items"></a>Recovering using fallback item(s)</h3>
+</div>
+<div class="sect1">
+<h2 id="recovering-using-fallback-items"><a class="anchor" href="#recovering-using-fallback-items"></a>Recovering using fallback item(s)</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>In general, upon failure, you want to recover.
 The first approach is to recover by replacing the failure with an item:</p>
@@ -174,8 +219,10 @@ For the downstream, it didn&#8217;t fail; it gets the fallback item instead.</p>
 So for <code>Multi</code>, the downstream receives the fallback item followed by the completion signal, as no more items can be produced.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="completing-on-failure"><a class="anchor" href="#completing-on-failure"></a>Completing on failure</h3>
+</div>
+<div class="sect1">
+<h2 id="completing-on-failure"><a class="anchor" href="#completing-on-failure"></a>Completing on failure</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>When observing a <code>Multi</code> you can replace the failure with the completion signal:</p>
 </div>
@@ -189,8 +236,10 @@ So for <code>Multi</code>, the downstream receives the fallback item followed by
 <p>The downstream won&#8217;t see the failure, just the completion event.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="switching-to-another-stream"><a class="anchor" href="#switching-to-another-stream"></a>Switching to another stream</h3>
+</div>
+<div class="sect1">
+<h2 id="switching-to-another-stream"><a class="anchor" href="#switching-to-another-stream"></a>Switching to another stream</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>On failure, you may want to switch to an alternate stream.
 When the failure is received, it subscribes to this other stream and propagates the items from this stream instead:</p>
@@ -212,21 +261,21 @@ Multi&lt;T&gt; m = multi
 </div>
 </div>
 </div>
-</div>
         </div>
-        <div class="col-md-3 col-md-offset-1 toc-container d-sm-none d-md-block">
-            <nav class="page-toc toc nav flex-column" id="toc">
+        <div class="col-md-3 toc-container d-sm-none d-md-block">
+            <nav class="page-toc toc nav sticky-top" id="toc">
+                
+                <h4>Table of Content</h4>
                 <ul class="sectlevel1">
-<li><a href="#handling-failures">Handling failures</a>
-<ul class="sectlevel2">
 <li><a href="#observing-failures">Observing failures</a></li>
 <li><a href="#transforming-failures">Transforming failures</a></li>
 <li><a href="#recovering-using-fallback-items">Recovering using fallback item(s)</a></li>
 <li><a href="#completing-on-failure">Completing on failure</a></li>
 <li><a href="#switching-to-another-stream">Switching to another stream</a></li>
 </ul>
-</li>
-</ul>
+                
+
+                
             </nav>
         </div>
     </div>
@@ -235,15 +284,24 @@ Multi&lt;T&gt; m = multi
 
 
 <div class="footer-buttons gs ">
-    <div class="container ">
-        <div class="row ">
-            <div class="col-12 ">
+    <div class="container">
+        <div class="row">
                 
-                <a href="/mutiny-doc-sandbox/getting-started/combining-items " class="previous ">
-                    <i class="fas fa-arrow-left "></i>&nbsp;Combining items from different streams</a>
-                 
-                <a href="/mutiny-doc-sandbox/getting-started/retry " class="next ">
-    Retrying on failures&nbsp;<i class="fas fa-arrow-right "></i></a> 
+            <div class="col align-self-start">
+                <a href="/mutiny-doc-sandbox/getting-started/transforming-items-async" class="btn btn-rounded button button-dark button-rounded">
+                    <i class="las la-arrow-left left"></i>&nbsp;Transforming items into Uni and Multi</a>
+            </div>
+                
+
+            <div class="col align-self-center text-center">
+                <a href="/mutiny-doc-sandbox/guides" class="btn btn-rounded button button-dark button-rounded">All Guides</a>
+            </div>
+
+            <div class="col align-self-end">
+                
+                <a href="/mutiny-doc-sandbox/getting-started/retry" class="btn btn-rounded button button-dark button-rounded float-right">
+                    Retrying on failures&nbsp;<i class="las la-arrow-right"></i></a>
+                
             </div>
         </div>
 
@@ -268,7 +326,7 @@ Multi&lt;T&gt; m = multi
             </div>
             <div class="col-lg-3">
                 <p>
-                     Site last generated: Nov 28, 2020
+                     Site last generated: Nov 30, 2020
                 </p>
             </div>
         </div>

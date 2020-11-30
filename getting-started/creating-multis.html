@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-    <title>Creating Multis</title>
+    <title></title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Learn how to create Multi instances">
+    <meta name="description" content="SmallRye Mutiny!">
 
     <link rel="canonical" href="/getting-started/creating-multis.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
@@ -33,7 +33,7 @@
                 <ul class="navbar-nav ml-auto mr-0 mt-2 mt-lg-0">
                     <li class="nav-item active"><a class="nav-link" href="/mutiny-doc-sandbox/index.html">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/pages/philosophy">Philosophy</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/getting-started">Getting started</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/getting-started/download">Getting started</a></li>
                     <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/guides">Guides</a></li>
                     <li class="nav-item"><a href="https://github.com/smallrye/smallrye-mutiny" target="_blank" title="Github"><i
                             class="lab la-github la-2x"></i></a></li>
@@ -47,7 +47,36 @@
 </header>
         <main>
             <div class="content">
-                <section class="hero gs">
+                
+
+    
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+            
+            
+
+    
+        
+
+
+
+<section class="hero gs">
     <div class="hero-main container">
         <div class="row">
             <div class="hero-left col-12">
@@ -55,15 +84,17 @@
                     <h1 class="hero-name">Creating Multis</h1>
                 </div>
                 <div class="hero-desc">
-                    Learn how to create Multi instances
+                    Learn how to create Multi instances.
                 </div>
                 <div class="hero-buttons">
                     
                     <a href="/mutiny-doc-sandbox/getting-started/creating-unis" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
                         <i class="las la-arrow-left left"></i>&nbsp;Creating Unis</a>
-                     
+                    
+                    
                     <a href="/mutiny-doc-sandbox/getting-started/transforming-items" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
-                Transforming items&nbsp;<i class="las la-arrow-right"></i></a> 
+                        Transforming items&nbsp;<i class="las la-arrow-right"></i></a>
+                    
                 </div>
             </div>
         </div>
@@ -73,10 +104,7 @@
 <div class="container page-content">
     <div class="row">
         <div class="col-md-9 content">
-            <div class="sect1">
-<h2 id="creating-multis"><a class="anchor" href="#creating-multis"></a>Creating Multis</h2>
-<div class="sectionbody">
-<div class="paragraph">
+            <div class="paragraph">
 <p>A <code>Multi</code> represents a <em>stream</em> of data.
 A stream can emit 0, 1, n, or an infinite number of items.</p>
 </div>
@@ -84,8 +112,9 @@ A stream can emit 0, 1, n, or an infinite number of items.</p>
 <p>You will rarely create instances of <code>Multi</code> yourself but instead use a reactive client that exposes a Mutiny API.
 Still, just like <code>Uni</code> there exists a rich API for creating <code>Multi</code> objects.</p>
 </div>
-<div class="sect2">
-<h3 id="the-multi-type"><a class="anchor" href="#the-multi-type"></a>The Multi type</h3>
+<div class="sect1">
+<h2 id="the-multi-type"><a class="anchor" href="#the-multi-type"></a>The Multi type</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>A <code>Multi&lt;T&gt;</code> is a data stream that:</p>
 </div>
@@ -142,8 +171,10 @@ To trigger the computation, you must subscribe.</p>
 <p>You can see the <code>Multi</code> javadoc <a href="https://javadoc.io/static/io.smallrye.reactive/mutiny/0.11.0/index.html?io/smallrye/mutiny/Multi.html">here</a>.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="subscribing-to-a-multi"><a class="anchor" href="#subscribing-to-a-multi"></a>Subscribing to a Multi</h3>
+</div>
+<div class="sect1">
+<h2 id="subscribing-to-a-multi"><a class="anchor" href="#subscribing-to-a-multi"></a>Subscribing to a Multi</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Remember, if you don&#8217;t subscribe, nothing is going to happen.
 Also, the pipeline is materialized for each <em>subscription</em>.</p>
@@ -164,8 +195,10 @@ Also, the pipeline is materialized for each <em>subscription</em>.</p>
 <p>Note the returned <code>Cancellable</code>: this object allows canceling the stream if need be.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="creating-multi-from-items"><a class="anchor" href="#creating-multi-from-items"></a>Creating Multi from items</h3>
+</div>
+<div class="sect1">
+<h2 id="creating-multi-from-items"><a class="anchor" href="#creating-multi-from-items"></a>Creating Multi from items</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>There are many ways to create <code>Multi</code> instances.
 Use <a href="https://javadoc.io/static/io.smallrye.reactive/mutiny/0.11.0/index.html?io/smallrye/mutiny/groups/MultiCreate.html">Multi.createFrom()</a> to see all the possibilities.</p>
@@ -211,8 +244,10 @@ Multi.createFrom().items(() -&gt;
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="creating-failing-multis"><a class="anchor" href="#creating-failing-multis"></a>Creating failing Multis</h3>
+</div>
+<div class="sect1">
+<h2 id="creating-failing-multis"><a class="anchor" href="#creating-failing-multis"></a>Creating failing Multis</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Streams can also fail.
 Failures are used to indicate to the downstream subscribers that the source encountered a terrible error and cannot continue emitting items.
@@ -228,8 +263,10 @@ Multi&lt;Integer&gt; failed2 = Multi.createFrom().failure(() -&gt; new Exception
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="creating-empty-multis"><a class="anchor" href="#creating-empty-multis"></a>Creating empty Multis</h3>
+</div>
+<div class="sect1">
+<h2 id="creating-empty-multis"><a class="anchor" href="#creating-empty-multis"></a>Creating empty Multis</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Unlike <code>Uni,</code> <code>Multi</code> streams don&#8217;t send <code>null</code> items (this is forbidden in <em>reactive streams</em>).</p>
 </div>
@@ -246,8 +283,10 @@ Of course, the completion event can happen even if there are no items, creating 
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="creating-multis-using-an-emitter-advanced"><a class="anchor" href="#creating-multis-using-an-emitter-advanced"></a>Creating Multis using an emitter (<em>advanced</em>)</h3>
+</div>
+<div class="sect1">
+<h2 id="creating-multis-using-an-emitter-advanced"><a class="anchor" href="#creating-multis-using-an-emitter-advanced"></a>Creating Multis using an emitter (<em>advanced</em>)</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>You can create a <code>Multi</code> using an emitter.
 This approach is useful when integrating callback-based APIs:</p>
@@ -267,8 +306,10 @@ This approach is useful when integrating callback-based APIs:</p>
 It can also get notified of cancellation to, for example, stop the work in progress.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="creating-multis-from-ticks-advanced"><a class="anchor" href="#creating-multis-from-ticks-advanced"></a>Creating Multis from <em>ticks</em> (<em>advanced</em>)</h3>
+</div>
+<div class="sect1">
+<h2 id="creating-multis-from-ticks-advanced"><a class="anchor" href="#creating-multis-from-ticks-advanced"></a>Creating Multis from <em>ticks</em> (<em>advanced</em>)</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>You can create a stream that emit a <em>ticks</em> periodically:</p>
 </div>
@@ -283,13 +324,12 @@ For the first tick, it&#8217;s 0, then 1, then 2, and so on.</p>
 </div>
 </div>
 </div>
-</div>
         </div>
-        <div class="col-md-3 col-md-offset-1 toc-container d-sm-none d-md-block">
-            <nav class="page-toc toc nav flex-column" id="toc">
+        <div class="col-md-3 toc-container d-sm-none d-md-block">
+            <nav class="page-toc toc nav sticky-top" id="toc">
+                
+                <h4>Table of Content</h4>
                 <ul class="sectlevel1">
-<li><a href="#creating-multis">Creating Multis</a>
-<ul class="sectlevel2">
 <li><a href="#the-multi-type">The Multi type</a></li>
 <li><a href="#subscribing-to-a-multi">Subscribing to a Multi</a></li>
 <li><a href="#creating-multi-from-items">Creating Multi from items</a></li>
@@ -298,8 +338,9 @@ For the first tick, it&#8217;s 0, then 1, then 2, and so on.</p>
 <li><a href="#creating-multis-using-an-emitter-advanced">Creating Multis using an emitter (<em>advanced</em>)</a></li>
 <li><a href="#creating-multis-from-ticks-advanced">Creating Multis from <em>ticks</em> (<em>advanced</em>)</a></li>
 </ul>
-</li>
-</ul>
+                
+
+                
             </nav>
         </div>
     </div>
@@ -308,15 +349,24 @@ For the first tick, it&#8217;s 0, then 1, then 2, and so on.</p>
 
 
 <div class="footer-buttons gs ">
-    <div class="container ">
-        <div class="row ">
-            <div class="col-12 ">
+    <div class="container">
+        <div class="row">
                 
-                <a href="/mutiny-doc-sandbox/getting-started/creating-unis " class="previous ">
-                    <i class="fas fa-arrow-left "></i>&nbsp;Creating Unis</a>
-                 
-                <a href="/mutiny-doc-sandbox/getting-started/transforming-items " class="next ">
-    Transforming items&nbsp;<i class="fas fa-arrow-right "></i></a> 
+            <div class="col align-self-start">
+                <a href="/mutiny-doc-sandbox/getting-started/creating-unis" class="btn btn-rounded button button-dark button-rounded">
+                    <i class="las la-arrow-left left"></i>&nbsp;Creating Unis</a>
+            </div>
+                
+
+            <div class="col align-self-center text-center">
+                <a href="/mutiny-doc-sandbox/guides" class="btn btn-rounded button button-dark button-rounded">All Guides</a>
+            </div>
+
+            <div class="col align-self-end">
+                
+                <a href="/mutiny-doc-sandbox/getting-started/transforming-items" class="btn btn-rounded button button-dark button-rounded float-right">
+                    Transforming items&nbsp;<i class="las la-arrow-right"></i></a>
+                
             </div>
         </div>
 
@@ -341,7 +391,7 @@ For the first tick, it&#8217;s 0, then 1, then 2, and so on.</p>
             </div>
             <div class="col-lg-3">
                 <p>
-                     Site last generated: Nov 28, 2020
+                     Site last generated: Nov 30, 2020
                 </p>
             </div>
         </div>

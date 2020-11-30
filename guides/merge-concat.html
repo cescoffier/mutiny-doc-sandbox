@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="SmallRye Mutiny!">
 
-    <link rel="canonical" href="/getting-started/first-lines-of-code.html">
+    <link rel="canonical" href="/guides/merge-concat.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
@@ -49,45 +49,17 @@
             <div class="content">
                 
 
-    
-    
-        
-        
-        
-    
-        
-        
-        
-    
-        
-            
-            
-
-    
-        
-
-
-
 <section class="hero gs">
     <div class="hero-main container">
         <div class="row">
             <div class="hero-left col-12">
                 <div class="hero-slogan">
-                    <h1 class="hero-name">First lines of code</h1>
+                    <h1 class="hero-name">Merging and Concatenating Streams</h1>
                 </div>
                 <div class="hero-desc">
-                    Your first lines of code using Mutiny.
+                    Learn how to merge or concatenate streams
                 </div>
-                <div class="hero-buttons">
-                    
-                    <a href="/mutiny-doc-sandbox/getting-started/download" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
-                        <i class="las la-arrow-left left"></i>&nbsp;Getting Started with Mutiny</a>
-                    
-                    
-                    <a href="/mutiny-doc-sandbox/getting-started/creating-unis" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
-                        Creating Unis&nbsp;<i class="las la-arrow-right"></i></a>
-                    
-                </div>
+                <!-- TODO Labels -->
             </div>
         </div>
     </div>
@@ -96,73 +68,128 @@
 <div class="container page-content">
     <div class="row">
         <div class="col-md-9 content">
-            <div class="sect1">
-<h2 id="hello-mutiny"><a class="anchor" href="#hello-mutiny"></a>Hello Mutiny!</h2>
+            <div class="paragraph">
+<p>Merging or concatenating streams is a frequent operation which consists in taking multiple streams and creating a new <code>Multi</code> out of them.
+Such an operation observes the items emitted by the different streams and produces a new <code>Multi</code> emitting the events.</p>
+</div>
+<div class="paragraph">
+<p>All the streams merged or concatenated this way should emit the same type of items.</p>
+</div>
+<div class="sect1">
+<h2 id="the-difference-between-merge-and-concatenate"><a class="anchor" href="#the-difference-between-merge-and-concatenate"></a>The difference between merge and concatenate</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Once you made Mutiny available to your classpath, you can start writing code.
-Let&#8217;s start with this simple program:</p>
+<p>Understanding the difference between <em>merge</em> and <em>concatenate</em> is essential.</p>
 </div>
-<div class="listingblock">
+<div class="paragraph">
+<p>When <em>merging</em> streams, it observes the different upstreams and emits the items as they come.
+If the streams emit their items concurrently, the items from the different streams are interleaved.</p>
+</div>
+<div class="imageblock reduce">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import io.smallrye.mutiny.Uni;
-
-public class FirstProgram {
-
-  public static void main(String[] args) {
-    Uni.createFrom().item("hello")
-      .onItem().transform(item -&gt; item + " mutiny")
-      .onItem().transform(String::toUpperCase)
-      .subscribe().with(
-        item -&gt; System.out.println("&gt;&gt; " + item));
-  }
-}</code></pre>
+<img src="/mutiny-doc-sandbox/assets/images/merge-streams.png" alt="Merging streams">
 </div>
 </div>
 <div class="paragraph">
-<p>This program prints:</p>
+<p>When using <em>merge</em>, failures are also propagated to the merged stream, and no more items are emitted after that failure.
+The <em>completion</em> event is only emitted by the merged stream when all the observed streams are completed.</p>
+</div>
+<div class="paragraph">
+<p>But if we want to keep the order of the observed stream, we need to <em>concatenate</em>.</p>
+</div>
+<div class="paragraph">
+<p>When <em>concatenating</em>, it waits for the first stream to complete before subscribing to the second one. Thus, it ensures that all the items from the first stream have been emitted before emitting the second stream items. It preserves an order corresponding to the source:</p>
+</div>
+<div class="imageblock reduce">
+<div class="content">
+<img src="/mutiny-doc-sandbox/assets/images/concatenate-streams.png" alt="Concatenating streams">
+</div>
+</div>
+<div class="paragraph">
+<p>When the first stream emits the completion event, it switches to the second stream, and so on.
+When the last stream completes, the concatenated stream sends the completion event.
+As for <em>merge</em>, if a stream fails then there won&#8217;t be further evebts.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="merging-multis"><a class="anchor" href="#merging-multis"></a>Merging Multis</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To create a new <code>Multi</code> from the <em>merge</em> of multiple <code>Multi</code> streams use:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="text" class="language-text hljs">&gt;&gt; HELLO MUTINY</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;T&gt; multi1 = getFirstMulti();
+Multi&lt;T&gt; multi2 = getSecondMulti();
+
+Multi&lt;T&gt; merged = Multi.createBy().merging().streams(multi1, multi2);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For example, we can merge multiple streams emitting periodical events and look at the output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; first = Multi.createFrom().ticks().every(Duration.ofMillis(10))
+        .onItem().transform(l -&gt; "Stream 1 - " + l);
+
+Multi&lt;String&gt; second = Multi.createFrom().ticks().every(Duration.ofMillis(15))
+        .onItem().transform(l -&gt; "Stream 2 - " + l);
+
+Multi&lt;String&gt; third = Multi.createFrom().ticks().every(Duration.ofMillis(5))
+        .onItem().transform(l -&gt; "Stream 3 - " + l);
+
+Cancellable cancellable = Multi.createBy().merging().streams(first, second, third)
+        .subscribe().with(s -&gt; System.out.println("Got item: " + s));</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="text" class="language-text hljs">Got item: Stream 1 - 0
+Got item: Stream 2 - 0
+Got item: Stream 3 - 0
+Got item: Stream 3 - 1
+Got item: Stream 1 - 1
+Got item: Stream 3 - 2
+Got item: Stream 2 - 1
+Got item: Stream 3 - 3
+Got item: Stream 1 - 2
+Got item: Stream 3 - 4
+Got item: Stream 3 - 5
+....</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="dissecting-the-pipeline"><a class="anchor" href="#dissecting-the-pipeline"></a>Dissecting the pipeline</h2>
+<h2 id="concatenating-multis"><a class="anchor" href="#concatenating-multis"></a>Concatenating Multis</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>What&#8217;s interesting is how this message is <em>built</em>.
-We described a processing pipeline taking an item, processing it and finally consuming it.</p>
+<p>To create a new <code>Multi</code> from the <em>concatenation</em> of multiple <code>Multi</code> streams use:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;T&gt; multi1 = getFirstMulti();
+Multi&lt;T&gt; multi2 = getSecondMulti();
+
+Multi&lt;T&gt; concatenated = Multi.createBy().concatenating().streams(multi1, multi2);</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>First, we create a <code>Uni</code>, one of the two types with <code>Multi</code> that Mutiny provides.
-A <code>Uni</code> is a stream emitting either a single item or a failure.</p>
+<p>Don&#8217;t forget that the streams order matters in this case, as <code>(streamA, streamB)</code> does not provide the same result as <code>(streamB, streamA)</code>:</p>
 </div>
-<div class="paragraph">
-<p>Here, we create a <code>Uni</code> emitting the <code>"hello"</code> item.
-This is the input of our pipeline.
-Then we process this item:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; first = Multi.createFrom().items("A1", "A2", "A3");
+Multi&lt;String&gt; second = Multi.createFrom().items("B1", "B2", "B3");
+
+Multi.createBy().concatenating().streams(first, second)
+        .subscribe().with(item -&gt; System.out.print(item)); // "A1A2A3B1B2B3"
+
+Multi.createBy().concatenating().streams(second, first)
+        .subscribe().with(item -&gt; System.out.print(item)); // "B1B2B3A1A2A3"</code></pre>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>we append <code>" mutiny"</code>, then</p>
-</li>
-<li>
-<p>we make it an uppercase string.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>This forms the processing part of our pipeline, and then we finally <strong>subscribe</strong> to the pipeline.</p>
-</div>
-<div class="paragraph">
-<p>This last part is essential.
-If you don&#8217;t have a final subscriber, nothing is going to happen.
-Mutiny types are lazy, meaning that you need to express your interest.
-If you don&#8217;t the computation won&#8217;t even start.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -171,56 +198,7 @@ If you don&#8217;t the computation won&#8217;t even start.</p>
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-If your program doesn&#8217;t do anything, verify that you didn&#8217;t forget to subscribe!
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="mutiny-uses-a-builder-api"><a class="anchor" href="#mutiny-uses-a-builder-api"></a>Mutiny uses a builder API!</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Another important aspect is the pipeline construction.
-Appending a new <em>stage</em> to a pipeline returns a new <code>Uni.</code></p>
-</div>
-<div class="paragraph">
-<p>The previous program is equivalent to:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; uni1 = Uni.createFrom().item("hello");
-Uni&lt;String&gt; uni2 = uni1.onItem().transform(item -&gt; item + " mutiny");
-Uni&lt;String&gt; uni3 = uni2.onItem().transform(String::toUpperCase);
-
-uni3.subscribe().with(item -&gt; System.out.println("&gt;&gt; " + item));</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>It is fundamental to understand that this program is not equivalent to:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; uni = Uni.createFrom().item("hello");
-
-uni.onItem().transform(item -&gt; item + " mutiny");
-uni.onItem().transform(String::toUpperCase);
-
-uni.subscribe().with(item -&gt; System.out.println("&gt;&gt; " + item));</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This program just prints <code>"&gt;&gt; hello"`</code>, as it does not use the appended stages and the final subscriber consumes the first <code>Uni.</code></p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-Mutiny APIs are not fluent and each computation stage returns a new object.
+If one of the concatenated streams is unbounded (infinite), the next streams in the list won&#8217;t be consumed!
 </td>
 </tr>
 </table>
@@ -228,17 +206,29 @@ Mutiny APIs are not fluent and each computation stage returns a new object.
 </div>
 </div>
         </div>
-        <div class="col-md-3 toc-container d-sm-none d-md-block">
+        <div class="col-md-3 col-md-offset-1 toc-container d-sm-none d-md-block">
             <nav class="page-toc toc nav sticky-top" id="toc">
                 
                 <h4>Table of Content</h4>
                 <ul class="sectlevel1">
-<li><a href="#hello-mutiny">Hello Mutiny!</a></li>
-<li><a href="#dissecting-the-pipeline">Dissecting the pipeline</a></li>
-<li><a href="#mutiny-uses-a-builder-api">Mutiny uses a builder API!</a></li>
+<li><a href="#the-difference-between-merge-and-concatenate">The difference between merge and concatenate</a></li>
+<li><a href="#merging-multis">Merging Multis</a></li>
+<li><a href="#concatenating-multis">Concatenating Multis</a></li>
 </ul>
                 
 
+                
+                <h4>Related content</h4>
+                <ul>
+                    
+                    <li>
+                        
+                        <a href="/mutiny-doc-sandbox/guides/combining-items">Combining items from streams</a>
+                        
+                        
+                    </li>
+                    
+                </ul>
                 
             </nav>
         </div>
@@ -246,31 +236,6 @@ Mutiny APIs are not fluent and each computation stage returns a new object.
 </div>
 
 
-
-<div class="footer-buttons gs ">
-    <div class="container">
-        <div class="row">
-                
-            <div class="col align-self-start">
-                <a href="/mutiny-doc-sandbox/getting-started/download" class="btn btn-rounded button button-dark button-rounded">
-                    <i class="las la-arrow-left left"></i>&nbsp;Getting Started with Mutiny</a>
-            </div>
-                
-
-            <div class="col align-self-center text-center">
-                <a href="/mutiny-doc-sandbox/guides" class="btn btn-rounded button button-dark button-rounded">All Guides</a>
-            </div>
-
-            <div class="col align-self-end">
-                
-                <a href="/mutiny-doc-sandbox/getting-started/creating-unis" class="btn btn-rounded button button-dark button-rounded float-right">
-                    Creating Unis&nbsp;<i class="las la-arrow-right"></i></a>
-                
-            </div>
-        </div>
-
-    </div>
-</div>
             </div>
         </main>
         <footer class="footer">

@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-    <title>Creating Unis</title>
+    <title></title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Learn how to create Uni instances">
+    <meta name="description" content="SmallRye Mutiny!">
 
     <link rel="canonical" href="/getting-started/creating-unis.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
@@ -33,7 +33,7 @@
                 <ul class="navbar-nav ml-auto mr-0 mt-2 mt-lg-0">
                     <li class="nav-item active"><a class="nav-link" href="/mutiny-doc-sandbox/index.html">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/pages/philosophy">Philosophy</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/getting-started">Getting started</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/getting-started/download">Getting started</a></li>
                     <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/guides">Guides</a></li>
                     <li class="nav-item"><a href="https://github.com/smallrye/smallrye-mutiny" target="_blank" title="Github"><i
                             class="lab la-github la-2x"></i></a></li>
@@ -47,7 +47,32 @@
 </header>
         <main>
             <div class="content">
-                <section class="hero gs">
+                
+
+    
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+            
+            
+
+    
+        
+
+
+
+<section class="hero gs">
     <div class="hero-main container">
         <div class="row">
             <div class="hero-left col-12">
@@ -55,15 +80,17 @@
                     <h1 class="hero-name">Creating Unis</h1>
                 </div>
                 <div class="hero-desc">
-                    Learn how to create Uni instances
+                    Learn how to create Uni instances.
                 </div>
                 <div class="hero-buttons">
                     
                     <a href="/mutiny-doc-sandbox/getting-started/first-lines-of-code" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
                         <i class="las la-arrow-left left"></i>&nbsp;First lines of code</a>
-                     
+                    
+                    
                     <a href="/mutiny-doc-sandbox/getting-started/creating-multis" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
-                Creating Multis&nbsp;<i class="las la-arrow-right"></i></a> 
+                        Creating Multis&nbsp;<i class="las la-arrow-right"></i></a>
+                    
                 </div>
             </div>
         </div>
@@ -73,16 +100,14 @@
 <div class="container page-content">
     <div class="row">
         <div class="col-md-9 content">
-            <div class="sect1">
-<h2 id="creating-unis"><a class="anchor" href="#creating-unis"></a>Creating Unis</h2>
-<div class="sectionbody">
-<div class="paragraph">
+            <div class="paragraph">
 <p>A <code>Uni</code> represents a <em>stream</em> that can only emit either an item or a failure event.
 You rarely create instances of <code>Uni</code> yourself, but, instead, use a reactive client exposing a Mutiny API that provides <code>Unis.</code>
 That being said, it can be handy at times.</p>
 </div>
-<div class="sect2">
-<h3 id="the-uni-type"><a class="anchor" href="#the-uni-type"></a>The Uni type</h3>
+<div class="sect1">
+<h2 id="the-uni-type"><a class="anchor" href="#the-uni-type"></a>The Uni type</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>A <code>Uni&lt;T&gt;</code> is a specialized stream that emits only an item or a failure.
 Typically, <code>Uni&lt;T&gt;</code> are great to represent asynchronous actions such as a remote procedure call, an HTTP request, or an operation producing a single result.</p>
@@ -120,8 +145,10 @@ The following snippet provides a simple example of pipeline using <code>Uni</cod
 <p>You can see the <code>Uni</code> javadoc <a href="https://javadoc.io/static/io.smallrye.reactive/mutiny/0.11.0/index.html?io/smallrye/mutiny/Uni.html">here</a>.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="subscribing-to-a-uni"><a class="anchor" href="#subscribing-to-a-uni"></a>Subscribing to a Uni</h3>
+</div>
+<div class="sect1">
+<h2 id="subscribing-to-a-uni"><a class="anchor" href="#subscribing-to-a-uni"></a>Subscribing to a Uni</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Remember: if you don&#8217;t subscribe, nothing is going to happen.
 What&#8217;s more, the pipeline is materialized for each <em>subscription</em>.</p>
@@ -141,8 +168,10 @@ What&#8217;s more, the pipeline is materialized for each <em>subscription</em>.<
 <p>Note the returned <code>Cancellable</code>: this object allows canceling the operation if need be.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="creating-unis-from-item"><a class="anchor" href="#creating-unis-from-item"></a>Creating Unis from item</h3>
+</div>
+<div class="sect1">
+<h2 id="creating-unis-from-item"><a class="anchor" href="#creating-unis-from-item"></a>Creating Unis from item</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>There are many ways to create <code>Uni</code> instances.
 Use <a href="https://javadoc.io/static/io.smallrye.reactive/mutiny/0.11.0/index.html?io/smallrye/mutiny/groups/UniCreate.html">Uni.createFrom()</a> to see all the possibilities.</p>
@@ -172,8 +201,10 @@ Uni&lt;Integer&gt; uni = Uni.createFrom().item(() -&gt; counter.getAndIncrement(
 So, each of them will get a different value.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="creating-failing-unis"><a class="anchor" href="#creating-failing-unis"></a>Creating failing Unis</h3>
+</div>
+<div class="sect1">
+<h2 id="creating-failing-unis"><a class="anchor" href="#creating-failing-unis"></a>Creating failing Unis</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Operations represented by <code>Unis</code> can also emit a failure event, indicating that the operation failed.</p>
 </div>
@@ -190,8 +221,10 @@ Uni&lt;Integer&gt; failed2 = Uni.createFrom().failure(() -&gt; new Exception("bo
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="creating-univoid"><a class="anchor" href="#creating-univoid"></a>Creating Uni&lt;Void&gt;</h3>
+</div>
+<div class="sect1">
+<h2 id="creating-univoid"><a class="anchor" href="#creating-univoid"></a>Creating Uni&lt;Void&gt;</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>When the represented operation to not produce a result, you still need a way to indicate the operation&#8217;s completion.
 For this, you need to emit a <code>null</code> item:</p>
@@ -202,8 +235,10 @@ For this, you need to emit a <code>null</code> item:</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="creating-unis-using-an-emitter-advanced"><a class="anchor" href="#creating-unis-using-an-emitter-advanced"></a>Creating Unis using an emitter (<em>advanced</em>)</h3>
+</div>
+<div class="sect1">
+<h2 id="creating-unis-using-an-emitter-advanced"><a class="anchor" href="#creating-unis-using-an-emitter-advanced"></a>Creating Unis using an emitter (<em>advanced</em>)</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>You can create a <code>Uni</code> using an emitter.
 This approach is useful when integrating callback-based APIs:</p>
@@ -221,8 +256,10 @@ This approach is useful when integrating callback-based APIs:</p>
 It can also get notified of cancellation to, for example, stop the work in progress.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="creating-unis-from-a-completionstage-advanced"><a class="anchor" href="#creating-unis-from-a-completionstage-advanced"></a>Creating Unis from a CompletionStage (<em>advanced</em>)</h3>
+</div>
+<div class="sect1">
+<h2 id="creating-unis-from-a-completionstage-advanced"><a class="anchor" href="#creating-unis-from-a-completionstage-advanced"></a>Creating Unis from a CompletionStage (<em>advanced</em>)</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>You can also <code>Uni</code> objects from <code>CompletionStage</code> / <code>CompletableFuture</code>.
 This is useful when integrating with APIs that are based on these types:</p>
@@ -250,13 +287,12 @@ Uni&lt;T&gt; = Uni.createFrom().completionStage(stage);</code></pre>
 </div>
 </div>
 </div>
-</div>
         </div>
-        <div class="col-md-3 col-md-offset-1 toc-container d-sm-none d-md-block">
-            <nav class="page-toc toc nav flex-column" id="toc">
+        <div class="col-md-3 toc-container d-sm-none d-md-block">
+            <nav class="page-toc toc nav sticky-top" id="toc">
+                
+                <h4>Table of Content</h4>
                 <ul class="sectlevel1">
-<li><a href="#creating-unis">Creating Unis</a>
-<ul class="sectlevel2">
 <li><a href="#the-uni-type">The Uni type</a></li>
 <li><a href="#subscribing-to-a-uni">Subscribing to a Uni</a></li>
 <li><a href="#creating-unis-from-item">Creating Unis from item</a></li>
@@ -265,8 +301,24 @@ Uni&lt;T&gt; = Uni.createFrom().completionStage(stage);</code></pre>
 <li><a href="#creating-unis-using-an-emitter-advanced">Creating Unis using an emitter (<em>advanced</em>)</a></li>
 <li><a href="#creating-unis-from-a-completionstage-advanced">Creating Unis from a CompletionStage (<em>advanced</em>)</a></li>
 </ul>
-</li>
-</ul>
+                
+
+                
+                <h4>Related content</h4>
+                <ul>
+                    
+                    <li>
+                        
+                            
+                                <a href="/mutiny-doc-sandbox/getting-started/creating-multis">Creating Multis</a>
+                            
+                        
+
+                        
+                    </li>
+                    
+                </ul>
+                
             </nav>
         </div>
     </div>
@@ -275,15 +327,24 @@ Uni&lt;T&gt; = Uni.createFrom().completionStage(stage);</code></pre>
 
 
 <div class="footer-buttons gs ">
-    <div class="container ">
-        <div class="row ">
-            <div class="col-12 ">
+    <div class="container">
+        <div class="row">
                 
-                <a href="/mutiny-doc-sandbox/getting-started/first-lines-of-code " class="previous ">
-                    <i class="fas fa-arrow-left "></i>&nbsp;First lines of code</a>
-                 
-                <a href="/mutiny-doc-sandbox/getting-started/creating-multis " class="next ">
-    Creating Multis&nbsp;<i class="fas fa-arrow-right "></i></a> 
+            <div class="col align-self-start">
+                <a href="/mutiny-doc-sandbox/getting-started/first-lines-of-code" class="btn btn-rounded button button-dark button-rounded">
+                    <i class="las la-arrow-left left"></i>&nbsp;First lines of code</a>
+            </div>
+                
+
+            <div class="col align-self-center text-center">
+                <a href="/mutiny-doc-sandbox/guides" class="btn btn-rounded button button-dark button-rounded">All Guides</a>
+            </div>
+
+            <div class="col align-self-end">
+                
+                <a href="/mutiny-doc-sandbox/getting-started/creating-multis" class="btn btn-rounded button button-dark button-rounded float-right">
+                    Creating Multis&nbsp;<i class="las la-arrow-right"></i></a>
+                
             </div>
         </div>
 
@@ -308,7 +369,7 @@ Uni&lt;T&gt; = Uni.createFrom().completionStage(stage);</code></pre>
             </div>
             <div class="col-lg-3">
                 <p>
-                     Site last generated: Nov 28, 2020
+                     Site last generated: Nov 30, 2020
                 </p>
             </div>
         </div>

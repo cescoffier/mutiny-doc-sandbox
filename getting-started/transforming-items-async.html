@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-    <title>Transforming items into Uni and Multi</title>
+    <title></title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Learn how to transform received item into asynchronous streams">
+    <meta name="description" content="SmallRye Mutiny!">
 
     <link rel="canonical" href="/getting-started/transforming-items-async.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
@@ -33,7 +33,7 @@
                 <ul class="navbar-nav ml-auto mr-0 mt-2 mt-lg-0">
                     <li class="nav-item active"><a class="nav-link" href="/mutiny-doc-sandbox/index.html">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/pages/philosophy">Philosophy</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/getting-started">Getting started</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/getting-started/download">Getting started</a></li>
                     <li class="nav-item"><a class="nav-link" href="/mutiny-doc-sandbox/guides">Guides</a></li>
                     <li class="nav-item"><a href="https://github.com/smallrye/smallrye-mutiny" target="_blank" title="Github"><i
                             class="lab la-github la-2x"></i></a></li>
@@ -47,7 +47,44 @@
 </header>
         <main>
             <div class="content">
-                <section class="hero gs">
+                
+
+    
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+        
+        
+    
+        
+            
+            
+
+    
+        
+
+
+
+<section class="hero gs">
     <div class="hero-main container">
         <div class="row">
             <div class="hero-left col-12">
@@ -55,15 +92,17 @@
                     <h1 class="hero-name">Transforming items into Uni and Multi</h1>
                 </div>
                 <div class="hero-desc">
-                    Learn how to transform received item into asynchronous streams
+                    Learn how to transform received item into asynchronous streams.
                 </div>
                 <div class="hero-buttons">
                     
                     <a href="/mutiny-doc-sandbox/getting-started/transforming-items" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
                         <i class="las la-arrow-left left"></i>&nbsp;Transforming items</a>
-                     
-                    <a href="/mutiny-doc-sandbox/getting-started/merge-concat" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
-                Merging and Concatenating streams&nbsp;<i class="las la-arrow-right"></i></a> 
+                    
+                    
+                    <a href="/mutiny-doc-sandbox/getting-started/handling-failures" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
+                        Handling failures&nbsp;<i class="las la-arrow-right"></i></a>
+                    
                 </div>
             </div>
         </div>
@@ -73,10 +112,7 @@
 <div class="container page-content">
     <div class="row">
         <div class="col-md-9 content">
-            <div class="sect1">
-<h2 id="transforming-items-into-streams"><a class="anchor" href="#transforming-items-into-streams"></a>Transforming items into streams</h2>
-<div class="sectionbody">
-<div class="paragraph">
+            <div class="paragraph">
 <p>The previous examples illustrated how to transform each item from a stream into another item.
 Yet, there are cases where we need to go beyond this, for example:</p>
 </div>
@@ -99,8 +135,9 @@ To implement such transformations, we use <code>onItem().transformToUni(Funcctio
 <img src="/mutiny-doc-sandbox/assets/images/transform-to-uni.png" alt="Transforming items into Uni">
 </div>
 </div>
-<div class="sect2">
-<h3 id="uni-transforming-an-item-into-a-uni"><a class="anchor" href="#uni-transforming-an-item-into-a-uni"></a>Uni - Transforming an item into a Uni</h3>
+<div class="sect1">
+<h2 id="uni-transforming-an-item-into-a-uni"><a class="anchor" href="#uni-transforming-an-item-into-a-uni"></a>Uni - Transforming an item into a Uni</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Imagine you have a <code>Uni&lt;String&gt;</code>, and you want to call a remote service.</p>
 </div>
@@ -136,8 +173,10 @@ Uni&lt;String&gt; result = uni
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="uni-transforming-an-item-into-a-multi"><a class="anchor" href="#uni-transforming-an-item-into-a-multi"></a>Uni - Transforming an item into a Multi</h3>
+</div>
+<div class="sect1">
+<h2 id="uni-transforming-an-item-into-a-multi"><a class="anchor" href="#uni-transforming-an-item-into-a-multi"></a>Uni - Transforming an item into a Multi</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>The previous example produced a single item.
 You may want to transform the received item into a stream which is&#8230;&#8203; a <code>Multi</code>!</p>
@@ -169,8 +208,10 @@ Uni&lt;String&gt; result = uni
 <p>The produced <code>Multi</code> objects can of course be more complicated that that and emit items in an asynchronous fashion.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="transforming-items-from-multi-the-merge-vs-concatenate-dilemma"><a class="anchor" href="#transforming-items-from-multi-the-merge-vs-concatenate-dilemma"></a>Transforming items from Multi - the <em>merge</em> vs <em>concatenate</em> dilemma</h3>
+</div>
+<div class="sect1">
+<h2 id="transforming-items-from-multi-the-merge-vs-concatenate-dilemma"><a class="anchor" href="#transforming-items-from-multi-the-merge-vs-concatenate-dilemma"></a>Transforming items from Multi - the <em>merge</em> vs <em>concatenate</em> dilemma</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>When transforming items emitted by an upstream <code>Multi,</code> we need to answer the following question: how are we going to <em>merge</em> the produced items back?</p>
 </div>
@@ -202,8 +243,10 @@ Mutiny offers two possibilities:</p>
 </ul>
 </div>
 </div>
-<div class="sect2">
-<h3 id="multi-transforming-an-item-into-a-uni"><a class="anchor" href="#multi-transforming-an-item-into-a-uni"></a>Multi - Transforming an item into a Uni</h3>
+</div>
+<div class="sect1">
+<h2 id="multi-transforming-an-item-into-a-uni"><a class="anchor" href="#multi-transforming-an-item-into-a-uni"></a>Multi - Transforming an item into a Uni</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>To implement the scenario from the last section, you will use <code>onItem().transformToUniAndMerge</code> or <code>onItem().transformToUniAndConcatenate()</code> depending on your ordering choice:</p>
 </div>
@@ -217,8 +260,10 @@ Multi&lt;String&gt; m = multi
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="multi-transforming-an-item-into-a-multi"><a class="anchor" href="#multi-transforming-an-item-into-a-multi"></a>Multi - Transforming an item into a Multi</h3>
+</div>
+<div class="sect1">
+<h2 id="multi-transforming-an-item-into-a-multi"><a class="anchor" href="#multi-transforming-an-item-into-a-multi"></a>Multi - Transforming an item into a Multi</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p><code>onItem().transformToMultiAndMerge</code> and <code>onItem().transformToMultiAndConcatenate</code> transform incoming items into <code>Multi</code> streams.
 The produced <code>Multi</code> objects are either <em>merged</em> or <em>concatenated</em>:</p>
@@ -237,21 +282,36 @@ Multi&lt;String&gt; m = multi
 </div>
 </div>
 </div>
-</div>
         </div>
-        <div class="col-md-3 col-md-offset-1 toc-container d-sm-none d-md-block">
-            <nav class="page-toc toc nav flex-column" id="toc">
+        <div class="col-md-3 toc-container d-sm-none d-md-block">
+            <nav class="page-toc toc nav sticky-top" id="toc">
+                
+                <h4>Table of Content</h4>
                 <ul class="sectlevel1">
-<li><a href="#transforming-items-into-streams">Transforming items into streams</a>
-<ul class="sectlevel2">
 <li><a href="#uni-transforming-an-item-into-a-uni">Uni - Transforming an item into a Uni</a></li>
 <li><a href="#uni-transforming-an-item-into-a-multi">Uni - Transforming an item into a Multi</a></li>
 <li><a href="#transforming-items-from-multi-the-merge-vs-concatenate-dilemma">Transforming items from Multi - the <em>merge</em> vs <em>concatenate</em> dilemma</a></li>
 <li><a href="#multi-transforming-an-item-into-a-uni">Multi - Transforming an item into a Uni</a></li>
 <li><a href="#multi-transforming-an-item-into-a-multi">Multi - Transforming an item into a Multi</a></li>
 </ul>
-</li>
-</ul>
+                
+
+                
+                <h4>Related content</h4>
+                <ul>
+                    
+                    <li>
+                        
+                            
+                                <a href="/mutiny-doc-sandbox/getting-started/transforming-items">Transforming items</a>
+                            
+                        
+
+                        
+                    </li>
+                    
+                </ul>
+                
             </nav>
         </div>
     </div>
@@ -260,15 +320,24 @@ Multi&lt;String&gt; m = multi
 
 
 <div class="footer-buttons gs ">
-    <div class="container ">
-        <div class="row ">
-            <div class="col-12 ">
+    <div class="container">
+        <div class="row">
                 
-                <a href="/mutiny-doc-sandbox/getting-started/transforming-items " class="previous ">
-                    <i class="fas fa-arrow-left "></i>&nbsp;Transforming items</a>
-                 
-                <a href="/mutiny-doc-sandbox/getting-started/merge-concat " class="next ">
-    Merging and Concatenating streams&nbsp;<i class="fas fa-arrow-right "></i></a> 
+            <div class="col align-self-start">
+                <a href="/mutiny-doc-sandbox/getting-started/transforming-items" class="btn btn-rounded button button-dark button-rounded">
+                    <i class="las la-arrow-left left"></i>&nbsp;Transforming items</a>
+            </div>
+                
+
+            <div class="col align-self-center text-center">
+                <a href="/mutiny-doc-sandbox/guides" class="btn btn-rounded button button-dark button-rounded">All Guides</a>
+            </div>
+
+            <div class="col align-self-end">
+                
+                <a href="/mutiny-doc-sandbox/getting-started/handling-failures" class="btn btn-rounded button button-dark button-rounded float-right">
+                    Handling failures&nbsp;<i class="las la-arrow-right"></i></a>
+                
             </div>
         </div>
 
@@ -293,7 +362,7 @@ Multi&lt;String&gt; m = multi
             </div>
             <div class="col-lg-3">
                 <p>
-                     Site last generated: Nov 28, 2020
+                     Site last generated: Nov 30, 2020
                 </p>
             </div>
         </div>

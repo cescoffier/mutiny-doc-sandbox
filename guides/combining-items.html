@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="SmallRye Mutiny!">
 
-    <link rel="canonical" href="/guides/take-skip.html">
+    <link rel="canonical" href="/guides/combining-items.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
@@ -54,10 +54,10 @@
         <div class="row">
             <div class="hero-left col-12">
                 <div class="hero-slogan">
-                    <h1 class="hero-name">Take or Skip the first or last items</h1>
+                    <h1 class="hero-name">Combining items from streams</h1>
                 </div>
                 <div class="hero-desc">
-                    Learn how to select or skip only the first or last items from a multi.
+                    Learn how to combine items from different streams.
                 </div>
                 <!-- TODO Labels -->
             </div>
@@ -69,120 +69,176 @@
     <div class="row">
         <div class="col-md-9 content">
             <div class="paragraph">
-<p>Multi provides the ability to:</p>
+<p>Combining items from various streams is an essential pattern in Reactive Programming.
+It associates the emitted items from multiple streams and emits an <em>aggregate</em>.
+The downstream receives this <em>aggregates</em> and can handle it smoothly.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>only forward items from the beginning of the observed multi,</p>
-</li>
-<li>
-<p>only forward the last items (and discard all the other ones),</p>
-</li>
-<li>
-<p>skip items from the beginning of the multi,</p>
-</li>
-<li>
-<p>skip the last items.</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>There are plenty of use cases, such as executing two tasks concurrently and waiting for both completions, getting the last items from different streams to build an always up-to-date view, and so on.</p>
 </div>
 <div class="sect1">
-<h2 id="taking-items"><a class="anchor" href="#taking-items"></a>Taking items</h2>
+<h2 id="combining-unis"><a class="anchor" href="#combining-unis"></a>Combining Unis</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The <code>multi.transform().byTakingFirstItems</code> method forwards on the <em>n</em> <strong>first</strong> items from the multi.
-It forwards that amount of items and then sends the completion signal.
-It also cancels the upstream subscription.</p>
+<p>Imagine that you have two asynchronous operations to perform like 2 HTTP requests.
+You want to send these requests and be notified when both have completed with their responses ready to be consumed.</p>
+</div>
+<div class="paragraph">
+<p>Of course, you could send the first request, wait for the response, and then send the second request.
+If both requests are independent, we can do something better: send both concurrently and await for both completions!</p>
+</div>
+<div class="imageblock reduce">
+<div class="content">
+<img src="/mutiny-doc-sandbox/assets/images/uni-combine.png" alt="Combining Unis">
+</div>
+</div>
+<div class="paragraph">
+<p>How can you achieve this with Mutiny?</p>
+</div>
+<div class="paragraph">
+<p>First, each request is a <code>Uni</code>, so we have:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; firstThreeItems = multi.transform().byTakingFirstItems(3);</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Response&gt; uniA = invokeHttpServiceA();
+Uni&lt;Response&gt; uniB = invokeHttpServiceB();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If the observed multi emits fewer items, it sends the completion event when the upstream completes.</p>
-</div>
-<div class="paragraph">
-<p>Similarly, The <code>multi.transform().byTakingLastItems</code> operator forwards on the <em>n</em>  <strong>last</strong> items from the multi.
-It discards all the items emitted beforehand.</p>
+<p>Then, we want to combine both <em>responses</em>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; lastThreeItems = multi.transform().byTakingLastItems(3);</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Tuple2&lt;Response, Response&gt;&gt; responses = Uni.combine()
+        .all().unis(uniA, uniB).asTuple();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>multi.transform().byTakingItemsWhile</code> operator forwards the items while the passed predicate returns <code>true</code>:</p>
+<p>This code creates a new <code>Uni</code> produced by combining <code>uniA</code> and <code>uniB</code>.
+The responses are aggregated inside a <code>Tuple</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; takeWhile = multi.transform().byTakingItemsWhile(i -&gt; i &lt; 4);</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni.combine().all().unis(uniA, uniB).asTuple()
+        .subscribe().with(tuple -&gt; {
+    System.out.println("Response from A: " + tuple.getItem1());
+    System.out.println("Response from B: " + tuple.getItem2());
+});</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>It calls the predicates for each item.
-Once the predicate returns <code>false</code>, it stops forwarding the items downstream.
-It also sends the completion event and cancels the upstream subscription.</p>
+<p>The <code>tuple</code> aggregates the responses in the same order as the <code>Uni</code> sequence.</p>
 </div>
 <div class="paragraph">
-<p>Finally,  <code>multi.transform().byTakingItemsFor</code> operator picks the first items for a given period.
-Once the passed duration expires, it sends the completion event and cancels the upstream subscription.
-If the observes multi completes before the passed duration, it sends the completion event.</p>
+<p>If one of the <code>Uni</code> fails, so does the combination and you recieve the failure:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; takeForDuration = multi.transform().byTakingItemsFor(Duration.ofSeconds(1));</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Response&gt; uniA = invokeHttpServiceA();
+Uni&lt;Response&gt; uniB = invokeHttpServiceB();
+Uni&lt;Tuple2&lt;Response, Response&gt;&gt; responses = Uni.combine()
+        .all().unis(uniA, uniB).asTuple();
+Uni.combine().all().unis(uniA, uniB).asTuple()
+        .subscribe().with(tuple -&gt; {
+    System.out.println("Response from A: " + tuple.getItem1());
+    System.out.println("Response from B: " + tuple.getItem2());
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using tuples is convenient but only works if you have less than 10 <code>Uni</code> objects.
+If you want another structure or deal with more than 10 <code>Uni</code> objects then use <code>combineWith</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Map&lt;String, Response&gt;&gt; uni = Uni.combine()
+        .all().unis(uniA, uniB).combinedWith(
+                listOfResponses -&gt; {
+                    Map&lt;String, Response&gt; map = new LinkedHashMap&lt;&gt;();
+                    map.put("A", (Response) listOfResponses.get(0));
+                    map.put("B", (Response) listOfResponses.get(1));
+                    return map;
+                }
+        );</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="skipping-items"><a class="anchor" href="#skipping-items"></a>Skipping items</h2>
+<h2 id="combining-multis"><a class="anchor" href="#combining-multis"></a>Combining Multis</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You can also skip items.</p>
+<p>Combining <code>Multis</code> consists of associating items from different stream per <em>index</em>:</p>
+</div>
+<div class="imageblock reduce">
+<div class="content">
+<img src="/mutiny-doc-sandbox/assets/images/multi-combine.png" alt="Combining Multis">
+</div>
 </div>
 <div class="paragraph">
-<p>The <code>multi.transform().bySkippingFirstItems</code> method skips the <em>n</em> <strong>first</strong> items from the multi.
-It forwards all the remaining items and sends the completion event when the upstream multi completes.</p>
+<p>It associates the first items from the combined streams, then the second items:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; skipThreeItems = multi.transform().bySkippingFirstItems(3);</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Tuple2&lt;A, B&gt;&gt; combined = Multi.createBy().combining()
+        .streams(multiA, multiB).asTuple();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If the observed multi emits fewer items, it sends the completion event without emitting any items.</p>
-</div>
-<div class="paragraph">
-<p>Similarly, The <code>multi.transform().bySkippingLastItems</code> operator skips on the <em>n</em>  <strong>last</strong> items from the multi:</p>
+<p>As for <code>Uni</code>, you can aggregate the item into tuples (up to 9 items) or combine with a combinator function:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt;  skipLastThreeItems = multi.transform().bySkippingLastItems(3);</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi.createBy().combining()
+        .streams(multiA, multiB).using(list -&gt; combineItems(list))
+        .subscribe().with(x -&gt; {
+            // do something with the combined items
+        });</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>multi.transform().bySkippingItemsWhile</code> operator skips the items while the passed predicate returns <code>true</code>:</p>
+<p>If one of the streams fails, the combined stream propagates the failure and stops the emission.
+The combined stream completes as soon as one of the observed stream sends the completion event.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If one of the observed streams never emits any item then the combined stream will not emit anything.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="combining-the-last-items-of-multis"><a class="anchor" href="#combining-the-last-items-of-multis"></a>Combining the last items of Multis</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It can be useful to combine multiple <code>Multi</code> streams and receive the <em>latest</em> items from each stream on every emission:</p>
+</div>
+<div class="imageblock reduce">
+<div class="content">
+<img src="/mutiny-doc-sandbox/assets/images/multi-combine-latest.png" alt="Combining Multis to always gets the latest items from every stream">
+</div>
+</div>
+<div class="paragraph">
+<p>This is achieved using <code>latest()</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; skipWhile = multi.transform().bySkippingItemsWhile(i -&gt; i &lt; 4);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>It calls the predicates for each item.
-Once the predicate returns <code>false</code>, it stops discarding the items and starts forwarding downstream.</p>
-</div>
-<div class="paragraph">
-<p>Finally,  <code>multi.transform().bySkippingItemsFor</code> operator skips the first items for a given period.
-Once the passed duration expires, it sends the items emitted after the deadline downstream.
-If the observes multi completes before the passed duration, it sends the completion event.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; skipForDuration = multi.transform().bySkippingItemsFor(Duration.ofSeconds(1));</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">        Multi&lt;Tuple2&lt;A, B&gt;&gt; multi1 = Multi.createBy().combining()
+                .streams(multiA, multiB)
+                .latestItems().asTuple();
+
+        // or
+
+        Multi&lt;String&gt; multi2 = Multi.createBy().combining()
+                .streams(multiA, multiB)
+                .latestItems().using(list -&gt; combineItems(list));</code></pre>
 </div>
 </div>
 </div>
@@ -193,8 +249,9 @@ If the observes multi completes before the passed duration, it sends the complet
                 
                 <h4>Table of Content</h4>
                 <ul class="sectlevel1">
-<li><a href="#taking-items">Taking items</a></li>
-<li><a href="#skipping-items">Skipping items</a></li>
+<li><a href="#combining-unis">Combining Unis</a></li>
+<li><a href="#combining-multis">Combining Multis</a></li>
+<li><a href="#combining-the-last-items-of-multis">Combining the last items of Multis</a></li>
 </ul>
                 
 
@@ -204,15 +261,8 @@ If the observes multi completes before the passed duration, it sends the complet
                     
                     <li>
                         
-                        <a href="/mutiny-doc-sandbox/guides/filter">Filtering items from multi</a>
+                        <a href="/mutiny-doc-sandbox/guides/merge-concat">Merging and Concatenating Streams</a>
                         
-                        
-                    </li>
-                    
-                    <li>
-                        
-                        
-                        <a href="https://javadoc.io/doc/io.smallrye.reactive/mutiny/latest/io/smallrye/mutiny/groups/MultiTransform.html"><tt>MultiTransform</tt></a>
                         
                     </li>
                     

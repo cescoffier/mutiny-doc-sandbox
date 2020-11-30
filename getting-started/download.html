@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="SmallRye Mutiny!">
 
-    <link rel="canonical" href="/getting-started/first-lines-of-code.html">
+    <link rel="canonical" href="/getting-started/download.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
@@ -56,10 +56,6 @@
         
     
         
-        
-        
-    
-        
             
             
 
@@ -73,19 +69,16 @@
         <div class="row">
             <div class="hero-left col-12">
                 <div class="hero-slogan">
-                    <h1 class="hero-name">First lines of code</h1>
+                    <h1 class="hero-name">Getting Started with Mutiny</h1>
                 </div>
                 <div class="hero-desc">
-                    Your first lines of code using Mutiny.
+                    To start using Mutiny, you just need to drop a JAR in your classpath
                 </div>
                 <div class="hero-buttons">
                     
-                    <a href="/mutiny-doc-sandbox/getting-started/download" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
-                        <i class="las la-arrow-left left"></i>&nbsp;Getting Started with Mutiny</a>
                     
-                    
-                    <a href="/mutiny-doc-sandbox/getting-started/creating-unis" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
-                        Creating Unis&nbsp;<i class="las la-arrow-right"></i></a>
+                    <a href="/mutiny-doc-sandbox/getting-started/first-lines-of-code" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
+                        First lines of code&nbsp;<i class="las la-arrow-right"></i></a>
                     
                 </div>
             </div>
@@ -97,133 +90,92 @@
     <div class="row">
         <div class="col-md-9 content">
             <div class="sect1">
-<h2 id="hello-mutiny"><a class="anchor" href="#hello-mutiny"></a>Hello Mutiny!</h2>
+<h2 id="dependency"><a class="anchor" href="#dependency"></a>Using Mutiny in a Java application</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Once you made Mutiny available to your classpath, you can start writing code.
-Let&#8217;s start with this simple program:</p>
+<p>Add the <em>dependency</em> to your project:</p>
+</div>
+<div class="listingblock">
+<div class="title"><a href="https://maven.apache.org/">Maven</a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+  &lt;groupId&gt;io.smallrye.reactive&lt;/groupId&gt;
+  &lt;artifactId&gt;mutiny&lt;/artifactId&gt;
+  &lt;version&gt;0.11.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title"><a href="https://gradle.org/">Gradle with Groovy</a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="text" class="language-text hljs">implementation 'io.smallrye.reactive:mutiny:0.11.0'</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title"><a href="https://gradle.org/">Gradle with Kotlin</a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="kotlin" class="language-kotlin hljs">implementation("io.smallrye.reactive:mutiny:0.11.0")</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title"><a href="https://github.com/jbangdev/jbang">JBang</a></div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">//DEPS io.smallrye.reactive:mutiny:0.11.0</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="quarkus"><a class="anchor" href="#quarkus"></a>Using Mutiny with Quarkus</h3>
+<div class="paragraph">
+<p>Most of the <a href="https://quarkus.io">Quarkus</a> extensions with reactive capabilities already depend on Mutiny.
+You can also add the <code>quarkus-mutiny</code> dependency explicitly:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import io.smallrye.mutiny.Uni;
-
-public class FirstProgram {
-
-  public static void main(String[] args) {
-    Uni.createFrom().item("hello")
-      .onItem().transform(item -&gt; item + " mutiny")
-      .onItem().transform(String::toUpperCase)
-      .subscribe().with(
-        item -&gt; System.out.println("&gt;&gt; " + item));
-  }
-}</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">mvn quarkus:add-dependency -Dextensions=mutiny</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This program prints:</p>
+<p>Or directly add the dependency to your <code>pom.xml</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="text" class="language-text hljs">&gt;&gt; HELLO MUTINY</code></pre>
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+  &lt;groupId&gt;io.quarkus&lt;/groupId&gt;
+  &lt;artifactId&gt;quarkus-mutiny&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Follow the <a href="https://quarkus.io/guides/getting-started-reactive">Getting started with reactive</a> guide for more details.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="dissecting-the-pipeline"><a class="anchor" href="#dissecting-the-pipeline"></a>Dissecting the pipeline</h2>
+<h2 id="vertx"><a class="anchor" href="#vertx"></a>Using Mutiny with Eclipse Vert.x</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>What&#8217;s interesting is how this message is <em>built</em>.
-We described a processing pipeline taking an item, processing it and finally consuming it.</p>
+<p>API bindings for many popular modules and clients from the <a href="https://vertx.io">Vert.x</a> stack are available from the <a href="https://github.com/smallrye/smallrye-reactive-utils">Smallrye Reactive Utilities project</a>.</p>
 </div>
 <div class="paragraph">
-<p>First, we create a <code>Uni</code>, one of the two types with <code>Multi</code> that Mutiny provides.
-A <code>Uni</code> is a stream emitting either a single item or a failure.</p>
+<p>Here is how to add a dependency to the Vert.x core library with Mutiny bindings:</p>
 </div>
-<div class="paragraph">
-<p>Here, we create a <code>Uni</code> emitting the <code>"hello"</code> item.
-This is the input of our pipeline.
-Then we process this item:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+  &lt;groupId&gt;io.smallrye.reactive&lt;/groupId&gt;
+  &lt;artifactId&gt;smallrye-mutiny-vertx-core&lt;/artifactId&gt;
+  &lt;version&gt;1.2.2&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>we append <code>" mutiny"</code>, then</p>
-</li>
-<li>
-<p>we make it an uppercase string.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>This forms the processing part of our pipeline, and then we finally <strong>subscribe</strong> to the pipeline.</p>
-</div>
-<div class="paragraph">
-<p>This last part is essential.
-If you don&#8217;t have a final subscriber, nothing is going to happen.
-Mutiny types are lazy, meaning that you need to express your interest.
-If you don&#8217;t the computation won&#8217;t even start.</p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-If your program doesn&#8217;t do anything, verify that you didn&#8217;t forget to subscribe!
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="mutiny-uses-a-builder-api"><a class="anchor" href="#mutiny-uses-a-builder-api"></a>Mutiny uses a builder API!</h2>
+<h2 id="download"><a class="anchor" href="#download"></a>Direct Download</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Another important aspect is the pipeline construction.
-Appending a new <em>stage</em> to a pipeline returns a new <code>Uni.</code></p>
-</div>
-<div class="paragraph">
-<p>The previous program is equivalent to:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; uni1 = Uni.createFrom().item("hello");
-Uni&lt;String&gt; uni2 = uni1.onItem().transform(item -&gt; item + " mutiny");
-Uni&lt;String&gt; uni3 = uni2.onItem().transform(String::toUpperCase);
-
-uni3.subscribe().with(item -&gt; System.out.println("&gt;&gt; " + item));</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>It is fundamental to understand that this program is not equivalent to:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; uni = Uni.createFrom().item("hello");
-
-uni.onItem().transform(item -&gt; item + " mutiny");
-uni.onItem().transform(String::toUpperCase);
-
-uni.subscribe().with(item -&gt; System.out.println("&gt;&gt; " + item));</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This program just prints <code>"&gt;&gt; hello"`</code>, as it does not use the appended stages and the final subscriber consumes the first <code>Uni.</code></p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-Mutiny APIs are not fluent and each computation stage returns a new object.
-</td>
-</tr>
-</table>
+<p>You can also download the Mutiny JARs directly from <a href="https://search.maven.org/search?q=g:io.smallrye.reactive%20AND%20a:mutiny*%20AND%20v:0.11.0">Maven Central</a>.</p>
 </div>
 </div>
 </div>
@@ -233,12 +185,45 @@ Mutiny APIs are not fluent and each computation stage returns a new object.
                 
                 <h4>Table of Content</h4>
                 <ul class="sectlevel1">
-<li><a href="#hello-mutiny">Hello Mutiny!</a></li>
-<li><a href="#dissecting-the-pipeline">Dissecting the pipeline</a></li>
-<li><a href="#mutiny-uses-a-builder-api">Mutiny uses a builder API!</a></li>
+<li><a href="#dependency">Using Mutiny in a Java application</a>
+<ul class="sectlevel2">
+<li><a href="#quarkus">Using Mutiny with Quarkus</a></li>
+</ul>
+</li>
+<li><a href="#vertx">Using Mutiny with Eclipse Vert.x</a></li>
+<li><a href="#download">Direct Download</a></li>
 </ul>
                 
 
+                
+                <h4>Related content</h4>
+                <ul>
+                    
+                    <li>
+                        
+
+                        
+                        <a href="https://maven.apache.org">Apache Maven</a>
+                        
+                    </li>
+                    
+                    <li>
+                        
+
+                        
+                        <a href="https://gradle.org/">Gradle</a>
+                        
+                    </li>
+                    
+                    <li>
+                        
+
+                        
+                        <a href="https://www.jbang.dev/">JBang!</a>
+                        
+                    </li>
+                    
+                </ul>
                 
             </nav>
         </div>
@@ -252,8 +237,7 @@ Mutiny APIs are not fluent and each computation stage returns a new object.
         <div class="row">
                 
             <div class="col align-self-start">
-                <a href="/mutiny-doc-sandbox/getting-started/download" class="btn btn-rounded button button-dark button-rounded">
-                    <i class="las la-arrow-left left"></i>&nbsp;Getting Started with Mutiny</a>
+                &nbsp;
             </div>
                 
 
@@ -263,8 +247,8 @@ Mutiny APIs are not fluent and each computation stage returns a new object.
 
             <div class="col align-self-end">
                 
-                <a href="/mutiny-doc-sandbox/getting-started/creating-unis" class="btn btn-rounded button button-dark button-rounded float-right">
-                    Creating Unis&nbsp;<i class="las la-arrow-right"></i></a>
+                <a href="/mutiny-doc-sandbox/getting-started/first-lines-of-code" class="btn btn-rounded button button-dark button-rounded float-right">
+                    First lines of code&nbsp;<i class="las la-arrow-right"></i></a>
                 
             </div>
         </div>
