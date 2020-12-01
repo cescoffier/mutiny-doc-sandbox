@@ -192,6 +192,20 @@ For example, in the next example, count the number of items, and produce the fin
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="getting-the-first-and-last-items"><a class="anchor" href="#getting-the-first-and-last-items"></a>Getting the first and last items</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>While they are not strictly speaking collecting items, the <code>collectItems().first()</code> and <code>collectItems().last()</code> allows retrieving the first and last item from a <code>Multi</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; first = multi.collectItems().first();
+Uni&lt;String&gt; last = multi.collectItems().last();</code></pre>
+</div>
+</div>
+</div>
+</div>
         </div>
         <div class="col-md-3 col-md-offset-1 toc-container d-sm-none d-md-block">
             <nav class="page-toc toc nav sticky-top" id="toc">
@@ -202,6 +216,7 @@ For example, in the next example, count the number of items, and produce the fin
 <li><a href="#collecting-items-into-a-map">Collecting items into a map</a></li>
 <li><a href="#collecting-items-into-a-multimap">Collecting items into a multimap</a></li>
 <li><a href="#using-a-custom-accumulator">Using a custom accumulator</a></li>
+<li><a href="#getting-the-first-and-last-items">Getting the first and last items</a></li>
 </ul>
                 
 
