@@ -155,10 +155,10 @@ For example, you can log the failure:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; u = uni
-  .onFailure().invoke(failure -&gt; log(failure));
+        .onFailure().invoke(failure -&gt; log(failure));
 
 Multi&lt;String&gt; m = multi
-  .onFailure().invoke(failure -&gt; log(failure));</code></pre>
+        .onFailure().invoke(failure -&gt; log(failure));</code></pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -180,16 +180,16 @@ The received failure will be propagated downstream when the <code>Uni</code> pro
 <h2 id="transforming-failures"><a class="anchor" href="#transforming-failures"></a>Transforming failures</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Another useful action on failure is to transform the failure into a <em>more meaningfull</em> failure.</p>
+<p>Another useful action on failure is to transform the failure into a <em>more meaningful</em> failure.</p>
 </div>
 <div class="paragraph">
-<p>Typically you can wrap a low-level failure (like an <code>IOException</code>) into a business failure (<code>ServiceUnavailableException</code>):</p>
+<p>Typically, you can wrap a low-level failure (like an <code>IOException</code>) into a business failure (<code>ServiceUnavailableException</code>):</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; u = uni
-  .onFailure().transform(failure -&gt;
-    new ServiceUnavailableException(failure));</code></pre>
+        .onFailure().transform(failure -&gt;
+                new ServiceUnavailableException(failure));</code></pre>
 </div>
 </div>
 </div>
@@ -204,10 +204,10 @@ The first approach is to recover by replacing the failure with an item:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; u1 = uni
-  .onFailure().recoverWithItem("hello");
+        .onFailure().recoverWithItem("hello");
 
 Uni&lt;String&gt; u2 = uni
-  .onFailure().recoverWithItem(f -&gt; getFallback(f));</code></pre>
+        .onFailure().recoverWithItem(f -&gt; getFallback(f));</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -228,8 +228,8 @@ So for <code>Multi</code>, the downstream receives the fallback item followed by
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;T&gt; m = multi
-  .onFailure().recoverWithCompletion();</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; m = multi
+        .onFailure().recoverWithCompletion();</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -246,11 +246,11 @@ When the failure is received, it subscribes to this other stream and propagates 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;T&gt; u = uni
-  .onFailure().recoverWithUni(f -&gt; getFallbackUni(f));
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; u = uni
+        .onFailure().recoverWithUni(f -&gt; getFallbackUni(f));
 
-Multi&lt;T&gt; m = multi
-  .onFailure().recoverWithMulti(f -&gt; getFallbackMulti(f));</code></pre>
+Multi&lt;String&gt; m = multi
+        .onFailure().recoverWithMulti(f -&gt; getFallbackMulti(f));</code></pre>
 </div>
 </div>
 <div class="paragraph">
