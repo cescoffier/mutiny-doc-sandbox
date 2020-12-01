@@ -97,7 +97,7 @@
                     
                     
                     <a href="/mutiny-doc-sandbox/getting-started/transforming-items-async" class="getting-started-nav btn btn-rounded button button-dark button-rounded">
-                        Transforming items into Uni and Multi&nbsp;<i class="las la-arrow-right"></i></a>
+                        Transforming items to Uni/Multi&nbsp;<i class="las la-arrow-right"></i></a>
                     
                 </div>
             </div>
@@ -116,7 +116,7 @@ One of the most common operations you will do is transforming these items using 
 <p>To achieve this, you use <code>onItem().transform(Function&lt;T, U&gt;)</code>.
 It calls the passed function for each item and produces the result as an item which is propagaed downstream.</p>
 </div>
-<div class="imageblock center">
+<div class="imageblock reduce">
 <div class="content">
 <img src="/mutiny-doc-sandbox/assets/images/transform-operator.png" alt="Transforming items synchronously">
 </div>
@@ -131,11 +131,10 @@ Implementing this transformation is done as follows:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; uni = Uni.createFrom().item("hello");
-
 uni
-  .onItem().transform(i -&gt; i.toUpperCase())
-  .subscribe().with(
-    item -&gt; System.out.println(item)); // Print HELLO</code></pre>
+        .onItem().transform(i -&gt; i.toUpperCase())
+        .subscribe().with(
+        item -&gt; System.out.println(item)); // Print HELLO</code></pre>
 </div>
 </div>
 </div>
@@ -149,7 +148,7 @@ uni
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; m = multi
-  .onItem().transform(i -&gt; i.toUpperCase());</code></pre>
+        .onItem().transform(i -&gt; i.toUpperCase());</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -159,9 +158,9 @@ uni
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; multi = Multi.createFrom().items("a", "b", "c");
 multi
-  .onItem().transform(i -&gt; i.toUpperCase())
-  .subscribe().with(
-    item -&gt; System.out.println(item)); // Print A B C</code></pre>
+        .onItem().transform(i -&gt; i.toUpperCase())
+        .subscribe().with(
+            item -&gt; System.out.println(item)); // Print A B C</code></pre>
 </div>
 </div>
 </div>
@@ -184,8 +183,8 @@ It also means that the subscriber won&#8217;t get further item after that failur
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; u = uni
-  .onItem().transform(i -&gt; i.toUpperCase())
-  .onItem().transform(i -&gt; i + "!");</code></pre>
+        .onItem().transform(i -&gt; i.toUpperCase())
+        .onItem().transform(i -&gt; i + "!");</code></pre>
 </div>
 </div>
 </div>
@@ -210,7 +209,7 @@ It also means that the subscriber won&#8217;t get further item after that failur
                     <li>
                         
                             
-                                <a href="/mutiny-doc-sandbox/getting-started/transforming-items-async">Transforming items into Uni and Multi</a>
+                                <a href="/mutiny-doc-sandbox/getting-started/transforming-items-async">Transforming items to Uni/Multi</a>
                             
                         
 
@@ -243,7 +242,7 @@ It also means that the subscriber won&#8217;t get further item after that failur
             <div class="col align-self-end">
                 
                 <a href="/mutiny-doc-sandbox/getting-started/transforming-items-async" class="btn btn-rounded button button-dark button-rounded float-right">
-                    Transforming items into Uni and Multi&nbsp;<i class="las la-arrow-right"></i></a>
+                    Transforming items to Uni/Multi&nbsp;<i class="las la-arrow-right"></i></a>
                 
             </div>
         </div>
@@ -269,7 +268,7 @@ It also means that the subscriber won&#8217;t get further item after that failur
             </div>
             <div class="col-lg-3">
                 <p>
-                     Site last generated: Nov 30, 2020
+                     Site last generated: Dec 1, 2020
                 </p>
             </div>
         </div>

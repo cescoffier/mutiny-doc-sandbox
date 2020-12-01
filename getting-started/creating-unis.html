@@ -136,9 +136,9 @@ The following snippet provides a simple example of pipeline using <code>Uni</cod
 <div class="title">Example of pipeline using Uni</div>
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni.createFrom().item(1)
-  .onItem().transform(i -&gt; "hello-" + i)
-  .onItem().delayIt().by(Duration.ofMillis(100))
-  .subscribe().with(System.out::println);</code></pre>
+        .onItem().transform(i -&gt; "hello-" + i)
+        .onItem().delayIt().by(Duration.ofMillis(100))
+        .subscribe().with(System.out::println);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -159,9 +159,9 @@ What&#8217;s more, the pipeline is materialized for each <em>subscription</em>.<
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Cancellable cancellable = uni
-  .subscribe().with(
-    item -&gt; System.out.println(item),
-    failure -&gt; System.out.println("Failed with " + failure));</code></pre>
+        .subscribe().with(
+                item -&gt; System.out.println(item),
+                failure -&gt; System.out.println("Failed with " + failure));</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -231,7 +231,7 @@ For this, you need to emit a <code>null</code> item:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Void&gt; uni  = Uni.createFrom().nullItem();</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Void&gt; uni = Uni.createFrom().nullItem();</code></pre>
 </div>
 </div>
 </div>
@@ -245,9 +245,9 @@ This approach is useful when integrating callback-based APIs:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni.createFrom().emitter(em -&gt; {
-  // When the result is available, emit it
-  em.complete(result);
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; uni = Uni.createFrom().emitter(em -&gt; {
+    // When the result is available, emit it
+    em.complete(result);
 });</code></pre>
 </div>
 </div>
@@ -266,8 +266,7 @@ This is useful when integrating with APIs that are based on these types:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">CompletionStage&lt;T&gt; stage = ...;
-Uni&lt;T&gt; = Uni.createFrom().completionStage(stage);</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; uni = Uni.createFrom().completionStage(stage);</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -369,7 +368,7 @@ Uni&lt;T&gt; = Uni.createFrom().completionStage(stage);</code></pre>
             </div>
             <div class="col-lg-3">
                 <p>
-                     Site last generated: Nov 30, 2020
+                     Site last generated: Dec 1, 2020
                 </p>
             </div>
         </div>

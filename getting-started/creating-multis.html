@@ -161,10 +161,10 @@ To trigger the computation, you must subscribe.</p>
 <div class="title">Example of pipeline using Multi</div>
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi.createFrom().items(1, 2, 3, 4, 5)
-  .onItem().transform(i -&gt; i * 2)
-  .transform().byTakingFirstItems(3)
-  .onFailure().recoverWithItem(0)
-  .subscribe().with(System.out::println);</code></pre>
+        .onItem().transform(i -&gt; i * 2)
+        .transform().byTakingFirstItems(3)
+        .onFailure().recoverWithItem(0)
+        .subscribe().with(System.out::println);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -185,10 +185,10 @@ Also, the pipeline is materialized for each <em>subscription</em>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Cancellable cancellable = multi
-  .subscribe().with(
-    item -&gt; System.out.println(item),
-    failure -&gt; System.out.println("Failed with " + failure),
-    () -&gt; System.out.println("Completed"));</code></pre>
+        .subscribe().with(
+                item -&gt; System.out.println(item),
+                failure -&gt; System.out.println("Failed with " + failure),
+                () -&gt; System.out.println("Completed"));</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -208,9 +208,8 @@ Use <a href="https://javadoc.io/static/io.smallrye.reactive/mutiny/0.11.0/index.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;Integer&gt; uni = Uni.createFrom().items(1, 2, 3, 4);
-
-Multi.createFrom().iterable(Arrays.asList(1, 2, 3, 4, 5))</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; multiFromItems = Multi.createFrom().items(1, 2, 3, 4);
+Multi&lt;Integer&gt; multiFromIterable = Multi.createFrom().iterable(Arrays.asList(1, 2, 3, 4, 5));</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -222,8 +221,8 @@ Multi.createFrom().iterable(Arrays.asList(1, 2, 3, 4, 5))</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">AtomicInteger counter = new AtomicInteger();
-Multi.createFrom().items(() -&gt;
-  IntStream.range(counter.getAndIncrement(), counter.get() * 2).boxed())</code></pre>
+Multi&lt;Integer&gt; multi = Multi.createFrom().items(() -&gt;
+        IntStream.range(counter.getAndIncrement(), counter.get() * 2).boxed());</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -279,7 +278,7 @@ Of course, the completion event can happen even if there are no items, creating 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;T&gt; multi = Multi.createFrom().empty();</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; multi = Multi.createFrom().empty();</code></pre>
 </div>
 </div>
 </div>
@@ -293,11 +292,11 @@ This approach is useful when integrating callback-based APIs:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi.createFrom().emitter(em -&gt; {
-  em.emit(1);
-  em.emit(2);
-  em.emit(3);
-  em.complete();
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; multi = Multi.createFrom().emitter(em -&gt; {
+    em.emit(1);
+    em.emit(2);
+    em.emit(3);
+    em.complete();
 });</code></pre>
 </div>
 </div>
@@ -391,7 +390,7 @@ For the first tick, it&#8217;s 0, then 1, then 2, and so on.</p>
             </div>
             <div class="col-lg-3">
                 <p>
-                     Site last generated: Nov 30, 2020
+                     Site last generated: Dec 1, 2020
                 </p>
             </div>
         </div>
