@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="SmallRye Mutiny!">
 
-    <link rel="canonical" href="/guides/take-skip.html">
+    <link rel="canonical" href="/guides/completion-stages.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
@@ -54,10 +54,10 @@
         <div class="row">
             <div class="hero-left col-12">
                 <div class="hero-slogan">
-                    <h1 class="hero-name">Take or Skip the first or last items</h1>
+                    <h1 class="hero-name">How to deal with Completion Stages?</h1>
                 </div>
                 <div class="hero-desc">
-                    Learn how to select or skip only the first or last items from a multi.
+                    Learn how to interact with CompletionStages and CompletableFutures.
                 </div>
                 <!-- TODO Labels -->
             </div>
@@ -69,121 +69,152 @@
     <div class="row">
         <div class="col-md-9 content">
             <div class="paragraph">
-<p>Multi provides the ability to:</p>
+<p><code>CompletionStage</code> and <code>CompletableFuture</code> are classes provided by Java to represent asynchronous actions.</p>
+</div>
+<div class="sect1">
+<h2 id="differences-between-uni-and-completionstage"><a class="anchor" href="#differences-between-uni-and-completionstage"></a>Differences between Uni and CompletionStage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>While <code>CompletionStage</code> and <code>CompletableFuture</code> are close to <code>Uni</code> in terms of use case, there are some fundamental differences.</p>
+</div>
+<div class="paragraph">
+<p><code>CompletionStage</code> are <em>eager</em>.
+When a method returns a <code>CompletionStage,</code> the operation has already been triggered.
+The outcome is used to complete the the returned <code>CompletionStage</code>.
+On the other side, <code>Unis</code> are lazy.
+The operation is only triggered once there is a subscription.</p>
+</div>
+<div class="paragraph">
+<p><code>CompletionStage</code> <em>caches</em> the outcome.
+So, once received, you can retrieve the result.
+Every retrieval will get the same result.
+With <code>Uni</code>, every subscription has the opportunity to re-trigger the operation and gets a different result.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+You can also <em>cache</em> the outcome with <code>Uni.memoize().indefinitely()</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="from-uni-to-completionstage"><a class="anchor" href="#from-uni-to-completionstage"></a>From Uni to CompletionStage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can create a <code>CompletionStage</code> from <code>Uni</code> using <code>uni.subscribeAsCompletionStage()</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">CompletionStage&lt;String&gt; cs = uni.subscribeAsCompletionStage();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s important to understand that retrieving a <code>CompletionStage</code> subscribes to the <code>Uni</code>.
+If you do this operation twice, it subscribes to the <code>Uni</code> twice and re-trigger the operation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// Trigger the underlying operation twice:
+CompletionStage&lt;String&gt; cs1 = uni.subscribeAsCompletionStage();
+CompletionStage&lt;String&gt; cs2 = uni.subscribeAsCompletionStage();</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="creating-a-uni-from-a-completionstage"><a class="anchor" href="#creating-a-uni-from-a-completionstage"></a>Creating a Uni from a CompletionStage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To create a <code>Uni</code> from a <code>CompletionStage</code>, use <code>Uni.createFrom().completionStage(&#8230;&#8203;)</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Uni&lt;String&gt; uni1 = Uni
+        // Create from a Completion Stage
+        .createFrom().completionStage(
+                CompletableFuture.supplyAsync(() -&gt; "hello", executor)
+        )
+        .onItem().transform(String::toUpperCase);
+
+Uni&lt;String&gt; uni2 = Uni
+        // Create from a Completion Stage supplier (recommended)
+        .createFrom().completionStage(
+                () -&gt; CompletableFuture.supplyAsync(() -&gt; "hello", executor)
+        )
+        .onItem().transform(String::toUpperCase);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see, there are two versions.
+The first one receives the <code>CompletionStage</code> directly, while the second one gets a supplier.
+In the case of multiple subscriptions on the produced <code>Uni</code>, the supplier is called multiple times (once per subscription), and so can change the return <code>CompletionStage</code>.
+It also delays the creation of the <code>CompletionStage</code> until there is a subscription, which only triggers the operation at that time.
+If you pass the instance directly, it will always use the same one (even for multiple subscriptions) and triggers the operation even if there is no subscription.
+For these reasons, it is generally better to use the variant accepting a supplier.</p>
+</div>
+<div class="paragraph">
+<p>Note that if the completion stage produces a <code>null</code> value, the resulting <code>Uni</code> emits <code>null</code> as item.
+If the completion stages complete exceptionally, the failure is emitted by the resulting <code>Uni</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="creating-a-multi-from-a-completionstage"><a class="anchor" href="#creating-a-multi-from-a-completionstage"></a>Creating a Multi from a CompletionStage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To create a <code>Multi</code> from a <code>CompletionStage</code>, use <code>Multi.createFrom().completionStage(&#8230;&#8203;)</code>.
+It produces:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>only forward items from the beginning of the observed multi,</p>
+<p>a multi emitting an item and completing - if the value produced by the completion stage is not <code>null</code>,</p>
 </li>
 <li>
-<p>only forward the last items (and discard all the other ones),</p>
+<p>an empty multi if the value produced by the completion stage is <code>null</code>,</p>
 </li>
 <li>
-<p>skip items from the beginning of the multi,</p>
-</li>
-<li>
-<p>skip the last items.</p>
+<p>a failed multi is completion stage is completed exceptionally.</p>
 </li>
 </ul>
 </div>
-<div class="sect1">
-<h2 id="taking-items"><a class="anchor" href="#taking-items"></a>Taking items</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The <code>multi.transform().byTakingFirstItems</code> method forwards on the <em>n</em> <strong>first</strong> items from the multi.
-It forwards that amount of items and then sends the completion signal.
-It also cancels the upstream subscription.</p>
-</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; firstThreeItems = multi.transform().byTakingFirstItems(3);</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; multi1 = Multi
+        .createFrom().completionStage(
+                CompletableFuture.supplyAsync(() -&gt; "hello", executor)
+        )
+        .onItem().transform(String::toUpperCase);
+
+Multi&lt;String&gt; multi2 = Multi
+        .createFrom().completionStage(() -&gt;
+                CompletableFuture.supplyAsync(() -&gt; "hello", executor)
+        )
+        .onItem().transform(String::toUpperCase);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If the observed multi emits fewer items, it sends the completion event when the upstream completes.</p>
+<p>For the same reason as for <code>Uni</code>, there are two versions:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>one accepting a <code>CompletionStage</code> directly</p>
+</li>
+<li>
+<p>one accepting a <code>Supplier&lt;CompletionStage&gt;</code>, called at subscription-time, for every subscription.</p>
+</li>
+</ol>
 </div>
 <div class="paragraph">
-<p>Similarly, The <code>multi.transform().byTakingLastItems</code> operator forwards on the <em>n</em>  <strong>last</strong> items from the multi.
-It discards all the items emitted beforehand.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; lastThreeItems = multi.transform().byTakingLastItems(3);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>multi.transform().byTakingItemsWhile</code> operator forwards the items while the passed predicate returns <code>true</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; takeWhile = multi.transform().byTakingItemsWhile(i -&gt; i &lt; 4);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>It calls the predicates for each item.
-Once the predicate returns <code>false</code>, it stops forwarding the items downstream.
-It also sends the completion event and cancels the upstream subscription.</p>
-</div>
-<div class="paragraph">
-<p>Finally,  <code>multi.transform().byTakingItemsFor</code> operator picks the first items for a given period.
-Once the passed duration expires, it sends the completion event and cancels the upstream subscription.
-If the observes multi completes before the passed duration, it sends the completion event.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; takeForDuration = multi.transform().byTakingItemsFor(Duration.ofSeconds(1));</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="skipping-items"><a class="anchor" href="#skipping-items"></a>Skipping items</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>You can also skip items.</p>
-</div>
-<div class="paragraph">
-<p>The <code>multi.transform().bySkippingFirstItems</code> method skips the <em>n</em> <strong>first</strong> items from the multi.
-It forwards all the remaining items and sends the completion event when the upstream multi completes.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; skipThreeItems = multi.transform().bySkippingFirstItems(3);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If the observed multi emits fewer items, it sends the completion event without emitting any items.</p>
-</div>
-<div class="paragraph">
-<p>Similarly, The <code>multi.transform().bySkippingLastItems</code> operator skips on the <em>n</em>  <strong>last</strong> items from the multi:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt;  skipLastThreeItems = multi.transform().bySkippingLastItems(3);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>multi.transform().bySkippingItemsWhile</code> operator skips the items while the passed predicate returns <code>true</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; skipWhile = multi.transform().bySkippingItemsWhile(i -&gt; i &lt; 4);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>It calls the predicates for each item.
-Once the predicate returns <code>false</code>, it stops discarding the items and starts forwarding downstream.</p>
-</div>
-<div class="paragraph">
-<p>Finally,  <code>multi.transform().bySkippingItemsFor</code> operator skips the first items for a given period.
-Once the passed duration expires, it sends the items emitted after the deadline downstream.
-If the observes multi completes before the passed duration, it sends the completion event.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Integer&gt; skipForDuration = multi.transform().bySkippingItemsFor(Duration.ofSeconds(1));</code></pre>
-</div>
+<p>It is recommended to use the second version.</p>
 </div>
 </div>
 </div>
@@ -193,8 +224,10 @@ If the observes multi completes before the passed duration, it sends the complet
                 
                 <h4>Table of Content</h4>
                 <ul class="sectlevel1">
-<li><a href="#taking-items">Taking items</a></li>
-<li><a href="#skipping-items">Skipping items</a></li>
+<li><a href="#differences-between-uni-and-completionstage">Differences between Uni and CompletionStage</a></li>
+<li><a href="#from-uni-to-completionstage">From Uni to CompletionStage</a></li>
+<li><a href="#creating-a-uni-from-a-completionstage">Creating a Uni from a CompletionStage</a></li>
+<li><a href="#creating-a-multi-from-a-completionstage">Creating a Multi from a CompletionStage</a></li>
 </ul>
                 
 
@@ -204,15 +237,8 @@ If the observes multi completes before the passed duration, it sends the complet
                     
                     <li>
                         
-                        <a href="/mutiny-doc-sandbox/guides/filter">Filtering items from multi</a>
+                        <a href="/mutiny-doc-sandbox/guides/converters">Using other reactive programming libraries</a>
                         
-                        
-                    </li>
-                    
-                    <li>
-                        
-                        
-                        <a href="https://javadoc.io/doc/io.smallrye.reactive/mutiny/latest/io/smallrye/mutiny/groups/MultiTransform.html"><tt>MultiTransform</tt></a>
                         
                     </li>
                     

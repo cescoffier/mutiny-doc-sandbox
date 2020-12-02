@@ -223,7 +223,7 @@ Some events can <em>swim</em> upstream from the sinks to the source.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Subscribed</strong> - indicate that the upstream has taken into account the subscription - more on this later,</p>
+<p><strong>Subscribed</strong> - indicates that the upstream has taken into account the subscription - more on this later,</p>
 </li>
 <li>
 <p><strong>Items</strong> - events containing some (business) <em>value</em>,</p>
@@ -271,7 +271,7 @@ Once they are sent, no more items will flow.</p>
 <p>The subscriber sends a <code>request</code> event indicating how many items it can handle at this moment; it can request 1, <em>n</em>, or infinite.</p>
 </li>
 <li>
-<p>The publisher receiving the <code>request</code> event start emitting at most <em>n</em> item events to the subscriber</p>
+<p>The publisher receiving the <code>request</code> event starts emitting at most <em>n</em> item events to the subscriber</p>
 </li>
 <li>
 <p>The subscriber can decide at any time to request more events or to cancel the subscription</p>
@@ -358,7 +358,7 @@ source
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">onEvent().invoke(event -&gt; ...)</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">onEvent().invoke(event -&gt; ...)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -504,7 +504,7 @@ Uni.createFrom().item("a")
             </div>
             <div class="col-lg-3">
                 <p>
-                     Site last generated: Dec 1, 2020
+                     Site last generated: Dec 2, 2020
                 </p>
             </div>
         </div>

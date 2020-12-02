@@ -106,7 +106,7 @@ In this case, the <code>runSubscription</code> operator is what you need:</p>
 </div>
 <div class="paragraph">
 <p>The code above creates a Uni that will supply the item using a blocking call, here the <code>invokeRemoteServiceUsingBlockingIO</code> method.
-To avoid blocking the subscriber thread, it uses <code>runSubscriptionOn</code> which switch the thread and call <code>invokeRemoteServiceUsingBlockingIO</code> on another thread.
+To avoid blocking the subscriber thread, it uses <code>runSubscriptionOn</code> which switches the thread and call <code>invokeRemoteServiceUsingBlockingIO</code> on another thread.
 Here we pass the default worker thread pool, but you can use your own executor.</p>
 </div>
 <div class="admonitionblock tip">
@@ -209,7 +209,7 @@ But, when dealing with <code>Multi</code> and need to execute blocking operation
             </div>
             <div class="col-lg-3">
                 <p>
-                     Site last generated: Dec 1, 2020
+                     Site last generated: Dec 2, 2020
                 </p>
             </div>
         </div>

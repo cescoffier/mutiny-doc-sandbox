@@ -138,12 +138,25 @@ After a failure, no more items are being received.</p>
 <p>recover from it by switching to another stream, passing a fallback item, or completing, or</p>
 </li>
 <li>
-<p>retrying (cover in the /getting-started/retries[next guide])</p>
+<p>retrying (covered in the next guide)</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
 <p>If you don&#8217;t handle the failure event, it is propagated downstream until a stage handles the failure or reaches the final subscriber.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+on <code>Multi</code>, a failure cancels the subscription, meaning you will not receive any more items.
+The <code>retry</code> operator lets you re-subscribe and continue the reception.
+</td>
+</tr>
+</table>
 </div>
 <div class="sect1">
 <h2 id="observing-failures"><a class="anchor" href="#observing-failures"></a>Observing failures</h2>
@@ -326,7 +339,7 @@ Multi&lt;String&gt; m = multi
             </div>
             <div class="col-lg-3">
                 <p>
-                     Site last generated: Dec 1, 2020
+                     Site last generated: Dec 2, 2020
                 </p>
             </div>
         </div>
