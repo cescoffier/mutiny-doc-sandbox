@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="SmallRye Mutiny!">
 
-    <link rel="canonical" href="/guides/shortcuts.html">
+    <link rel="canonical" href="/guides/plug.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
@@ -60,10 +60,10 @@
         <div class="row">
             <div class="hero-left col-12">
                 <div class="hero-slogan">
-                    <h1 class="hero-name">Shortcut methods</h1>
+                    <h1 class="hero-name">Can I have custom operators?</h1>
                 </div>
                 <div class="hero-desc">
-                    Learn the different shortcuts reducing verbosity.
+                    Learn how to implement your own operator.
                 </div>
                 <!-- TODO Labels -->
             </div>
@@ -75,107 +75,70 @@
     <div class="row">
         <div class="col-md-9 content">
             <div class="paragraph">
-<p>The Mutiny API is decomposed around the idea of groups, each group handling a specific event.
-However, to avoid verbosity, Mutiny also exposes <em>shortcuts</em> for the most used methods.
-Be aware that these shorts, while making the code shorter, may harm the readability and understandability.</p>
+<p>Yes, but please write operators responsibly!</p>
 </div>
 <div class="paragraph">
-<p>To <em>peek</em> at items, you can use the <code>invoke</code> method:</p>
+<p>Both <code>Uni</code> and <code>Multi</code> support custom operators using the <code>plug</code> operator.
+Here is an example where we use a custom <code>Multi</code> operator that randomly drops items:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;String&gt; multi = Multi.createFrom().items("a", "b", "c");
-multi.invoke(item -&gt; System.out.println("Received item " + item));</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi.createFrom()
+        .range(1, 101)
+        .plug(RandomDrop::new)
+        .subscribe().with(System.out::println);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><code>invoke</code> is a shortcut for <code>onItem().invoke(&#8230;&#8203;)</code>.</p>
-</div>
-<div class="paragraph">
-<p>Mutiny also provides the <code>call</code> method for executing an action returning a <code>Uni</code>.
-This is useful to execute an asynchronous action without modifying incoming item:</p>
+<p>with the operator defined as follows:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">multi.call(item -&gt; executeAnAsyncAction(item));</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class RandomDrop&lt;T&gt; extends AbstractMultiOperator&lt;T, T&gt; {
+    public RandomDrop(Multi&lt;? extends T&gt; upstream) {
+        super(upstream);
+    }
+
+    @Override
+    public void subscribe(MultiSubscriber&lt;? super T&gt; downstream) {
+        upstream.subscribe().withSubscriber(new DropProcessor(downstream));
+    }
+
+    private class DropProcessor extends MultiOperatorProcessor&lt;T, T&gt; {
+        DropProcessor(MultiSubscriber&lt;? super T&gt; downstream) {
+            super(downstream);
+        }
+
+        @Override
+        public void onItem(T item) {
+            if (ThreadLocalRandom.current().nextBoolean()) {
+                super.onItem(item);
+            }
+        }
+    }
+}</code></pre>
 </div>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p><code>call</code> is a shortcut for <code>onItem().call(&#8230;&#8203;)</code>.</p>
+<p>Custom operators are an advanced feature: when possible please use the existing operators and use helpers such as <code>stage</code> to write readable code.
+In the case of custom <code>Multi</code> operators it is wise to test them against the <em>Reactive Streams TCK</em>.</p>
 </div>
-<div class="paragraph">
-<p>The following table lists the available shortcuts available by the <code>Uni</code> class:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Shortcut</th>
-<th class="tableblock halign-left valign-top">Equivalent</th>
+</td>
 </tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.map(x &#8594; y)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.onItem().transform(x &#8594; y)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.flatMap(x &#8594; uni2)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.onItem().transformToUni(x &#8594; uni2)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.chain(x &#8594; uni2)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.onItem().transformToUni(x &#8594; uni2)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.then(() &#8594; uni2)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.onItem().transformToUni(ignored &#8594; uni2)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.invoke(x &#8594; System.out.println(x))</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.onItem().invoke(x &#8594; System.out.println(x))</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.call(x &#8594; uni2)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.onItem().call(x &#8594; uni2)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.eventually) &#8594; System.out.println("eventually"</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.onItemOrFailure().invokeignoredItem, ignoredException) &#8594; System.out.println("eventually"</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.eventually(() &#8594; uni2)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uni.onItemOrFailure().call((ignoredItem, ignoredException) &#8594; uni2)</code></p></td>
-</tr>
-</tbody>
 </table>
+</div>
         </div>
         <div class="col-md-3 col-md-offset-1 toc-container d-sm-none d-md-block">
             <nav class="page-toc toc nav sticky-top" id="toc">
                 
 
-                
-                <h4>Related content</h4>
-                <ul>
-                    
-                    <li>
-                        
-                        <a href="/mutiny-doc-sandbox/guides/rx">Using map, flatMap and concatMap</a>
-                        
-                        
-                    </li>
-                    
-                    <li>
-                        
-                        <a href="/mutiny-doc-sandbox/guides/converters">Using other reactive programming libraries</a>
-                        
-                        
-                    </li>
-                    
-                </ul>
                 
             </nav>
         </div>
