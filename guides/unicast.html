@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="SmallRye Mutiny!">
 
-    <link rel="canonical" href="/guides/pagination.html">
+    <link rel="canonical" href="/guides/unicast.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
@@ -60,10 +60,10 @@
         <div class="row">
             <div class="hero-left col-12">
                 <div class="hero-slogan">
-                    <h1 class="hero-name">How to use paginated API?</h1>
+                    <h1 class="hero-name">How to create use create a Multi from a non reactive source?</h1>
                 </div>
                 <div class="hero-desc">
-                    Learn how to consume APIs using pagination.
+                    Learn how to use the Unicast processor.
                 </div>
                 <!-- TODO Labels -->
             </div>
@@ -75,74 +75,33 @@
     <div class="row">
         <div class="col-md-9 content">
             <div class="paragraph">
-<p>There are many REST / HTTP APIs using pagination, <em>i.e.</em> return only a subset of the results and you need to request the next <em>page</em> to get the next batch.
-Each batch contains a list of item(s).
-To use this kind of API and generate a continuous stream of items, you need to use the <code>Multi.createBy().repeating()</code> function.
-However, we need to pass a cursor / state to advance and avoid requesting again and again the same page.
-Fortunately, <code>repeating</code> provides methods to pass a shared state.
-So by combining these methods and <code>disjoint</code> you can generate streams from these pages:</p>
+<p>The <code>UnicastProcessor</code> is an implementation of <code>Multi</code> that lets you enqueue items in a queue.
+The items are then dispatched to the subscriber using the request protocol.
+While this pattern is against the idea of back-pressure, it lets you connect sources of data that do not support back-pressure with your subscriber.</p>
+</div>
+<div class="paragraph">
+<p>In the following example, the <code>UnicastProcessor</code> is used by a thread emitting items.
+These items are enqueued in the processor and replayed when the subscriber is connected, following the request protocol.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">PaginatedApi api = new PaginatedApi();
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">UnicastProcessor&lt;String&gt; processor = UnicastProcessor.create();
+Multi&lt;String&gt; multi = processor
+        .onItem().transform(String::toUpperCase)
+        .onFailure().recoverWithItem("d'oh");
 
-Multi&lt;String&gt; stream = Multi.createBy().repeating()
-        .completionStage(
-                () -&gt; new AtomicInteger(),
-                state -&gt; api.getPage(state.getAndIncrement()))
-        .until(list -&gt; list.isEmpty())
-        .onItem().disjoint();</code></pre>
+// Create a source of items that does not follow the request protocol
+new Thread(() -&gt; {
+    for (int i = 0; i &lt; 1000; i++) {
+        processor.onNext(Integer.toString(i));
+    }
+    processor.onComplete();
+}).start();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>First, you create a <code>Multi</code> containing the items emitted by the <code>CompletionStage</code> supplier and pass a state supplier to progress among the pages.</p>
-</div>
-<div class="paragraph">
-<p>Then, use <code>until</code> to call the paginated API until we have all the items.
-At the point we have a stream of list of item such as <code>["a", "b", "c"], ["d", "e"], []</code>.
-However, we want the following stream: <code>"a", "b", "c", "d", "e"</code>.
-The <code>disjoint</code> method does exactly this.
-It gets the items from the lists and passes them downstream:</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="/mutiny-doc-sandbox/assets/images/diag-1cddf88909ef82bdaa96ca9da9f4c028.png" alt="Diagram" width="652" height="628">
-</div>
-</div>
-<div class="paragraph">
-<p><code>Multi.createBy().repeating()</code> lets you choose the number of iterations using:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>atMost</code> - exact number of repetitions (or failure happens before reaching that number)</p>
-</li>
-<li>
-<p><code>until</code> - the repetition is stopped if the item emitted by the <code>Uni</code> <strong>passes</strong> a test (predicate).
-It does not propagate the item that did pass the check, and it stops the repetition.
-The check verifies if the current item does not contain valid data.</p>
-</li>
-<li>
-<p><code>whilst</code> - the repetition is stopped if the item emitted by the <code>Uni</code> <strong>does not pass</strong> a test (predicate).
-It does propagate the item downstream even if the check does not pass.
-However, it stops the repetition.
-The test verifies if there is a <em>next</em> batch to be retrieved.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The following code illustrates the usage of <code>whilst</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">PaginatedApi api = new PaginatedApi();
-
-Multi&lt;Page&gt; stream = Multi.createBy().repeating()
-        .uni(
-                () -&gt; new AtomicInteger(),
-                state -&gt; api.retrieve(state.getAndIncrement()))
-        .whilst(page -&gt; page.hasNext());</code></pre>
-</div>
+<p>By default, the <code>UnicastProcessor</code> uses an unbounded queue.
+You can also pass a fixed size queue that would reject the items once full.</p>
 </div>
         </div>
         <div class="col-md-3 col-md-offset-1 toc-container d-sm-none d-md-block">
@@ -155,15 +114,8 @@ Multi&lt;Page&gt; stream = Multi.createBy().repeating()
                     
                     <li>
                         
-                        <a href="/mutiny-doc-sandbox/guides/polling">How to use polling?</a>
+                        <a href="/mutiny-doc-sandbox/guides/hot-streams">How to create a hot stream?</a>
                         
-                        
-                    </li>
-                    
-                    <li>
-                        
-                        
-                        <a href="https://quarkus.io/blog/mutiny-pagination/">Handling paginated APIs with Mutiny</a>
                         
                     </li>
                     

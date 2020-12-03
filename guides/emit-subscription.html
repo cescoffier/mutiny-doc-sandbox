@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="SmallRye Mutiny!">
 
-    <link rel="canonical" href="/guides/pagination.html">
+    <link rel="canonical" href="/guides/emit-subscription.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
@@ -60,10 +60,10 @@
         <div class="row">
             <div class="hero-left col-12">
                 <div class="hero-slogan">
-                    <h1 class="hero-name">How to use paginated API?</h1>
+                    <h1 class="hero-name">What's the difference between emitOn and runSubscriptionOn?</h1>
                 </div>
                 <div class="hero-desc">
-                    Learn how to consume APIs using pagination.
+                    Learn how to control threads subscription threads.
                 </div>
                 <!-- TODO Labels -->
             </div>
@@ -74,74 +74,64 @@
 <div class="container page-content">
     <div class="row">
         <div class="col-md-9 content">
-            <div class="paragraph">
-<p>There are many REST / HTTP APIs using pagination, <em>i.e.</em> return only a subset of the results and you need to request the next <em>page</em> to get the next batch.
-Each batch contains a list of item(s).
-To use this kind of API and generate a continuous stream of items, you need to use the <code>Multi.createBy().repeating()</code> function.
-However, we need to pass a cursor / state to advance and avoid requesting again and again the same page.
-Fortunately, <code>repeating</code> provides methods to pass a shared state.
-So by combining these methods and <code>disjoint</code> you can generate streams from these pages:</p>
+            <div class="sect1">
+<h2 id="emiton-vs-runsubscriptionon"><a class="anchor" href="#emiton-vs-runsubscriptionon"></a>emitOn vs. runSubscriptionOn</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>emitOn</code> and <code>runSubscriptionOn</code> are 2 operators influencing on which threads the event are dispatched.
+However, they target different types of events and different directions.</p>
+</div>
+<div class="paragraph">
+<p><code>emitOn</code> takes events coming from upstream (items, completion, failure) and replays them downstream on a thread from the given executor.
+Consequently, it affects where the subsequent operators execute (until another <code>emitOn</code> is used):</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">PaginatedApi api = new PaginatedApi();
-
-Multi&lt;String&gt; stream = Multi.createBy().repeating()
-        .completionStage(
-                () -&gt; new AtomicInteger(),
-                state -&gt; api.getPage(state.getAndIncrement()))
-        .until(list -&gt; list.isEmpty())
-        .onItem().disjoint();</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi.createFrom().items(this::retrieveItemsFromSource)
+        .emitOn(executor)
+        .onItem().transform(this::applySomeOperation)
+        .subscribe().with(
+        item -&gt; System.out.println("Item: " + item),
+        Throwable::printStackTrace,
+        () -&gt; completed.set(true)
+);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>First, you create a <code>Multi</code> containing the items emitted by the <code>CompletionStage</code> supplier and pass a state supplier to progress among the pages.</p>
-</div>
-<div class="paragraph">
-<p>Then, use <code>until</code> to call the paginated API until we have all the items.
-At the point we have a stream of list of item such as <code>["a", "b", "c"], ["d", "e"], []</code>.
-However, we want the following stream: <code>"a", "b", "c", "d", "e"</code>.
-The <code>disjoint</code> method does exactly this.
-It gets the items from the lists and passes them downstream:</p>
+<p>The previous code produces the following sequence:</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="/mutiny-doc-sandbox/assets/images/diag-1cddf88909ef82bdaa96ca9da9f4c028.png" alt="Diagram" width="652" height="628">
+<img src="/mutiny-doc-sandbox/assets/images/diag-ce11714f53fedf6861bf5f43e7f2d847.png" alt="Diagram" width="2232" height="578">
 </div>
 </div>
 <div class="paragraph">
-<p><code>Multi.createBy().repeating()</code> lets you choose the number of iterations using:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>atMost</code> - exact number of repetitions (or failure happens before reaching that number)</p>
-</li>
-<li>
-<p><code>until</code> - the repetition is stopped if the item emitted by the <code>Uni</code> <strong>passes</strong> a test (predicate).
-It does not propagate the item that did pass the check, and it stops the repetition.
-The check verifies if the current item does not contain valid data.</p>
-</li>
-<li>
-<p><code>whilst</code> - the repetition is stopped if the item emitted by the <code>Uni</code> <strong>does not pass</strong> a test (predicate).
-It does propagate the item downstream even if the check does not pass.
-However, it stops the repetition.
-The test verifies if there is a <em>next</em> batch to be retrieved.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The following code illustrates the usage of <code>whilst</code>:</p>
+<p><code>runSubscriptionOn</code> applies to the subscription process.
+It requests the upstream to run its subscription (call of the <code>subscribe</code> method on its own upstream) on a thread from the given executor:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">PaginatedApi api = new PaginatedApi();
-
-Multi&lt;Page&gt; stream = Multi.createBy().repeating()
-        .uni(
-                () -&gt; new AtomicInteger(),
-                state -&gt; api.retrieve(state.getAndIncrement()))
-        .whilst(page -&gt; page.hasNext());</code></pre>
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi.createFrom().items(() -&gt; {
+    // called on a thread from the executor
+    return retrieveItemsFromSource();
+})
+        .onItem().transform(this::applySomeOperation)
+        .runSubscriptionOn(executor)
+        .subscribe().with(
+        item -&gt; System.out.println("Item: " + item),
+        Throwable::printStackTrace,
+        () -&gt; completed.set(true)
+);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So, if we consider the previous code snippet, it produces the following sequence:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="/mutiny-doc-sandbox/assets/images/diag-cbd1972d7b4ab697a798e3d1b5ede99e.png" alt="Diagram" width="2207" height="578">
+</div>
+</div>
 </div>
 </div>
         </div>
@@ -155,15 +145,22 @@ Multi&lt;Page&gt; stream = Multi.createBy().repeating()
                     
                     <li>
                         
-                        <a href="/mutiny-doc-sandbox/guides/polling">How to use polling?</a>
+                        <a href="/mutiny-doc-sandbox/guides/reactive-to-imperative">From reactive to imperative</a>
                         
                         
                     </li>
                     
                     <li>
                         
+                        <a href="/mutiny-doc-sandbox/guides/imperative-to-reactive">Imperative to Reactive</a>
                         
-                        <a href="https://quarkus.io/blog/mutiny-pagination/">Handling paginated APIs with Mutiny</a>
+                        
+                    </li>
+                    
+                    <li>
+                        
+                        <a href="/mutiny-doc-sandbox/guides/emission-threads">How to change the emission thread?</a>
+                        
                         
                     </li>
                     
