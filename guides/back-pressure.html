@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="SmallRye Mutiny!">
 
-    <link rel="canonical" href="/404.html">
+    <link rel="canonical" href="/guides/back-pressure.html">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/default.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
     <link rel="shortcut icon" type="image/png" href="/mutiny-doc-sandbox/assets/images/favicon.ico">
@@ -40,7 +40,7 @@
                     <li class="nav-item"><a class="nav-link " href="/mutiny-doc-sandbox/index.html">Home</a></li>
                     <li class="nav-item"><a class="nav-link " href="/mutiny-doc-sandbox/pages/philosophy">Philosophy</a></li>
                     <li class="nav-item"><a class="nav-link " href="/mutiny-doc-sandbox/getting-started/download">Getting started</a></li>
-                    <li class="nav-item"><a class="nav-link " href="/mutiny-doc-sandbox/guides">Guides</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/mutiny-doc-sandbox/guides">Guides</a></li>
                     <li class="nav-item"><a href="https://github.com/smallrye/smallrye-mutiny" target="_blank" title="Github"><i
                             class="lab la-github la-2x"></i></a></li>
                     <li class="nav-item"><a href="https://stackoverflow.com/questions/tagged/mutiny" target="_blank"
@@ -53,37 +53,80 @@
 </header>
         <main>
             <div class="content">
-                <style type="text/css" media="screen">
-  h1 {
-    margin: 30px 0;
-    font-size: 4em;
-    line-height: 1;
-    letter-spacing: -1px;
-  }
-</style>
+                
 
-<div class="container">
-  <div class="row">
-    <div class="col-1">
+<section class="hero gs">
+    <div class="hero-main container">
+        <div class="row">
+            <div class="hero-left col-12">
+                <div class="hero-slogan">
+                    <h1 class="hero-name">How to control back pressure and control overflow</h1>
+                </div>
+                <div class="hero-desc">
+                    Learn how to configure overflow when the downstream cannot keep up
+                </div>
+                <!-- TODO Labels -->
+            </div>
+        </div>
+    </div>
+</section>
 
-    </div>
-    <div class="col-10 code-404">
-      <div class="hero-code">
-          <div class="code-examples">
-          <pre><code class="hljs java">
-Uni&lt;String&gt; uni = pageRequested
-  .onItem()
-    .ifNull().fail(
-        () -> new PageNotFound("Oh No! This page does not exist")
-    )      
-  .onFailure()
-    .recoverWith(() -> "Click on one of the links there ^^");
-          </code></pre>
-          </div>
-      </div>
-    </div>
-  </div>
+<div class="container page-content">
+    <div class="row">
+        <div class="col-md-9 content">
+            <div class="paragraph">
+<p>When a consumer cannot keep up with the pace of a publisher, there is an overflow condition.
+When it happens, Mutiny sends an <em>overflow</em> event that you can handle using the <code>onOverflow</code> group.</p>
 </div>
+<div class="paragraph">
+<p>By default, it fails and propagates an exception downstream.
+You can change that behavior and control how the overflow is handled using the <code>multi.onOverflow()</code> method, such as in:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">String res1 = multi
+        .emitOn(executor)
+        .onOverflow().buffer(10)
+        .collectItems().first()
+        .await().indefinitely();
+
+String res2 = multi
+        .emitOn(executor)
+        .onOverflow().dropPreviousItems()
+        .collectItems().first()
+        .await().indefinitely();</code></pre>
+</div>
+</div>
+        </div>
+        <div class="col-md-3 col-md-offset-1 toc-container d-sm-none d-md-block">
+            <nav class="page-toc toc nav sticky-top" id="toc">
+                
+
+                
+                <h4>Related content</h4>
+                <ul>
+                    
+                    <li>
+                        
+                        <i class="las la-chevron-circle-right"></i>&nbsp;<a href="/mutiny-doc-sandbox/guides/hot-streams">How to create a hot stream?</a>
+                        
+                        
+                    </li>
+                    
+                    <li>
+                        
+                        
+                        <i class="las la-chevron-circle-right"></i>&nbsp;<a href="https://javadoc.io/doc/io.smallrye.reactive/mutiny/latest/io/smallrye/mutiny/groups/MultiOverflow.html"><tt>OnOverflow</tt></a>
+                        
+                    </li>
+                    
+                </ul>
+                
+            </nav>
+        </div>
+    </div>
+</div>
+
 
             </div>
         </main>

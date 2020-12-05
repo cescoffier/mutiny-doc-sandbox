@@ -236,15 +236,15 @@ If one of the observed streams never emits any item then the combined stream wil
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">        Multi&lt;Tuple2&lt;A, B&gt;&gt; multi1 = Multi.createBy().combining()
-                .streams(multiA, multiB)
-                .latestItems().asTuple();
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">Multi&lt;Tuple2&lt;A, B&gt;&gt; multi1 = Multi.createBy().combining()
+        .streams(multiA, multiB)
+        .latestItems().asTuple();
 
-        // or
+// or
 
-        Multi&lt;String&gt; multi2 = Multi.createBy().combining()
-                .streams(multiA, multiB)
-                .latestItems().using(list -&gt; combineItems(list));</code></pre>
+Multi&lt;String&gt; multi2 = Multi.createBy().combining()
+        .streams(multiA, multiB)
+        .latestItems().using(list -&gt; combineItems(list));</code></pre>
 </div>
 </div>
 </div>
@@ -267,7 +267,7 @@ If one of the observed streams never emits any item then the combined stream wil
                     
                     <li>
                         
-                        <a href="/mutiny-doc-sandbox/guides/merge-concat">Merging and Concatenating Streams</a>
+                        <i class="las la-chevron-circle-right"></i>&nbsp;<a href="/mutiny-doc-sandbox/guides/merge-concat">Merging and Concatenating Streams</a>
                         
                         
                     </li>
@@ -299,7 +299,7 @@ If one of the observed streams never emits any item then the combined stream wil
             </div>
             <div class="col-lg-3">
                 <p>
-                     Site last generated: Dec 3, 2020
+                     Site last generated: Dec 5, 2020
                 </p>
             </div>
         </div>
